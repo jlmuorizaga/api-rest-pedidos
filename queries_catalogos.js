@@ -1,10 +1,10 @@
 const Pool = require('pg').Pool
 
-const DB_HOST = process.env.DB_HOST || 'localhost'
+const DB_HOST = process.env.DB_HOST || 'chp202304db.c2fc27t7knic.us-east-2.rds.amazonaws.com'
 const DB_USER = process.env.DB_USER || 'cheesepizzauser'
 const DB_PASSWORD = process.env.DB_PASSWORD || 'cheesepizza2001'
 const DB_NAME = process.env.DB_NAME || 'chppreciosespecprodpromocdb'
-const DB_PORT = process.env.DB_PORT || 5434
+const DB_PORT = process.env.DB_PORT || 5432
 
 //Pool de conexiones a base de datos
 const pool = new Pool({
@@ -13,10 +13,10 @@ const pool = new Pool({
     database: DB_NAME,
     password: DB_PASSWORD,
     port: DB_PORT,
-/*	ssl:{
+	ssl:{
             rejectUnauthorized:false,
         },
-        */
+        
 })
 
 
