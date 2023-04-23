@@ -63,8 +63,11 @@ const getPedidosBySucursal = (request, response) => {
 
 const getPedidoById = (request, response) => {
     const id_pedido = request.params.id_pedido
-    pool.query(
-        'SELECT * FROM datos.pedido WHERE id = $1',
+    pool.query(         
+        'SELECT "id", tipo_pago as "tipoPago", modalidad_entrega as "modalidadEntrega",'+ 
+'estatus, fechahora as "fechaHora",detalle, instrucciones, monto, '+
+'datos_cliente as "datosCliente",clave_sucursal as "claveSucursal"'+
+' FROM datos.pedido WHERE id = $1',
         [id_pedido],
         (error, results) => {
             if (error) {
