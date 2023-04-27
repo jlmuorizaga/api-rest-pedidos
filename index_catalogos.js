@@ -1,3 +1,4 @@
+const cors = require('cors')
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -10,7 +11,9 @@ app.use(
         extended: true,
     })
 )
-
+app.use(cors({
+    origin: '*'
+}))
 app.get('/', (request, response) => {
     response.json({ info: 'API CHPSystem Catálogos' })
 })
