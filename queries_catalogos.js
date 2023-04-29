@@ -33,6 +33,46 @@ const getSucursales = (request, response) => {
     )
 }
 
+const getEspecialidadesBySucursal = (request, response) => {
+    const cve_sucursal = request.params.cve_sucursal
+    pool.query(
+        'SELECT DISTINCT ep.id as idEspecialidad,ep.nombre,ep.ingredientes '
+        +'FROM preesppropro.especialidad_pizza as ep, '
+        +'preesppropro.relacion_especialidad_tamanio_precio_sucursal as re,'
+        +'preesppropro.sucursal as s '
+        +'WHERE ep.id=re.id_especialidad_pizza '
+        +'AND s.id=re.id_sucursal and s.clave=$1 '
+        +'ORDER BY ep.nombre',
+        [cve_sucursal], (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
+const getTamaniosBySucursal = (request, response) => {
+    const cve_sucursal = request.params.cve_sucursal
+    const id_especialidad = request.params.id_especialidad
+    pool.query(
+        'SELECT id_especialidad_pizza,r.id_tamanio_pizza,t.nombre,r.precio '
+        +'FROM preesppropro.relacion_especialidad_tamanio_precio_sucursal AS r,'
+        +'preesppropro.sucursal as s, preesppropro.tamanio_pizza as t '
+        +'WHERE s.id=r.id_sucursal and r.id_tamanio_pizza=t.id ' 
+        +'AND s.clave=$1 '
+        +'AND id_especialidad_pizza=$2',
+        [cve_sucursal,id_especialidad], (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
 module.exports = {
-    getSucursales
+    getSucursales,
+    getEspecialidadesBySucursal,
+    getTamaniosBySucursal
 }
