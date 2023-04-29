@@ -79,7 +79,12 @@ const getPedidoById = (request, response) => {
             if (error) {
                 throw error
             }
-            response.status(200).json(results.rows)
+            if(results.rows[0]){
+                response.status(200).json(results.rows[0])
+            }else{
+                textoError = '{"error": "No se encontró el pedido"}'
+                response.status(404).json(JSON.parse(textoError))
+            }
         }
     )
 }
