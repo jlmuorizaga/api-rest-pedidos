@@ -1,10 +1,21 @@
 const Pool = require('pg').Pool
 
+//Base de datos local JLMG
+/*
+const DB_HOST = process.env.DB_HOST || 'localhost'
+const DB_USER = process.env.DB_USER || 'userchpmovildb'
+const DB_PASSWORD = process.env.DB_PASSWORD || 'Secreto'
+const DB_NAME = process.env.DB_NAME || 'chppedidosmovildb'
+const DB_PORT = process.env.DB_PORT || 5432
+*/
+
+//Base de datos en AWS
 const DB_HOST = process.env.DB_HOST || 'chp202304db.c2fc27t7knic.us-east-2.rds.amazonaws.com'
 const DB_USER = process.env.DB_USER || 'cheesepizzauser'
 const DB_PASSWORD = process.env.DB_PASSWORD || 'cheesepizza2001'
 const DB_NAME = process.env.DB_NAME || 'cheesepizzapedidosmovilesdb'
 const DB_PORT = process.env.DB_PORT || 5432
+
 
 /*const DB_HOST = process.env.DB_HOST || 'localhost'
 const DB_USER = process.env.DB_USER || 'cheesepizzauser'
@@ -18,7 +29,8 @@ const pool = new Pool({
     host: DB_HOST,
     database: DB_NAME,
     password: DB_PASSWORD,
-    port: DB_PORT,
+    port: DB_PORT
+    ,
 	ssl:{
             rejectUnauthorized:false,
         },
@@ -33,7 +45,8 @@ const createPedido = (request, response) => {
             if (error) {
                 throw error
             }
-            response.status(201).send(`Se insertó pedido: ${results.rows[0].id}`)
+            textoRespuesta = '{"respuesta": "Se insertó pedido: '+results.rows[0].id+'"}';
+            response.status(201).json(JSON.parse(textoRespuesta))
         }
     )
 }
