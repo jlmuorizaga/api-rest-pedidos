@@ -30,12 +30,10 @@ const pool = new Pool({
     database: DB_NAME,
     password: DB_PASSWORD,
     port: DB_PORT
-    /*
     ,
 	ssl:{
             rejectUnauthorized:false,
         },
-*/
 })
 
 const createPedido = (request, response) => {
