@@ -12,7 +12,8 @@ app.use(
     })
 )
 app.use(cors({
-    origin: '*'
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT']
 }))
 
 app.get('/', (request, response) => {
