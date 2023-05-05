@@ -5,7 +5,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-const port = 3002;
+const port = 3001;
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
