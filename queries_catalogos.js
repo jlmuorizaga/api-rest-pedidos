@@ -76,13 +76,6 @@ const getTamaniosBySucursal = (request, response) => {
     )
 }
 
-SELECT p.id, descripcion, tamanio
-	FROM preesppropro.producto as p,
-	preesppropro.relacion_producto_sucursal as rs,
-	preesppropro.sucursal as s
-	WHERE p.id=rs.id_producto AND rs.id_sucursal=s.id
-	AND s.clave='01ARB' 
-	ORDER BY descripcion,tamanio
 
 const getProductosBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
