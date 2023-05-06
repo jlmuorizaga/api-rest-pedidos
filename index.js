@@ -27,6 +27,9 @@ app.put('/pedidoEnviado/:id_pedido', db.updateEstatusEnviado)
 app.put('/pedidoListo/:id_pedido', db.updateEstatusListo)
 app.put('/pedidoAtendido/:id_pedido', db.updateEstatusAtendido)
 
+//Endpoints de utilería sólo para pruebas de desarrollo
+app.put('/pedidosReset', db.updateEstatusPedidosReset)
+
 app.listen(port, () => {
     console.log('App corriendo en puerto',port)
 })
