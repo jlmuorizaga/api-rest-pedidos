@@ -23,7 +23,12 @@ const pool = new Pool({
 
 const getSucursales = (request, response) => {
     pool.query(
-        'SELECT clave, nombre_sucursal FROM preesppropro.sucursal order by clave',
+        'SELECT distinct clave, nombre_sucursal '
+        +'FROM preesppropro.sucursal as suc, '
+        +'preesppropro.relacion_especialidad_tamanio_precio_sucursal as relespec,'
+        +'preesppropro.relacion_producto_sucursal as relprod '
+        +'WHERE suc.id=relespec.id_sucursal or suc.id=relprod.id_sucursal '
+        +'order by clave',
         (error, results) => {
             if (error) {
                 throw error
