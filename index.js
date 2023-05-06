@@ -14,6 +14,7 @@ app.get('/', (request, response) => {
 })
 
 //Endpoints para app móvil
+app.post("/datos", db.insertaDatos);
 app.post('/pedido', db.createPedido)
 app.get('/estatusPedido/:id_pedido', db.getEstatusPedido)
 
@@ -25,8 +26,6 @@ app.put('/pedidoCapturado/:id_pedido', db.updateEstatusCapturado)
 app.put('/pedidoEnviado/:id_pedido', db.updateEstatusEnviado)
 app.put('/pedidoListo/:id_pedido', db.updateEstatusListo)
 app.put('/pedidoAtendido/:id_pedido', db.updateEstatusAtendido)
-
-app.post("/datos", db.insertaDatos);
 
 app.listen(port, () => {
     console.log('App corriendo en puerto',port)

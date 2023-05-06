@@ -39,15 +39,27 @@ const pool = new Pool({
 
 
 const insertaDatos = (req, res)=>{
-    console.log('Se invocó el post a datos');
-    const product = req.body;
-    console.log(product);
+    //console.log('Se invocó el post a datos');
+    //const product = req.body;
+    //console.log(product);
 
-    const mensaje = {
-        mensaje:"Datos recibidos"
-    }
+    //const mensaje = {
+    //    mensaje:"Datos recibidos"
+    //}
 
-    res.send(mensaje);
+    //res.send(mensaje);
+    const { id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal } = req.body
+    pool.query(
+        'INSERT INTO datos.pedido("id", tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+        [id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se insertó pedido: '+results.rows[0].id+'"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
 }
 
 
