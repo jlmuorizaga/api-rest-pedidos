@@ -67,10 +67,10 @@ const getEstatusPedido = (request, response) => {
 
 const getPedidosBySucursal = (request, response) => {
     const clave_sucursal = request.params.clave_sucursal
-    const status_solicitado = 'SL' //Estatus solicitado desde aplicación movil
+    const status_pedido_nube = 'NP' //Estatus: solicitado desde aplicación movil y actualmente en la nube
     pool.query(
         'SELECT id FROM datos.pedido WHERE clave_sucursal = $1 AND estatus = $2',
-        [clave_sucursal, status_solicitado],
+        [clave_sucursal, status_pedido_nube],
         (error, results) => {
             if (error) {
                 throw error
@@ -104,7 +104,7 @@ const getPedidoById = (request, response) => {
 
 const updateEstatusRecibido = (request, response) => {
     const id_pedido = request.params.id_pedido
-    const status_recibido = 'RC' //Estatus recibido en el receptor de pedidos
+    const status_recibido = 'RP' //Estatus: recibido en el receptor de pedidos
     pool.query(
         'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
         [status_recibido, id_pedido],
@@ -119,7 +119,7 @@ const updateEstatusRecibido = (request, response) => {
 
 const updateEstatusCapturado = (request, response) => {
     const id_pedido = request.params.id_pedido
-    const status_capturado = 'CP' //Estatus capturado en el punto de venta
+    const status_capturado = 'CP' //Estatus: capturado en el punto de venta
     pool.query(
         'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
         [status_capturado, id_pedido],
@@ -134,7 +134,7 @@ const updateEstatusCapturado = (request, response) => {
 
 const updateEstatusEnviado = (request, response) => {
     const id_pedido = request.params.id_pedido
-    const status_enviado = 'EV' //Estatus al domicilio del cliente
+    const status_enviado = 'EP' //Estatus: enviado al domicilio del cliente
     pool.query(
         'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
         [status_enviado, id_pedido],
@@ -149,7 +149,7 @@ const updateEstatusEnviado = (request, response) => {
 
 const updateEstatusListo = (request, response) => {
     const id_pedido = request.params.id_pedido
-    const status_listo = 'LE' //Estatus listo para entrega en sucursal
+    const status_listo = 'LP' //Estatus: pedido listo para entrega en sucursal
     pool.query(
         'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
         [status_listo, id_pedido],
@@ -164,7 +164,7 @@ const updateEstatusListo = (request, response) => {
 
 const updateEstatusAtendido = (request, response) => {
     const id_pedido = request.params.id_pedido
-    const status_atendido = 'AT' //Estatus pedido atendido
+    const status_atendido = 'AP' //Estatus: pedido atendido
     pool.query(
         'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
         [status_atendido, id_pedido],

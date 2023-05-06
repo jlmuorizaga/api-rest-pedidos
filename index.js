@@ -17,7 +17,7 @@ app.use(cors({
 }))
 
 app.get('/', (request, response) => {
-    response.json({ info: 'API CHPSystem Pedidos Móviles Nube' })
+    response.json({ info: 'API CHPSystem Pedidos Móviles Nube ver: 20230506 1218' })
 })
 
 //Endpoints para app móvil
