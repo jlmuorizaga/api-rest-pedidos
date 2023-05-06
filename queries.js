@@ -204,6 +204,20 @@ const updateEstatusAtendido = (request, response) => {
     )
 }
 
+const updateEstatusPedidosReset = (request, response) => {
+    const status_nube = 'NP' //Estatus: pedido atendido
+    pool.query(
+        'UPDATE datos.pedido SET estatus = $1',
+        [status_nube],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).send('Estatus reseteado en todos los pedidos')
+        }
+    )
+}
+
 module.exports = {
     insertaDatos,
     createPedido,
@@ -214,5 +228,6 @@ module.exports = {
     updateEstatusCapturado,
     updateEstatusEnviado,
     updateEstatusListo,
-    updateEstatusAtendido
+    updateEstatusAtendido,
+    updateEstatusPedidosReset
 }
