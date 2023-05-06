@@ -96,7 +96,7 @@ const getPedidosBySucursal = (request, response) => {
     const clave_sucursal = request.params.clave_sucursal
     const status_pedido_nube = 'NP' //Estatus: solicitado desde aplicación movil y actualmente en la nube
     pool.query(
-        'SELECT id FROM datos.pedido WHERE clave_sucursal = $1 AND estatus = $2',
+        'SELECT id FROM datos.pedido WHERE clave_sucursal = $1 AND estatus = $2 ORDER BY id',
         [clave_sucursal, status_pedido_nube],
         (error, results) => {
             if (error) {
