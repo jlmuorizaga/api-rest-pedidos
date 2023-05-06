@@ -80,7 +80,7 @@ const getTamaniosBySucursal = (request, response) => {
 const getProductosBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     pool.query(
-        'SELECT pro.id, descripcion, tamanio '
+        'SELECT pro.id, descripcion, tamanio,rs.precio_normal '
         +'FROM preesppropro.producto as pro,'
         +'preesppropro.relacion_producto_sucursal as rs,'
         +'preesppropro.sucursal as s '
