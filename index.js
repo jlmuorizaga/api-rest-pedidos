@@ -26,18 +26,7 @@ app.put('/pedidoEnviado/:id_pedido', db.updateEstatusEnviado)
 app.put('/pedidoListo/:id_pedido', db.updateEstatusListo)
 app.put('/pedidoAtendido/:id_pedido', db.updateEstatusAtendido)
 
-app.post("/datos", (req, res)=>{
-    console.log('Se invocó el post a datos');
-    const product = req.body;
-    console.log(product);
-
-    const mensaje = {
-        mensaje:"Datos recibidos"
-    }
-
-    res.send(mensaje);
-});
-
+app.post("/datos", db.insertaDatos);
 
 app.listen(port, () => {
     console.log('App corriendo en puerto',port)

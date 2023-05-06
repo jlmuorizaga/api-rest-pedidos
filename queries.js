@@ -23,6 +23,7 @@ const DB_PASSWORD = process.env.DB_PASSWORD || 'cheesepizza2001'
 const DB_NAME = process.env.DB_NAME || 'cheesepizzapedidosmovilesdb'
 const DB_PORT = process.env.DB_PORT || 5434
 */
+
 //Pool de conexiones a base de datos
 const pool = new Pool({
     user: DB_USER,
@@ -35,6 +36,20 @@ const pool = new Pool({
             rejectUnauthorized:false,
         },
 })
+
+
+const insertaDatos = (req, res)=>{
+    console.log('Se invocó el post a datos');
+    const product = req.body;
+    console.log(product);
+
+    const mensaje = {
+        mensaje:"Datos recibidos"
+    }
+
+    res.send(mensaje);
+}
+
 
 const createPedido = (request, response) => {
     const { id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal } = request.body
@@ -178,6 +193,7 @@ const updateEstatusAtendido = (request, response) => {
 }
 
 module.exports = {
+    insertaDatos,
     createPedido,
     getEstatusPedido,
     getPedidosBySucursal,
