@@ -1,20 +1,13 @@
-const cors = require('cors')
-const express = require('express')
-const bodyParser = require('body-parser')
-const app = express()
-const db = require('./queries')
-const port = process.env.PORT || 3000
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const db = require('./queries');
+const app = express();
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-app.use(bodyParser.json())
-app.use(
-    bodyParser.urlencoded({
-        extended: true,
-    })
-)
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT']
-}))
+const port = process.env.PORT || 3000
 
 app.get('/', (request, response) => {
     response.json({ info: 'API CHPSystem Pedidos Móviles Nube ver: 20230506 1218' })
@@ -32,6 +25,19 @@ app.put('/pedidoCapturado/:id_pedido', db.updateEstatusCapturado)
 app.put('/pedidoEnviado/:id_pedido', db.updateEstatusEnviado)
 app.put('/pedidoListo/:id_pedido', db.updateEstatusListo)
 app.put('/pedidoAtendido/:id_pedido', db.updateEstatusAtendido)
+
+app.post("/datos", (req, res)=>{
+    console.log('Se invocó el post a datos');
+    const product = req.body;
+    console.log(product);
+
+    const mensaje = {
+        mensaje:"Datos recibidos"
+    }
+
+    res.send(mensaje);
+});
+
 
 app.listen(port, () => {
     console.log('App corriendo en puerto',port)
