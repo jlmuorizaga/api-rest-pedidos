@@ -139,11 +139,26 @@ const getProductosByTipoProductoBySucursal = (request, response) => {
     )
 }
 
+const getSucursalesAll = (request, response) => {
+    pool.query(
+        'SELECT *  '
+        +'FROM preesppropro.sucursal '
+        +'order by clave',
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
 module.exports = {
     getSucursales,
     getEspecialidadesBySucursal,
     getTamaniosBySucursal,
     getProductosBySucursal,
     getTipoProductosBySucursal,
-    getProductosByTipoProductoBySucursal
+    getProductosByTipoProductoBySucursal,
+    getSucursalesAll
 }
