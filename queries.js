@@ -76,10 +76,10 @@ const getDatosCliente = (request, response) => {
 }
 
 const insertaCliente = (req, res) => {
-    const { id, correo_electronico, contrasenia, nombre, telefono } = req.body
+    const { id, correoElectronico, contrasenia, nombre, telefono } = req.body
     pool.query(
         'INSERT INTO datos.cliente("id", correo_electronico, contrasenia, nombre, telefono) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [id, correo_electronico, contrasenia, nombre, telefono],
+        [id, correoElectronico, contrasenia, nombre, telefono],
         (error, results) => {
             if (error) {
                 throw error
@@ -91,10 +91,10 @@ const insertaCliente = (req, res) => {
 }
 
 const actualizaCliente = (req, res) => {
-    const { id, correo_electronico, contrasenia, nombre, telefono } = req.body
+    const { id, correoElectronico, contrasenia, nombre, telefono } = req.body
     pool.query(
         'UPDATE datos.cliente SET correo_electronico=$1, contrasenia=$2, nombre=$3, telefono=$4 WHERE "id"=$5 RETURNING *',
-        [correo_electronico, contrasenia, nombre, telefono, id],
+        [correoElectronico, contrasenia, nombre, telefono, id],
         (error, results) => {
             if (error) {
                 throw error
