@@ -32,9 +32,9 @@ const pool = new Pool({
     password: DB_PASSWORD,
     port: DB_PORT
     ,
-	ssl:{
-            rejectUnauthorized:false,
-        },
+    ssl: {
+        rejectUnauthorized: false,
+    },
 })
 
 
@@ -43,8 +43,8 @@ const getEstatusAcceso = (request, response) => {
     const contrasenia = request.params.contrasenia;
     pool.query(
         'SELECT count(*) as acceso FROM datos.cliente '
-        +'WHERE correo_electronico = $1 ' 
-        +'AND contrasenia = $2',
+        + 'WHERE correo_electronico = $1 '
+        + 'AND contrasenia = $2',
         [correo, contrasenia],
         (error, results) => {
             if (error) {
@@ -55,8 +55,57 @@ const getEstatusAcceso = (request, response) => {
     )
 }
 
+const getDatosCliente = (request, response) => {
+    const correo = request.params.correo;
+    pool.query(
+        'SELECT "id", correo_electronico, nombre, telefono FROM datos.cliente '
+        + 'WHERE correo_electronico = $1',
+        [correo],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            if (results.rows[0]) {
+                response.status(200).json(results.rows[0])
+            } else {
+                textoError = '{"error": "No se encontró el cliente"}'
+                response.status(404).json(JSON.parse(textoError))
+            }
+        }
+    )
+}
 
-const insertaDatos = (req, res)=>{
+const insertaCliente = (req, res) => {
+    const { id, correo_electronico, contrasenia, nombre, telefono } = req.body
+    pool.query(
+        'INSERT INTO datos.cliente("id", correo_electronico, contrasenia, nombre, telefono) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [id, correo_electronico, contrasenia, nombre, telefono],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se insertó cliente: ' + results.rows[0].id + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
+const actualizaCliente = (req, res) => {
+    const { id, correo_electronico, contrasenia, nombre, telefono } = req.body
+    pool.query(
+        'UPDATE datos.cliente SET correo_electronico=$1, contrasenia=$2, nombre=$3, telefono=$4 WHERE "id"=$5 RETURNING *',
+        [correo_electronico, contrasenia, nombre, telefono, id],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se actualizó cliente: ' + results.rows[0].id + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
+const insertaDatos = (req, res) => {
     //console.log('Se invocó el post a datos');
     //const product = req.body;
     //console.log(product);
@@ -74,7 +123,7 @@ const insertaDatos = (req, res)=>{
             if (error) {
                 throw error
             }
-            textoRespuesta = '{"respuesta": "Se insertó pedido: '+results.rows[0].id+'"}';
+            textoRespuesta = '{"respuesta": "Se insertó pedido: ' + results.rows[0].id + '"}';
             res.status(201).json(JSON.parse(textoRespuesta))
         }
     )
@@ -89,7 +138,7 @@ const createPedido = (request, response) => {
             if (error) {
                 throw error
             }
-            textoRespuesta = '{"respuesta": "Se insertó pedido: '+results.rows[0].id+'"}';
+            textoRespuesta = '{"respuesta": "Se insertó pedido: ' + results.rows[0].id + '"}';
             response.status(201).json(JSON.parse(textoRespuesta))
         }
     )
@@ -126,19 +175,19 @@ const getPedidosBySucursal = (request, response) => {
 
 const getPedidoById = (request, response) => {
     const id_pedido = request.params.id_pedido
-    pool.query(         
-        'SELECT "id", tipo_pago as "tipoPago", modalidad_entrega as "modalidadEntrega",'+ 
-'estatus, fechahora as "fechaHora",detalle, instrucciones, monto, '+
-'datos_cliente as "datosCliente",clave_sucursal as "claveSucursal"'+
-' FROM datos.pedido WHERE id = $1',
+    pool.query(
+        'SELECT "id", tipo_pago as "tipoPago", modalidad_entrega as "modalidadEntrega",' +
+        'estatus, fechahora as "fechaHora",detalle, instrucciones, monto, ' +
+        'datos_cliente as "datosCliente",clave_sucursal as "claveSucursal"' +
+        ' FROM datos.pedido WHERE id = $1',
         [id_pedido],
         (error, results) => {
             if (error) {
                 throw error
             }
-            if(results.rows[0]){
+            if (results.rows[0]) {
                 response.status(200).json(results.rows[0])
-            }else{
+            } else {
                 textoError = '{"error": "No se encontró el pedido"}'
                 response.status(404).json(JSON.parse(textoError))
             }
@@ -236,6 +285,9 @@ const updateEstatusPedidosReset = (request, response) => {
 }
 
 module.exports = {
+    actualizaCliente,
+    insertaCliente,
+    getDatosCliente,
     getEstatusAcceso,
     insertaDatos,
     createPedido,

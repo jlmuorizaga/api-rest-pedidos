@@ -21,8 +21,8 @@ app.get('/estatusPedido/:id_pedido', db.getEstatusPedido);
 //Endpoints de clientes
 app.get('/accesoCliente/:correo/:contrasenia', db.getEstatusAcceso);
 app.get('/accesoCliente/:correo', db.getDatosCliente);
-app.post('/accesoCliente', db.getInsertaCliente);
-app.put('/accesoCliente', db.getActualizaCliente);
+app.post('/accesoCliente', db.insertaCliente);
+app.put('/accesoCliente', db.actualizaCliente);
 
 //Endpoints para receptor de pedidos en sucursal
 app.get('/pedidos/:clave_sucursal', db.getPedidosBySucursal);
