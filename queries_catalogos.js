@@ -130,7 +130,7 @@ const getProductosByTipoProductoBySucursal = (request, response) => {
         +'and rps.id_sucursal=s.id and s.clave=$1 '
         +'and rps.id_producto=p.id '
         +' and pt.id=$2',
-        [cve_sucursal], (error, results) => {
+        [cve_sucursal,id_tipo_producto], (error, results) => {
             if (error) {
                 throw error
             }
