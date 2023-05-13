@@ -25,7 +25,7 @@ app.get('/tamanios/:cve_sucursal/:id_especialidad', db.getTamaniosBySucursal)
 app.get('/productos/:cve_sucursal', db.getProductosBySucursal)
 app.get('/tipoproductos/:cve_sucursal', db.getTipoProductosBySucursal)
 app.get('/productos/:cve_sucursal/:id_tipo_producto', db.getProductosByTipoProductoBySucursal)
-
+app.get('/sucursalesAll', db.getSucursalesAll)
 
 app.listen(port, () => {
     console.log('App corriendo en puerto',port)
