@@ -117,10 +117,33 @@ const getTipoProductosBySucursal = (request, response) => {
     )
 }
 
+const getProductosByTipoProductoBySucursal = (request, response) => {
+    const cve_sucursal = request.params.cve_sucursal
+    const id_tipo_producto = request.params.id_tipo_producto
+    pool.query(
+        'SELECT p.descripcion,p.tamanio,rps.precio_normal '
+        +'FROM preesppropro.producto as p,'
+        +'preesppropro.producto_tipo as pt,'
+        +'preesppropro.sucursal as s,'
+        +'preesppropro.relacion_producto_sucursal as rps '
+        +'WHERE p.id_tipo_producto=pt.id '
+        +'and rps.id_sucursal=s.id and s.clave=$1 '
+        +'and rps.id_producto=p.id '
+        +' and pt.id=$2',
+        [cve_sucursal], (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
 module.exports = {
     getSucursales,
     getEspecialidadesBySucursal,
     getTamaniosBySucursal,
     getProductosBySucursal,
-    getTipoProductosBySucursal
+    getTipoProductosBySucursal,
+    getProductosByTipoProductoBySucursal
 }

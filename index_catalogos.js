@@ -24,6 +24,7 @@ app.get('/especialidades/:cve_sucursal', db.getEspecialidadesBySucursal)
 app.get('/tamanios/:cve_sucursal/:id_especialidad', db.getTamaniosBySucursal)
 app.get('/productos/:cve_sucursal', db.getProductosBySucursal)
 app.get('/tipoproductos/:cve_sucursal', db.getTipoProductosBySucursal)
+app.get('/productos/:cve_sucursal/:id_tipo_producto', db.getProductosByTipoProductoBySucursal)
 
 
 app.listen(port, () => {
