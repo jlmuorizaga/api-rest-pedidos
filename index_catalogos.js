@@ -15,7 +15,7 @@ app.use(cors({
     origin: '*'
 }))
 app.get('/', (request, response) => {
-    response.json({ info: 'API CHPSystem Catálogos\n\n ' 
+    response.json({ info: 'API CHPSystem Catálogos\n' 
     +'/sucursales\n'
     +'/especialidades/:cve_sucursal\n'
     +'/tamanios/:cve_sucursal/:id_especialidad\n'
