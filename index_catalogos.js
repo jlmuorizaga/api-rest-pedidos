@@ -22,7 +22,7 @@ app.get('/', (request, response) => {
     +'/productos/:cve_sucursal'
     +'/tipoproductos/:cve_sucursal'
     +'/productos/:cve_sucursal/:id_tipo_producto'
-    +'/sucursalesAll'
+    +'/sucursalesAll'})
 })
 
 //Endpoints para catálogos
