@@ -15,13 +15,13 @@ app.use(cors({
     origin: '*'
 }))
 app.get('/', (request, response) => {
-    response.json({ info: 'API CHPSystem Catálogos\n ' 
+    response.json({ info: 'API CHPSystem Catálogos\n\n ' 
     +'/sucursales\n'
-    +'/especialidades/:cve_sucursal'
-    +'/tamanios/:cve_sucursal/:id_especialidad'
-    +'/productos/:cve_sucursal'
-    +'/tipoproductos/:cve_sucursal'
-    +'/productos/:cve_sucursal/:id_tipo_producto'
+    +'/especialidades/:cve_sucursal\n'
+    +'/tamanios/:cve_sucursal/:id_especialidad\n'
+    +'/productos/:cve_sucursal\n'
+    +'/tipoproductos/:cve_sucursal\n'
+    +'/productos/:cve_sucursal/:id_tipo_producto\n'
     +'/sucursalesAll'})
 })
 
