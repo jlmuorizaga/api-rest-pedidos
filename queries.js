@@ -38,6 +38,24 @@ const pool = new Pool({
 })
 
 
+const getEstatusAcceso = (request, response) => {
+    const correo = request.params.correo;
+    const contrasenia = request.params.contrasenia;
+    pool.query(
+        'SELECT count(*) as acceso FROM datos.cliente '
+        +'WHERE correo_electronico = $1 ' 
+        +'AND contrasenia = $2',
+        [correo, contrasenia],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows[0]);
+        }
+    )
+}
+
+
 const insertaDatos = (req, res)=>{
     //console.log('Se invocó el post a datos');
     //const product = req.body;
@@ -61,7 +79,6 @@ const insertaDatos = (req, res)=>{
         }
     )
 }
-
 
 const createPedido = (request, response) => {
     const { id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal } = request.body
@@ -219,6 +236,7 @@ const updateEstatusPedidosReset = (request, response) => {
 }
 
 module.exports = {
+    getEstatusAcceso,
     insertaDatos,
     createPedido,
     getEstatusPedido,

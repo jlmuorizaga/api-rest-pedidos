@@ -14,22 +14,28 @@ app.get('/', (request, response) => {
 })
 
 //Endpoints para app móvil
+//Endpoints de pedidos
 app.post("/datos", db.insertaDatos);
-app.post('/pedido', db.createPedido)
-app.get('/estatusPedido/:id_pedido', db.getEstatusPedido)
+app.post('/pedido', db.createPedido);
+app.get('/estatusPedido/:id_pedido', db.getEstatusPedido);
+//Endpoints de clientes
+app.get('/accesoCliente/:correo/:contrasenia', db.getEstatusAcceso);
+app.get('/accesoCliente/:correo', db.getDatosCliente);
+app.post('/accesoCliente', db.getInsertaCliente);
+app.put('/accesoCliente', db.getActualizaCliente);
 
 //Endpoints para receptor de pedidos en sucursal
-app.get('/pedidos/:clave_sucursal', db.getPedidosBySucursal)
-app.get('/pedido/:id_pedido', db.getPedidoById)
-app.put('/pedidoRecibido/:id_pedido', db.updateEstatusRecibido)
-app.put('/pedidoCapturado/:id_pedido', db.updateEstatusCapturado)
-app.put('/pedidoEnviado/:id_pedido', db.updateEstatusEnviado)
-app.put('/pedidoListo/:id_pedido', db.updateEstatusListo)
-app.put('/pedidoAtendido/:id_pedido', db.updateEstatusAtendido)
+app.get('/pedidos/:clave_sucursal', db.getPedidosBySucursal);
+app.get('/pedido/:id_pedido', db.getPedidoById);
+app.put('/pedidoRecibido/:id_pedido', db.updateEstatusRecibido);
+app.put('/pedidoCapturado/:id_pedido', db.updateEstatusCapturado);
+app.put('/pedidoEnviado/:id_pedido', db.updateEstatusEnviado);
+app.put('/pedidoListo/:id_pedido', db.updateEstatusListo);
+app.put('/pedidoAtendido/:id_pedido', db.updateEstatusAtendido);
 
 //Endpoints de utilería sólo para pruebas de desarrollo
-app.put('/pedidosReset', db.updateEstatusPedidosReset)
+app.put('/pedidosReset', db.updateEstatusPedidosReset);
 
 app.listen(port, () => {
-    console.log('App corriendo en puerto',port)
+    console.log('App corriendo en puerto',port);
 })
