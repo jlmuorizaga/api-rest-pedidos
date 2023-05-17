@@ -58,7 +58,7 @@ const getEstatusAcceso = (request, response) => {
 const getDatosCliente = (request, response) => {
     const correo = request.params.correo;
     pool.query(
-        'SELECT "id", correo_electronico, nombre, telefono FROM datos.cliente '
+        'SELECT "id", correo_electronico, nombre, telefono, domicilio FROM datos.cliente '
         + 'WHERE correo_electronico = $1',
         [correo],
         (error, results) => {
@@ -76,10 +76,10 @@ const getDatosCliente = (request, response) => {
 }
 
 const insertaCliente = (req, res) => {
-    const { id, correoElectronico, contrasenia, nombre, telefono } = req.body
+    const { id, correoElectronico, contrasenia, nombre, telefono, domicilio } = req.body
     pool.query(
-        'INSERT INTO datos.cliente("id", correo_electronico, contrasenia, nombre, telefono) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [id, correoElectronico, contrasenia, nombre, telefono],
+        'INSERT INTO datos.cliente("id", correo_electronico, contrasenia, nombre, telefono, domicilio) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        [id, correoElectronico, contrasenia, nombre, telefono, domicilio],
         (error, results) => {
             if (error) {
                 throw error
@@ -91,10 +91,10 @@ const insertaCliente = (req, res) => {
 }
 
 const actualizaCliente = (req, res) => {
-    const { id, correoElectronico, contrasenia, nombre, telefono } = req.body
+    const { id, correoElectronico, contrasenia, nombre, telefono, domicilio } = req.body
     pool.query(
-        'UPDATE datos.cliente SET correo_electronico=$1, contrasenia=$2, nombre=$3, telefono=$4 WHERE "id"=$5 RETURNING *',
-        [correoElectronico, contrasenia, nombre, telefono, id],
+        'UPDATE datos.cliente SET correo_electronico=$1, contrasenia=$2, nombre=$3, telefono=$4, domicilio=$5 WHERE "id"=$6 RETURNING *',
+        [correoElectronico, contrasenia, nombre, telefono, domicilio, id],
         (error, results) => {
             if (error) {
                 throw error

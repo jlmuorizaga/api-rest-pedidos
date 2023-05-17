@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 3000
 
 app.get('/', (request, response) => {
-    response.json({ info: 'API CHPSystem Pedidos Móviles Nube ver: 20230506 1218' })
+    response.json({ info: 'API CHPSystem Pedidos Móviles Nube ver: 20230516 2254' })
 })
 
 //Endpoints para app móvil
