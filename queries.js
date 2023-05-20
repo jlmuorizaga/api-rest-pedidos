@@ -174,12 +174,26 @@ const getPedidosBySucursal = (request, response) => {
     )
 }
 
+const getPedidosByCliente = (request, response) => {
+    const id_cliente = request.params.id_cliente
+    pool.query(
+        'SELECT id, numero_pedido, clave_sucursal, fechahora, modalidad_entrega, estatus  FROM datos.pedido WHERE id_cliente = $1 ORDER BY numero_pedido',
+        [id_cliente],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
 const getPedidoById = (request, response) => {
     const id_pedido = request.params.id_pedido
     pool.query(
-        'SELECT "id", numero_pedido as "numeroPedido", tipo_pago as "tipoPago", modalidad_entrega as "modalidadEntrega",' +
-        'estatus, fechahora as "fechaHora",detalle, instrucciones, monto, ' +
-        'datos_cliente as "datosCliente",clave_sucursal as "claveSucursal" ' +
+        'SELECT "id", numero_pedido as "numeroPedido", tipo_pago as "tipoPago", modalidad_entrega as "modalidadEntrega", ' +
+        'estatus, fechahora as "fechaHora", detalle, instrucciones, monto, ' +
+        'datos_cliente as "datosCliente", clave_sucursal as "claveSucursal", promociones_aplicadas as "promocionesAplicadas" ' +
         ' FROM datos.pedido WHERE id = $1',
         [id_pedido],
         (error, results) => {
@@ -308,6 +322,7 @@ const updateEstatusPedidosReset = (request, response) => {
 module.exports = {
     actualizaCliente,
     insertaCliente,
+    getPedidosByCliente,
     getDatosCliente,
     getEstatusAcceso,
     insertaDatosPedido,
