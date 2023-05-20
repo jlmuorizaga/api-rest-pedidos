@@ -23,7 +23,8 @@ const pool = new Pool({
 
 const getSucursales = (request, response) => {
     pool.query(
-        'SELECT distinct clave, nombre_sucursal '
+        'SELECT distinct clave, nombre_sucursal,hora_inicio,hora_fin, '
+        +'latitud, longitud, id_lugar, venta_activa '
         +'FROM preesppropro.sucursal as suc, '
         +'preesppropro.relacion_especialidad_tamanio_precio_sucursal as relespec,'
         +'preesppropro.relacion_producto_sucursal as relprod '
