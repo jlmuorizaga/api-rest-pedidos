@@ -105,7 +105,7 @@ const actualizaCliente = (req, res) => {
     )
 }
 
-const insertaDatos = (req, res) => {
+const insertaDatosPedido = (req, res) => {
     //console.log('Se invocó el post a datos');
     //const product = req.body;
     //console.log(product);
@@ -115,34 +115,35 @@ const insertaDatos = (req, res) => {
     //}
 
     //res.send(mensaje);
-    const { id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal } = req.body
+    const { id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal, id_cliente, promociones_aplicadas } = req.body
     pool.query(
-        'INSERT INTO datos.pedido("id", tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
-        [id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal],
+        'INSERT INTO datos.pedido("id", tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal, id_cliente, promociones_aplicadas) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *',
+        [id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal, id_cliente, promociones_aplicadas],
         (error, results) => {
             if (error) {
                 throw error
             }
-            textoRespuesta = '{"respuesta": "Se insertó pedido: ' + results.rows[0].id + '"}';
+            textoRespuesta = '{"respuesta": "Se insertó pedido", "id": "' + results.rows[0].id + '", "numero_pedido": ' + results.rows[0].numero_pedido + '}';
+            //console.log(textoRespuesta)
             res.status(201).json(JSON.parse(textoRespuesta))
         }
     )
 }
 
-const createPedido = (request, response) => {
-    const { id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal } = request.body
-    pool.query(
-        'INSERT INTO datos.pedido("id", tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
-        [id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal],
-        (error, results) => {
-            if (error) {
-                throw error
-            }
-            textoRespuesta = '{"respuesta": "Se insertó pedido: ' + results.rows[0].id + '"}';
-            response.status(201).json(JSON.parse(textoRespuesta))
-        }
-    )
-}
+//const createPedido = (request, response) => {
+//    const { id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal } = request.body
+//    pool.query(
+//        'INSERT INTO datos.pedido("id", tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+//        [id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal],
+//        (error, results) => {
+//            if (error) {
+//                throw error
+//            }
+//            textoRespuesta = '{"respuesta": "Se insertó pedido: ' + results.rows[0].id + '"}';
+//            response.status(201).json(JSON.parse(textoRespuesta))
+//        }
+//    )
+//}
 
 const getEstatusPedido = (request, response) => {
     const id_pedido = request.params.id_pedido
@@ -173,12 +174,26 @@ const getPedidosBySucursal = (request, response) => {
     )
 }
 
+const getPedidosByCliente = (request, response) => {
+    const id_cliente = request.params.id_cliente
+    pool.query(
+        'SELECT id, numero_pedido, clave_sucursal, fechahora, modalidad_entrega, estatus  FROM datos.pedido WHERE id_cliente = $1 ORDER BY numero_pedido',
+        [id_cliente],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
 const getPedidoById = (request, response) => {
     const id_pedido = request.params.id_pedido
     pool.query(
-        'SELECT "id", tipo_pago as "tipoPago", modalidad_entrega as "modalidadEntrega",' +
-        'estatus, fechahora as "fechaHora",detalle, instrucciones, monto, ' +
-        'datos_cliente as "datosCliente",clave_sucursal as "claveSucursal"' +
+        'SELECT "id", numero_pedido as "numeroPedido", tipo_pago as "tipoPago", modalidad_entrega as "modalidadEntrega", ' +
+        'estatus, fechahora as "fechaHora", detalle, instrucciones, monto, ' +
+        'datos_cliente as "datosCliente", clave_sucursal as "claveSucursal", promociones_aplicadas as "promocionesAplicadas" ' +
         ' FROM datos.pedido WHERE id = $1',
         [id_pedido],
         (error, results) => {
@@ -199,13 +214,17 @@ const updateEstatusRecibido = (request, response) => {
     const id_pedido = request.params.id_pedido
     const status_recibido = 'RP' //Estatus: recibido en el receptor de pedidos
     pool.query(
-        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
+        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2 RETURNING *',
         [status_recibido, id_pedido],
         (error, results) => {
             if (error) {
                 throw error
             }
-            response.status(200).send(`Estatus modificado del pedido: ${id_pedido}`)
+            mensaje = '{"mensaje": "Se modificó estatus del pedido",'
+            +' "id": "'+results.rows[0].id+'",'
+            +' "numero_pedido":'+results.rows[0].numero_pedido+','
+            +' "estatus":"'+results.rows[0].estatus+'"}';
+            response.status(200).json(JSON.parse(mensaje));
         }
     )
 }
@@ -214,13 +233,17 @@ const updateEstatusCapturado = (request, response) => {
     const id_pedido = request.params.id_pedido
     const status_capturado = 'CP' //Estatus: capturado en el punto de venta
     pool.query(
-        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
+        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2 RETURNING *',
         [status_capturado, id_pedido],
         (error, results) => {
             if (error) {
                 throw error
             }
-            response.status(200).send(`Estatus modificado del pedido: ${id_pedido}`)
+            mensaje = '{"mensaje": "Se modificó estatus del pedido",'
+            +' "id": "'+results.rows[0].id+'",'
+            +' "numero_pedido":'+results.rows[0].numero_pedido+','
+            +' "estatus":"'+results.rows[0].estatus+'"}';
+            response.status(200).json(JSON.parse(mensaje));
         }
     )
 }
@@ -229,13 +252,17 @@ const updateEstatusEnviado = (request, response) => {
     const id_pedido = request.params.id_pedido
     const status_enviado = 'EP' //Estatus: enviado al domicilio del cliente
     pool.query(
-        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
+        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2 RETURNING *',
         [status_enviado, id_pedido],
         (error, results) => {
             if (error) {
                 throw error
             }
-            response.status(200).send(`Estatus modificado del pedido: ${id_pedido}`)
+            mensaje = '{"mensaje": "Se modificó estatus del pedido",'
+            +' "id": "'+results.rows[0].id+'",'
+            +' "numero_pedido":'+results.rows[0].numero_pedido+','
+            +' "estatus":"'+results.rows[0].estatus+'"}';
+            response.status(200).json(JSON.parse(mensaje));
         }
     )
 }
@@ -244,13 +271,17 @@ const updateEstatusListo = (request, response) => {
     const id_pedido = request.params.id_pedido
     const status_listo = 'LP' //Estatus: pedido listo para entrega en sucursal
     pool.query(
-        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
+        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2 RETURNING *',
         [status_listo, id_pedido],
         (error, results) => {
             if (error) {
                 throw error
             }
-            response.status(200).send(`Estatus modificado del pedido: ${id_pedido}`)
+            mensaje = '{"mensaje": "Se modificó estatus del pedido",'
+            +' "id": "'+results.rows[0].id+'",'
+            +' "numero_pedido":'+results.rows[0].numero_pedido+','
+            +' "estatus":"'+results.rows[0].estatus+'"}';
+            response.status(200).json(JSON.parse(mensaje));
         }
     )
 }
@@ -259,13 +290,17 @@ const updateEstatusAtendido = (request, response) => {
     const id_pedido = request.params.id_pedido
     const status_atendido = 'AP' //Estatus: pedido atendido
     pool.query(
-        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2',
+        'UPDATE datos.pedido SET estatus = $1 WHERE id = $2 RETURNING *',
         [status_atendido, id_pedido],
         (error, results) => {
             if (error) {
                 throw error
             }
-            response.status(200).send(`Estatus modificado del pedido: ${id_pedido}`)
+            mensaje = '{"mensaje": "Se modificó estatus del pedido",'
+            +' "id": "'+results.rows[0].id+'",'
+            +' "numero_pedido":'+results.rows[0].numero_pedido+','
+            +' "estatus":"'+results.rows[0].estatus+'"}';
+            response.status(200).json(JSON.parse(mensaje));
         }
     )
 }
@@ -287,10 +322,11 @@ const updateEstatusPedidosReset = (request, response) => {
 module.exports = {
     actualizaCliente,
     insertaCliente,
+    getPedidosByCliente,
     getDatosCliente,
     getEstatusAcceso,
-    insertaDatos,
-    createPedido,
+    insertaDatosPedido,
+    //createPedido,
     getEstatusPedido,
     getPedidosBySucursal,
     getPedidoById,
