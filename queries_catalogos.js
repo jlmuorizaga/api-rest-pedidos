@@ -101,7 +101,7 @@ const getTipoProductosBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     pool.query(
         'SELECT distinct pt.id,pt.descripcion '
-        +'FROM preesppropro.relacion_producto_sucursal as rps,'
+        +'FROM preesppropro.relacion_producto_sucursal as rps, '
         +'preesppropro.sucursal as s,'
         +'preesppropro.producto as p,'
         +'preesppropro.producto_tipo as pt '
