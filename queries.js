@@ -38,6 +38,24 @@ const pool = new Pool({
 })
 
 
+const getClienteAcceso = (request, response) => {
+    const correo = request.params.correo;
+    const contrasenia = request.params.contrasenia;
+    pool.query(
+        'SELECT "id", correo_electronico as "correoElectronico", contrasenia, nombre, telefono, domicilio '
+        + 'FROM datos.cliente '
+        + 'WHERE correo_electronico = $1 '
+        + 'AND contrasenia = $2',
+        [correo, contrasenia],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows[0]);
+        }
+    )
+}
+
 const getEstatusAcceso = (request, response) => {
     const correo = request.params.correo;
     const contrasenia = request.params.contrasenia;
@@ -221,9 +239,9 @@ const updateEstatusRecibido = (request, response) => {
                 throw error
             }
             mensaje = '{"mensaje": "Se modificó estatus del pedido",'
-            +' "id": "'+results.rows[0].id+'",'
-            +' "numero_pedido":'+results.rows[0].numero_pedido+','
-            +' "estatus":"'+results.rows[0].estatus+'"}';
+                + ' "id": "' + results.rows[0].id + '",'
+                + ' "numero_pedido":' + results.rows[0].numero_pedido + ','
+                + ' "estatus":"' + results.rows[0].estatus + '"}';
             response.status(200).json(JSON.parse(mensaje));
         }
     )
@@ -240,9 +258,9 @@ const updateEstatusCapturado = (request, response) => {
                 throw error
             }
             mensaje = '{"mensaje": "Se modificó estatus del pedido",'
-            +' "id": "'+results.rows[0].id+'",'
-            +' "numero_pedido":'+results.rows[0].numero_pedido+','
-            +' "estatus":"'+results.rows[0].estatus+'"}';
+                + ' "id": "' + results.rows[0].id + '",'
+                + ' "numero_pedido":' + results.rows[0].numero_pedido + ','
+                + ' "estatus":"' + results.rows[0].estatus + '"}';
             response.status(200).json(JSON.parse(mensaje));
         }
     )
@@ -259,9 +277,9 @@ const updateEstatusEnviado = (request, response) => {
                 throw error
             }
             mensaje = '{"mensaje": "Se modificó estatus del pedido",'
-            +' "id": "'+results.rows[0].id+'",'
-            +' "numero_pedido":'+results.rows[0].numero_pedido+','
-            +' "estatus":"'+results.rows[0].estatus+'"}';
+                + ' "id": "' + results.rows[0].id + '",'
+                + ' "numero_pedido":' + results.rows[0].numero_pedido + ','
+                + ' "estatus":"' + results.rows[0].estatus + '"}';
             response.status(200).json(JSON.parse(mensaje));
         }
     )
@@ -278,9 +296,9 @@ const updateEstatusListo = (request, response) => {
                 throw error
             }
             mensaje = '{"mensaje": "Se modificó estatus del pedido",'
-            +' "id": "'+results.rows[0].id+'",'
-            +' "numero_pedido":'+results.rows[0].numero_pedido+','
-            +' "estatus":"'+results.rows[0].estatus+'"}';
+                + ' "id": "' + results.rows[0].id + '",'
+                + ' "numero_pedido":' + results.rows[0].numero_pedido + ','
+                + ' "estatus":"' + results.rows[0].estatus + '"}';
             response.status(200).json(JSON.parse(mensaje));
         }
     )
@@ -297,9 +315,9 @@ const updateEstatusAtendido = (request, response) => {
                 throw error
             }
             mensaje = '{"mensaje": "Se modificó estatus del pedido",'
-            +' "id": "'+results.rows[0].id+'",'
-            +' "numero_pedido":'+results.rows[0].numero_pedido+','
-            +' "estatus":"'+results.rows[0].estatus+'"}';
+                + ' "id": "' + results.rows[0].id + '",'
+                + ' "numero_pedido":' + results.rows[0].numero_pedido + ','
+                + ' "estatus":"' + results.rows[0].estatus + '"}';
             response.status(200).json(JSON.parse(mensaje));
         }
     )
@@ -325,6 +343,7 @@ module.exports = {
     getPedidosByCliente,
     getDatosCliente,
     getEstatusAcceso,
+    getClienteAcceso,
     insertaDatosPedido,
     //createPedido,
     getEstatusPedido,

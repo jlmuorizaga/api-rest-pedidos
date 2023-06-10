@@ -21,7 +21,7 @@ app.get('/estatusPedido/:id_pedido', db.getEstatusPedido);
 app.get('/pedidosCliente/:id_cliente', db.getPedidosByCliente);
 
 //Endpoints de clientes
-app.get('/accesoCliente/:correo/:contrasenia', db.getEstatusAcceso);
+app.get('/accesoCliente/:correo/:contrasenia', db.getClienteAcceso);
 app.get('/accesoCliente/:correo', db.getDatosCliente);
 app.post('/accesoCliente', db.insertaCliente);
 app.put('/accesoCliente', db.actualizaCliente);
