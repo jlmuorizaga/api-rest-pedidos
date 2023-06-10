@@ -42,7 +42,7 @@ const getSucursales = (request, response) => {
 const getEspecialidadesBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     pool.query(
-        'SELECT DISTINCT ep.id as idEspecialidad,ep.nombre,ep.ingredientes '
+        'SELECT DISTINCT ep.id as "idEspecialidad",ep.nombre,ep.ingredientes '
         +'FROM preesppropro.especialidad_pizza as ep, '
         +'preesppropro.relacion_especialidad_tamanio_precio_sucursal as re,'
         +'preesppropro.sucursal as s '
@@ -62,7 +62,7 @@ const getTamaniosBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     const id_especialidad = request.params.id_especialidad
     pool.query(
-        'SELECT id_especialidad_pizza,r.id_tamanio_pizza,t.nombre,r.precio '
+        'SELECT id_especialidad_pizza as "idEspecialidadPizza",r.id_tamanio_pizza as "idTamanioPizza",t.nombre,r.precio '
         +'FROM preesppropro.relacion_especialidad_tamanio_precio_sucursal AS r,'
         +'preesppropro.sucursal as s, preesppropro.tamanio_pizza as t '
         +'WHERE s.id=r.id_sucursal and r.id_tamanio_pizza=t.id ' 
@@ -81,7 +81,7 @@ const getTamaniosBySucursal = (request, response) => {
 const getProductosBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     pool.query(
-        'SELECT pro.id, descripcion, tamanio,rs.precio_normal '
+        'SELECT pro.id, descripcion, tamanio,rs.precio_normal as "precioNormal" '
         +'FROM preesppropro.producto as pro,'
         +'preesppropro.relacion_producto_sucursal as rs,'
         +'preesppropro.sucursal as s '
@@ -122,7 +122,7 @@ const getProductosByTipoProductoBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     const id_tipo_producto = request.params.id_tipo_producto
     pool.query(
-        'SELECT p.id, p.descripcion,p.tamanio,rps.precio_normal '
+        'SELECT p.id, p.descripcion,p.tamanio,rps.precio_normal as "precioNormal" '
         +'FROM preesppropro.producto as p,'
         +'preesppropro.producto_tipo as pt,'
         +'preesppropro.sucursal as s,'

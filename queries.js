@@ -133,10 +133,10 @@ const insertaDatosPedido = (req, res) => {
     //}
 
     //res.send(mensaje);
-    const { id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal, id_cliente, promociones_aplicadas } = req.body
+    const { id, tipoPago, modalidadEntrega, estatus, fechaHora, detalle, instrucciones, monto, datosCliente, claveSucursal, idCliente, promocionesAplicadas } = req.body
     pool.query(
         'INSERT INTO datos.pedido("id", tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal, id_cliente, promociones_aplicadas) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *',
-        [id, tipo_pago, modalidad_entrega, estatus, fechahora, detalle, instrucciones, monto, datos_cliente, clave_sucursal, id_cliente, promociones_aplicadas],
+        [id, tipoPago, modalidadEntrega, estatus, fechaHora, detalle, instrucciones, monto, datosCliente, claveSucursal, idCliente, promocionesAplicadas],
         (error, results) => {
             if (error) {
                 throw error
@@ -195,7 +195,7 @@ const getPedidosBySucursal = (request, response) => {
 const getPedidosByCliente = (request, response) => {
     const id_cliente = request.params.id_cliente
     pool.query(
-        'SELECT id, numero_pedido, clave_sucursal, fechahora, modalidad_entrega, estatus  FROM datos.pedido WHERE id_cliente = $1 ORDER BY numero_pedido',
+        'SELECT id, numero_pedido as "numeroPedido", clave_sucursal as "claveSucursal", fechahora as "fechaHora", modalidad_entrega as "modalidadEntrega", estatus  FROM datos.pedido WHERE id_cliente = $1 ORDER BY numero_pedido',
         [id_cliente],
         (error, results) => {
             if (error) {
