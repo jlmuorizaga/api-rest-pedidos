@@ -1,0 +1,40 @@
+API CHPSystem Local Clientes
+
+*******************************************
+Verifica acceso
+GET
+curl --location 'http://localhost:3000/accesoCliente/joseluis.mondragon.inegi@gmail.com/Hola1234'
+
+*******************************************
+Datos del Cliente
+GET
+curl --location 'http://localhost:3000/accesoCliente/joseluis.mondragon.inegi@gmail.com'
+
+*******************************************
+Inserta Cliente
+POST
+curl --location 'http://localhost:3000/accesoCliente' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "id":"00CHP20230430201530345987399",
+    "correoElectronico": "ximena@gmail.com", 
+    "contrasenia": "yyy", 
+    "nombre":"Ximena Sariñana", 
+    "telefono":"22222222",
+    "domicilio": "CDMX"
+}'
+
+****************************************************
+Actualiza Cliente
+PUT
+curl --location --request PUT 'http://localhost:3000/accesoCliente' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "id": "00CHP20230430201530345987399",
+    "correoElectronico": "ximena@gmail.com",
+    "contrasenia": "Hola1234",
+    "nombre": "Ximena Sariñana",
+    "telefono": "1112223334",
+    "domicilio": "Colonia Roma CDMX"
+}'
+
