@@ -73,8 +73,24 @@ const getDomiciliosCliente = (request, response) => {
     )
 }
 
+const getFormasPagoCliente = (request, response) => {
+    const id_cliente = request.params.id_cliente
+    pool.query(
+        'SELECT id_forma_pago as "idFormaPago", id_cliente as "idCliente", banco, numero_tarjeta as "numeroTarjeta", vigencia_mes as "vigenciaMes", vigencia_anio as "vigenciaAnio", cvv, cvv_dinamico as "cvvDinamico", activa '
+        + 'FROM pedidos.forma_pago WHERE id_cliente = $1',
+        [id_cliente],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
     getDomiciliosCliente,
+    getFormasPagoCliente,
 }

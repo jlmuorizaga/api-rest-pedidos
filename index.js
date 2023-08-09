@@ -21,6 +21,7 @@ app.get('/', (request, response) => {
 app.get('/cliente/acceso/:correo/:contrasenia', db.getClienteAcceso);
 app.get('/cliente/:correo', db.getDatosCliente);
 app.get('/domicilio/:id_cliente', db.getDomiciliosCliente);
+app.get('/formaPago/:id_cliente', db.getFormasPagoCliente);
 
 
 //app.post('/cliente', db.insertaCliente);
