@@ -20,6 +20,9 @@ app.get('/', (request, response) => {
 //Endpoints de clientes
 app.get('/cliente/acceso/:correo/:contrasenia', db.getClienteAcceso);
 app.get('/cliente/:correo', db.getDatosCliente);
+app.get('/domicilio/:id_cliente', db.getDomiciliosCliente);
+
+
 //app.post('/cliente', db.insertaCliente);
 //app.put('/cliente', db.actualizaCliente);
 //app.get('/lugar', db.getLugares);

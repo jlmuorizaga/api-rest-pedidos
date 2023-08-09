@@ -58,7 +58,23 @@ const getDatosCliente = (request, response) => {
     );
 }
 
+const getDomiciliosCliente = (request, response) => {
+    const id_cliente = request.params.id_cliente
+    pool.query(
+        'SELECT id_domicilio as "idDomicilio", id_cliente as "idCliente", descripcion, punto, id_lugar as "idLugar", activo '
+        + 'FROM pedidos.domicilio WHERE id_cliente = $1',
+        [id_cliente],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
+    getDomiciliosCliente,
 }
