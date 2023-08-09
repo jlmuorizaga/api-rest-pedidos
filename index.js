@@ -17,23 +17,23 @@ app.get('/', (request, response) => {
 
 //Endpoints para app móvil
 
-//Endpoints de pedido
-app.post('/pedido', db.insertaPedido);
-app.put('/pedido/:id_pedido', db.actualizaPedido);
-app.get('/pedido/:id_pedido', db.getPedidoById);
-app.get('/pedido/cliente/:id_cliente', db.getPedidosByCliente);
-app.get('/pedido/sucursal/:clave_sucursal', db.getPedidosBySucursal);
-app.put('/pedido/estatus/:estatus/:id_pedido', db.updateEstatusPedido);
-
 //Endpoints de clientes
 app.get('/cliente/acceso/:correo/:contrasenia', db.getClienteAcceso);
 app.get('/cliente/:correo', db.getDatosCliente);
-app.post('/cliente', db.insertaCliente);
-app.put('/cliente', db.actualizaCliente);
-app.get('/lugar', db.getLugares);
+//app.post('/cliente', db.insertaCliente);
+//app.put('/cliente', db.actualizaCliente);
+//app.get('/lugar', db.getLugares);
+
+//Endpoints de pedido
+//app.post('/pedido', db.insertaPedido);
+//app.put('/pedido/:id_pedido', db.actualizaPedido);
+//app.get('/pedido/:id_pedido', db.getPedidoById);
+//app.get('/pedido/cliente/:id_cliente', db.getPedidosByCliente);
+//app.get('/pedido/sucursal/:clave_sucursal', db.getPedidosBySucursal);
+//app.put('/pedido/estatus/:estatus/:id_pedido', db.updateEstatusPedido);
 
 //Endpoints de utilería sólo para pruebas de desarrollo
-app.put('/pedidosReset', db.updateEstatusPedidosReset);
+//app.put('/pedidosReset', db.updateEstatusPedidosReset);
 
 app.listen(port, () => {
     console.log('API CHPSystem Pedidos Móviles Nube corriendo en puerto',port);
