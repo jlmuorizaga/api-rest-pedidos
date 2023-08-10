@@ -88,9 +88,41 @@ const getFormasPagoCliente = (request, response) => {
     )
 }
 
+const getLugares = (request, response) => {
+    pool.query(
+        'SELECT id_lugar as "idLugar", nombre, poligono '
+        + 'FROM pedidos.lugar',
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
+const insertaCliente = (req, res) => {
+    const { idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo } = req.body
+    pool.query(
+        'INSERT INTO pedidos.cliente'
+        + '(id_cliente, correo_electronico, contrasenia, nombre, telefono, fecha_registro, activo) '
+        + 'VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+        [idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se insertó cliente: ' + results.rows[0].id_cliente + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
     getDomiciliosCliente,
     getFormasPagoCliente,
+    getLugares,
+    insertaCliente,
 }
