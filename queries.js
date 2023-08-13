@@ -118,6 +118,40 @@ const insertaCliente = (req, res) => {
     )
 }
 
+const actualizaCliente = (req, res) => {
+    const { idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo } = req.body
+    pool.query(
+        'UPDATE pedidos.cliente '
+        + 'SET correo_electronico=$1, contrasenia=$2, nombre=$3, telefono=$4, fecha_registro=$5, activo=$6 '
+        + 'WHERE id_cliente=$7 RETURNING *',
+        [correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo, idCliente],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se actualizó cliente: ' + results.rows[0].id_cliente + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
+const insertaDomicilioCliente = (req, res) => {
+    const { idDomicilio, idCliente, descripcion, punto, idLugar, activo } = req.body
+    pool.query(
+        'INSERT INTO pedidos.domicilio'
+        + '(id_domicilio, id_cliente, descripcion, punto, id_lugar, activo) '
+        + 'VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        [idDomicilio, idCliente, descripcion, punto, idLugar, activo],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se insertó domicilio: ' + results.rows[0].id_domicilio + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
@@ -125,4 +159,6 @@ module.exports = {
     getFormasPagoCliente,
     getLugares,
     insertaCliente,
+    actualizaCliente,
+    insertaDomicilioCliente,
 }

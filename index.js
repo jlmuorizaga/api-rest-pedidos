@@ -22,10 +22,10 @@ app.get('/', (request, response) => {
 app.get('/cliente/acceso/:correo/:contrasenia', db.getClienteAcceso);
 
 app.post('/cliente', db.insertaCliente);
-//app.put('/cliente', db.actualizaCliente);
+app.put('/cliente', db.actualizaCliente);
 app.get('/cliente/:correo', db.getDatosCliente);
 
-//app.post('/domicilio, db.insertaDomicilioCliente);
+app.post('/domicilio, db.insertaDomicilioCliente);
 //app.put('/domicilio, db.actualizaDomicilioCliente);
 //app.delete('/domicilio, db.eliminaDomicilioCliente);
 app.get('/domicilio/:id_cliente', db.getDomiciliosCliente);
