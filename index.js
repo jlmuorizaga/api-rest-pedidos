@@ -26,7 +26,7 @@ app.put('/cliente', db.actualizaCliente);
 app.get('/cliente/:correo', db.getDatosCliente);
 
 app.post('/domicilio', db.insertaDomicilioCliente);
-//app.put('/domicilio', db.actualizaDomicilioCliente);
+app.put('/domicilio', db.actualizaDomicilioCliente);
 //app.delete('/domicilio', db.eliminaDomicilioCliente);
 app.get('/domicilio/:id_cliente', db.getDomiciliosCliente);
 

@@ -152,6 +152,24 @@ const insertaDomicilioCliente = (req, res) => {
     )
 }
 
+const actualizaDomicilioCliente = (req, res) => {
+    const { idDomicilio, idCliente, descripcion, punto, idLugar, activo } = req.body
+    pool.query(
+        'UPDATE pedidos.domicilio '
+        + 'SET id_cliente=$1, descripcion=$2, punto=$3, id_lugar=$4, activo=$5 '
+        + 'WHERE id_domicilio=$6 '
+        + 'RETURNING *',
+        [idCliente, descripcion, punto, idLugar, activo, idDomicilio],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se actualizó domicilio cliente: ' + results.rows[0].id_cliente + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
@@ -161,4 +179,5 @@ module.exports = {
     insertaCliente,
     actualizaCliente,
     insertaDomicilioCliente,
+    actualizaDomicilioCliente,
 }
