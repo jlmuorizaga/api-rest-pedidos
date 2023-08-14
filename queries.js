@@ -170,6 +170,22 @@ const actualizaDomicilioCliente = (req, res) => {
     )
 }
 
+const eliminaDomicilioCliente = (req, res) => {
+    const idDomicilio = req.params.id_domicilio;
+    pool.query(
+        'DELETE FROM pedidos.domicilio '
+        + 'WHERE id_domicilio=$1 ',
+        [idDomicilio],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se eliminó ' + results.rowCount + ' domicilio cliente: ' + idDomicilio + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
@@ -180,4 +196,5 @@ module.exports = {
     actualizaCliente,
     insertaDomicilioCliente,
     actualizaDomicilioCliente,
+    eliminaDomicilioCliente
 }

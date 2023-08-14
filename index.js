@@ -27,7 +27,7 @@ app.get('/cliente/:correo', db.getDatosCliente);
 
 app.post('/domicilio', db.insertaDomicilioCliente);
 app.put('/domicilio', db.actualizaDomicilioCliente);
-//app.delete('/domicilio', db.eliminaDomicilioCliente);
+app.delete('/domicilio/:id_domicilio', db.eliminaDomicilioCliente);
 app.get('/domicilio/:id_cliente', db.getDomiciliosCliente);
 
 //app.post('/formaPago', db.insertaFormaPagoCliente);
@@ -49,5 +49,5 @@ app.get('/lugar', db.getLugares);
 //app.put('/pedidosReset', db.updateEstatusPedidosReset);
 
 app.listen(port, () => {
-    console.log('API CHPSystem Pedidos Móviles Nube corriendo en puerto',port);
+    console.log('API CHPSystem Pedidos Móviles Nube corriendo en puerto', port);
 });
