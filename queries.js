@@ -186,6 +186,23 @@ const eliminaDomicilioCliente = (req, res) => {
     )
 }
 
+const insertaFormaPagoCliente = (req, res) => {
+    const { idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa } = req.body
+    pool.query(
+        'INSERT INTO pedidos.forma_pago '
+        + '(id_forma_pago, id_cliente, banco, numero_tarjeta, vigencia_mes, vigencia_anio, cvv, cvv_dinamico, activa) '
+        + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+        [idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se insertó forma de pago: ' + results.rows[0].id_forma_pago + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
@@ -196,5 +213,6 @@ module.exports = {
     actualizaCliente,
     insertaDomicilioCliente,
     actualizaDomicilioCliente,
-    eliminaDomicilioCliente
+    eliminaDomicilioCliente,
+    insertaFormaPagoCliente,
 }

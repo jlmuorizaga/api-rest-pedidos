@@ -30,7 +30,7 @@ app.put('/domicilio', db.actualizaDomicilioCliente);
 app.delete('/domicilio/:id_domicilio', db.eliminaDomicilioCliente);
 app.get('/domicilio/:id_cliente', db.getDomiciliosCliente);
 
-//app.post('/formaPago', db.insertaFormaPagoCliente);
+app.post('/formaPago', db.insertaFormaPagoCliente);
 //app.put('/formaPago', db.actualizaFormaPagoCliente);
 //app.delete('/formaPago/:id_forma_pago', db.eliminaFormaPagoCliente);
 app.get('/formaPago/:id_cliente', db.getFormasPagoCliente);
