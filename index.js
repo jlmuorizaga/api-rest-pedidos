@@ -27,13 +27,13 @@ app.get('/cliente/:correo', db.getDatosCliente);
 
 app.post('/domicilio', db.insertaDomicilioCliente);
 app.put('/domicilio', db.actualizaDomicilioCliente);
-app.delete('/domicilio/:id_domicilio', db.eliminaDomicilioCliente);
-app.get('/domicilio/:id_cliente', db.getDomiciliosCliente);
+app.delete('/domicilio/:idDomicilio', db.eliminaDomicilioCliente);
+app.get('/domicilio/:idCliente', db.getDomiciliosCliente);
 
 app.post('/formaPago', db.insertaFormaPagoCliente);
 app.put('/formaPago', db.actualizaFormaPagoCliente);
-app.delete('/formaPago/:id_forma_pago', db.eliminaFormaPagoCliente);
-app.get('/formaPago/:id_cliente', db.getFormasPagoCliente);
+app.delete('/formaPago/:idFormaPago', db.eliminaFormaPagoCliente);
+app.get('/formaPago/:idCliente', db.getFormasPagoCliente);
 
 app.get('/lugar', db.getLugares);
 

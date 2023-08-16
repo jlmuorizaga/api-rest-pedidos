@@ -46,7 +46,7 @@ const getDatosCliente = (request, response) => {
         [correo],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
             if (results.rows[0]) {
                 response.status(200).json(results.rows[0]);
@@ -59,33 +59,33 @@ const getDatosCliente = (request, response) => {
 }
 
 const getDomiciliosCliente = (request, response) => {
-    const id_cliente = request.params.id_cliente
+    const idCliente = request.params.idCliente;
     pool.query(
         'SELECT id_domicilio as "idDomicilio", id_cliente as "idCliente", descripcion, punto, id_lugar as "idLugar", activo '
         + 'FROM pedidos.domicilio WHERE id_cliente = $1',
-        [id_cliente],
+        [idCliente],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
-            response.status(200).json(results.rows)
+            response.status(200).json(results.rows);
         }
-    )
+    );
 }
 
 const getFormasPagoCliente = (request, response) => {
-    const id_cliente = request.params.id_cliente
+    const idCliente = request.params.idCliente;
     pool.query(
         'SELECT id_forma_pago as "idFormaPago", id_cliente as "idCliente", banco, numero_tarjeta as "numeroTarjeta", vigencia_mes as "vigenciaMes", vigencia_anio as "vigenciaAnio", cvv, cvv_dinamico as "cvvDinamico", activa '
         + 'FROM pedidos.forma_pago WHERE id_cliente = $1',
-        [id_cliente],
+        [idCliente],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
-            response.status(200).json(results.rows)
+            response.status(200).json(results.rows);
         }
-    )
+    );
 }
 
 const getLugares = (request, response) => {
@@ -94,15 +94,15 @@ const getLugares = (request, response) => {
         + 'FROM pedidos.lugar',
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
-            response.status(200).json(results.rows)
+            response.status(200).json(results.rows);
         }
-    )
+    );
 }
 
 const insertaCliente = (req, res) => {
-    const { idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo } = req.body
+    const { idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo } = req.body;
     pool.query(
         'INSERT INTO pedidos.cliente'
         + '(id_cliente, correo_electronico, contrasenia, nombre, telefono, fecha_registro, activo) '
@@ -110,16 +110,16 @@ const insertaCliente = (req, res) => {
         [idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
             textoRespuesta = '{"respuesta": "Se insertó cliente: ' + results.rows[0].id_cliente + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta))
+            res.status(201).json(JSON.parse(textoRespuesta));
         }
-    )
+    );
 }
 
 const actualizaCliente = (req, res) => {
-    const { idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo } = req.body
+    const { idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo } = req.body;
     pool.query(
         'UPDATE pedidos.cliente '
         + 'SET correo_electronico=$2, contrasenia=$3, nombre=$4, telefono=$5, fecha_registro=$6, activo=$7 '
@@ -127,16 +127,16 @@ const actualizaCliente = (req, res) => {
         [idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
             textoRespuesta = '{"respuesta": "Se actualizó cliente: ' + results.rows[0].id_cliente + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta))
+            res.status(201).json(JSON.parse(textoRespuesta));
         }
-    )
+    );
 }
 
 const insertaDomicilioCliente = (req, res) => {
-    const { idDomicilio, idCliente, descripcion, punto, idLugar, activo } = req.body
+    const { idDomicilio, idCliente, descripcion, punto, idLugar, activo } = req.body;
     pool.query(
         'INSERT INTO pedidos.domicilio'
         + '(id_domicilio, id_cliente, descripcion, punto, id_lugar, activo) '
@@ -144,16 +144,16 @@ const insertaDomicilioCliente = (req, res) => {
         [idDomicilio, idCliente, descripcion, punto, idLugar, activo],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
             textoRespuesta = '{"respuesta": "Se insertó domicilio: ' + results.rows[0].id_domicilio + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta))
+            res.status(201).json(JSON.parse(textoRespuesta));
         }
-    )
+    );
 }
 
 const actualizaDomicilioCliente = (req, res) => {
-    const { idDomicilio, idCliente, descripcion, punto, idLugar, activo } = req.body
+    const { idDomicilio, idCliente, descripcion, punto, idLugar, activo } = req.body;
     pool.query(
         'UPDATE pedidos.domicilio '
         + 'SET id_cliente=$2, descripcion=$3, punto=$4, id_lugar=$5, activo=$6 '
@@ -162,32 +162,32 @@ const actualizaDomicilioCliente = (req, res) => {
         [idDomicilio, idCliente, descripcion, punto, idLugar, activo],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
-            textoRespuesta = '{"respuesta": "Se actualizó domicilio cliente: ' + results.rows[0].id_domicilio + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta))
+            textoRespuesta = '{"respuesta": "Se actualizó domicilio: ' + results.rows[0].id_domicilio + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta));
         }
-    )
+    );
 }
 
 const eliminaDomicilioCliente = (req, res) => {
-    const idDomicilio = req.params.id_domicilio;
+    const idDomicilio = req.params.idDomicilio;
     pool.query(
         'DELETE FROM pedidos.domicilio '
         + 'WHERE id_domicilio=$1 ',
         [idDomicilio],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
-            textoRespuesta = '{"respuesta": "Se eliminó ' + results.rowCount + ' domicilio cliente: ' + idDomicilio + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta))
+            textoRespuesta = '{"respuesta": "Se eliminó ' + results.rowCount + ' domicilio: ' + idDomicilio + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta));
         }
-    )
+    );
 }
 
 const insertaFormaPagoCliente = (req, res) => {
-    const { idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa } = req.body
+    const { idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa } = req.body;
     pool.query(
         'INSERT INTO pedidos.forma_pago '
         + '(id_forma_pago, id_cliente, banco, numero_tarjeta, vigencia_mes, vigencia_anio, cvv, cvv_dinamico, activa) '
@@ -195,16 +195,16 @@ const insertaFormaPagoCliente = (req, res) => {
         [idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
             textoRespuesta = '{"respuesta": "Se insertó forma de pago: ' + results.rows[0].id_forma_pago + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta))
+            res.status(201).json(JSON.parse(textoRespuesta));
         }
-    )
+    );
 }
 
 const actualizaFormaPagoCliente = (req, res) => {
-    const { idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa } = req.body
+    const { idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa } = req.body;
     pool.query(
         'UPDATE pedidos.forma_pago '
         + 'SET id_cliente=$2, banco=$3, numero_tarjeta=$4, vigencia_mes=$5, vigencia_anio=$6, cvv=$7, cvv_dinamico=$8, activa=$9 '
@@ -213,28 +213,28 @@ const actualizaFormaPagoCliente = (req, res) => {
         [idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
-            textoRespuesta = '{"respuesta": "Se actualizó forma de pago cliente: ' + results.rows[0].id_forma_pago + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta))
+            textoRespuesta = '{"respuesta": "Se actualizó forma de pago: ' + results.rows[0].id_forma_pago + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta));
         }
-    )
+    );
 }
 
 const eliminaFormaPagoCliente = (req, res) => {
-    const idFormaPago = req.params.id_forma_pago;
+    const idFormaPago = req.params.idFormaPago;
     pool.query(
         'DELETE FROM pedidos.forma_pago '
         + 'WHERE id_forma_pago=$1 ',
         [idFormaPago],
         (error, results) => {
             if (error) {
-                throw error
+                throw error;
             }
             textoRespuesta = '{"respuesta": "Se eliminó ' + results.rowCount + ' forma de pago: ' + idFormaPago + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta))
+            res.status(201).json(JSON.parse(textoRespuesta));
         }
-    )
+    );
 }
 
 module.exports = {
