@@ -203,6 +203,24 @@ const insertaFormaPagoCliente = (req, res) => {
     )
 }
 
+const actualizaFormaPagoCliente = (req, res) => {
+    const { idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa } = req.body
+    pool.query(
+        'UPDATE pedidos.forma_pago '
+        + 'SET id_cliente=$2, banco=$3, numero_tarjeta=$4, vigencia_mes=$5, vigencia_anio=$6, cvv=$7, cvv_dinamico=$8, activa=$9 '
+        + 'WHERE id_forma_pago=$1 '
+        + 'RETURNING *',
+        [idFormaPago, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se actualizó forma de pago cliente: ' + results.rows[0].id_forma_pago + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
@@ -215,4 +233,5 @@ module.exports = {
     actualizaDomicilioCliente,
     eliminaDomicilioCliente,
     insertaFormaPagoCliente,
+    actualizaFormaPagoCliente,
 }
