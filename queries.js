@@ -221,6 +221,22 @@ const actualizaFormaPagoCliente = (req, res) => {
     )
 }
 
+const eliminaFormaPagoCliente = (req, res) => {
+    const idFormaPago = req.params.id_forma_pago;
+    pool.query(
+        'DELETE FROM pedidos.forma_pago '
+        + 'WHERE id_forma_pago=$1 ',
+        [idFormaPago],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            textoRespuesta = '{"respuesta": "Se eliminó ' + results.rowCount + ' forma de pago: ' + idFormaPago + '"}';
+            res.status(201).json(JSON.parse(textoRespuesta))
+        }
+    )
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
@@ -234,4 +250,5 @@ module.exports = {
     eliminaDomicilioCliente,
     insertaFormaPagoCliente,
     actualizaFormaPagoCliente,
+    eliminaFormaPagoCliente,
 }
