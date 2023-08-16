@@ -122,9 +122,9 @@ const actualizaCliente = (req, res) => {
     const { idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo } = req.body
     pool.query(
         'UPDATE pedidos.cliente '
-        + 'SET correo_electronico=$1, contrasenia=$2, nombre=$3, telefono=$4, fecha_registro=$5, activo=$6 '
-        + 'WHERE id_cliente=$7 RETURNING *',
-        [correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo, idCliente],
+        + 'SET correo_electronico=$2, contrasenia=$3, nombre=$4, telefono=$5, fecha_registro=$6, activo=$7 '
+        + 'WHERE id_cliente=$1 RETURNING *',
+        [idCliente, correoElectronico, contrasenia, nombre, telefono, fechaRegistro, activo],
         (error, results) => {
             if (error) {
                 throw error
