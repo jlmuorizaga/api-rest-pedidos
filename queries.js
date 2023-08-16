@@ -156,15 +156,15 @@ const actualizaDomicilioCliente = (req, res) => {
     const { idDomicilio, idCliente, descripcion, punto, idLugar, activo } = req.body
     pool.query(
         'UPDATE pedidos.domicilio '
-        + 'SET id_cliente=$1, descripcion=$2, punto=$3, id_lugar=$4, activo=$5 '
-        + 'WHERE id_domicilio=$6 '
+        + 'SET id_cliente=$2, descripcion=$3, punto=$4, id_lugar=$5, activo=$6 '
+        + 'WHERE id_domicilio=$1 '
         + 'RETURNING *',
-        [idCliente, descripcion, punto, idLugar, activo, idDomicilio],
+        [idDomicilio, idCliente, descripcion, punto, idLugar, activo],
         (error, results) => {
             if (error) {
                 throw error
             }
-            textoRespuesta = '{"respuesta": "Se actualizó domicilio cliente: ' + results.rows[0].id_cliente + '"}';
+            textoRespuesta = '{"respuesta": "Se actualizó domicilio cliente: ' + results.rows[0].id_domicilio + '"}';
             res.status(201).json(JSON.parse(textoRespuesta))
         }
     )
