@@ -154,6 +154,26 @@ const getSucursalesAll = (request, response) => {
     )
 }
 
+const getPromocionesBySucursal = (request, response) => {
+    const cve_sucursal = request.params.cve_sucursal
+    pool.query(
+        'SELECT DISTINCT cpe.id as "idPromocionEspecial",cpe.definicion '
+        +'FROM preesppropro.catalogo_promocion_especial as cpe, '
+        +'preesppropro.relacion_promocion_especial_sucursal as re, '
+        +'preesppropro.sucursal as s '
+        +'WHERE cpe.id=re.id_promocion '
+        +'AND s.id=re.id_sucursal and s.clave=$1 '
+        +'ORDER BY cpe.definicion',
+
+        [cve_sucursal], (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
 module.exports = {
     getSucursales,
     getEspecialidadesBySucursal,
@@ -161,5 +181,6 @@ module.exports = {
     getProductosBySucursal,
     getTipoProductosBySucursal,
     getProductosByTipoProductoBySucursal,
-    getSucursalesAll
+    getSucursalesAll,
+    getPromocionesBySucursal
 }

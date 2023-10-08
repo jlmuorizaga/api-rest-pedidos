@@ -24,6 +24,7 @@ app.get('/', (request, response) => {
             + '/tipoproductos/:cve_sucursal\n'
             + '/productos/:cve_sucursal/:id_tipo_producto\n'
             + '/sucursalesAll\n'
+            + '/promociones/:cve_sucursal\n'
             + 'Version 20231007 1154'
     })
 })
@@ -36,6 +37,7 @@ app.get('/productos/:cve_sucursal', db.getProductosBySucursal)
 app.get('/tipoproductos/:cve_sucursal', db.getTipoProductosBySucursal)
 app.get('/productos/:cve_sucursal/:id_tipo_producto', db.getProductosByTipoProductoBySucursal)
 app.get('/sucursalesAll', db.getSucursalesAll)
+app.get('/promociones/:cve_sucursal/',db.getPromocionesBySucursal)
 
 app.listen(port, () => {
     console.log('App corriendo en puerto', port)
