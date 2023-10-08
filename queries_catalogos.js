@@ -162,7 +162,7 @@ const getPromocionesBySucursal = (request, response) => {
         +'preesppropro.relacion_promocion_especial_sucursal as re, '
         +'preesppropro.sucursal as s '
         +'WHERE cpe.id=re.id_promocion '
-        +'AND s.id=re.id_sucursal and s.clave=$1 '
+        +'AND s.id=re.id_sucursal and s.clave=$1 and re.activa="S"'
         +'ORDER BY cpe.definicion',
 
         [cve_sucursal], (error, results) => {
