@@ -174,6 +174,21 @@ const getPromocionesBySucursal = (request, response) => {
     )
 }
 
+const getLugaresAll = (request, response) => {
+    pool.query(
+        'SELECT DISTINCT(l.id), nombre '
+	    +'FROM preesppropro.lugar as l, preesppropro.sucursal as s '
+	    +'WHERE l.id=s.id_lugar '
+	    +'ORDER BY nombre ASC',
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
+        }
+    )
+}
+
 module.exports = {
     getSucursales,
     getEspecialidadesBySucursal,
@@ -182,5 +197,6 @@ module.exports = {
     getTipoProductosBySucursal,
     getProductosByTipoProductoBySucursal,
     getSucursalesAll,
-    getPromocionesBySucursal
+    getPromocionesBySucursal,
+    getLugaresAll
 }
