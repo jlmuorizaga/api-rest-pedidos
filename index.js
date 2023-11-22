@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
 
 app.get('/', (request, response) => {
-    response.json({ info: 'API CHPSystem Pedidos Móviles Nube versión: 20231007 1154' });
+    response.json({ info: 'API CHPSystem Pedidos Móviles Nube versión: 20231121 1049' });
 });
 
 //Endpoints
@@ -25,10 +25,10 @@ app.post('/cliente', db.insertaCliente);
 app.put('/cliente', db.actualizaCliente);
 app.get('/cliente/:correo', db.getDatosCliente);
 
-app.post('/domicilio', db.insertaDomicilioCliente);
-app.put('/domicilio', db.actualizaDomicilioCliente);
-app.delete('/domicilio/:idDomicilio', db.eliminaDomicilioCliente);
-app.get('/domicilio/:idCliente', db.getDomiciliosCliente);
+app.post('/domicilio-cliente', db.insertaDomicilioCliente);
+app.put('/domicilio-cliente', db.actualizaDomicilioCliente);
+app.delete('/domicilio-cliente/:idDomicilioCliente', db.eliminaDomicilioCliente);
+app.get('/domicilio-cliente/:idCliente', db.getDomiciliosCliente);
 
 app.post('/tarjeta', db.insertaTarjetaCliente);
 app.put('/tarjeta', db.actualizaTarjetaCliente);

@@ -61,8 +61,8 @@ const getDatosCliente = (request, response) => {
 const getDomiciliosCliente = (request, response) => {
     const idCliente = request.params.idCliente;
     pool.query(
-        'SELECT id_domicilio as "idDomicilio", id_cliente as "idCliente", descripcion, punto, id_lugar as "idLugar", activo '
-        + 'FROM pedidos.domicilio WHERE id_cliente = $1',
+        'SELECT id_domicilio_cliente as "idDomicilioCliente", id_cliente as "idCliente", descripcion, punto, id_lugar as "idLugar", activo '
+        + 'FROM pedidos.domicilio_cliente WHERE id_cliente = $1',
         [idCliente],
         (error, results) => {
             if (error) {
@@ -136,51 +136,51 @@ const actualizaCliente = (req, res) => {
 }
 
 const insertaDomicilioCliente = (req, res) => {
-    const { idDomicilio, idCliente, descripcion, punto, idLugar, activo } = req.body;
+    const { idDomicilioCliente, idCliente, descripcion, punto, idLugar, activo } = req.body;
     pool.query(
-        'INSERT INTO pedidos.domicilio'
-        + '(id_domicilio, id_cliente, descripcion, punto, id_lugar, activo) '
+        'INSERT INTO pedidos.domicilio_cliente'
+        + '(id_domicilio_cliente, id_cliente, descripcion, punto, id_lugar, activo) '
         + 'VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        [idDomicilio, idCliente, descripcion, punto, idLugar, activo],
+        [idDomicilioCliente, idCliente, descripcion, punto, idLugar, activo],
         (error, results) => {
             if (error) {
                 throw error;
             }
-            textoRespuesta = '{"respuesta": "Se insertó domicilio: ' + results.rows[0].id_domicilio + '"}';
+            textoRespuesta = '{"respuesta": "Se insertó domicilio: ' + results.rows[0].id_domicilio_cliente + '"}';
             res.status(201).json(JSON.parse(textoRespuesta));
         }
     );
 }
 
 const actualizaDomicilioCliente = (req, res) => {
-    const { idDomicilio, idCliente, descripcion, punto, idLugar, activo } = req.body;
+    const { idDomicilioCliente, idCliente, descripcion, punto, idLugar, activo } = req.body;
     pool.query(
-        'UPDATE pedidos.domicilio '
+        'UPDATE pedidos.domicilio_cliente '
         + 'SET id_cliente=$2, descripcion=$3, punto=$4, id_lugar=$5, activo=$6 '
-        + 'WHERE id_domicilio=$1 '
+        + 'WHERE id_domicilio_cliente=$1 '
         + 'RETURNING *',
-        [idDomicilio, idCliente, descripcion, punto, idLugar, activo],
+        [idDomicilioCliente, idCliente, descripcion, punto, idLugar, activo],
         (error, results) => {
             if (error) {
                 throw error;
             }
-            textoRespuesta = '{"respuesta": "Se actualizó domicilio: ' + results.rows[0].id_domicilio + '"}';
+            textoRespuesta = '{"respuesta": "Se actualizó domicilio: ' + results.rows[0].id_domicilio_cliente + '"}';
             res.status(201).json(JSON.parse(textoRespuesta));
         }
     );
 }
 
 const eliminaDomicilioCliente = (req, res) => {
-    const idDomicilio = req.params.idDomicilio;
+    const idDomicilioCliente = req.params.idDomicilioCliente;
     pool.query(
-        'DELETE FROM pedidos.domicilio '
-        + 'WHERE id_domicilio=$1 ',
-        [idDomicilio],
+        'DELETE FROM pedidos.domicilio_cliente '
+        + 'WHERE id_domicilio_cliente=$1 ',
+        [idDomicilioCliente],
         (error, results) => {
             if (error) {
                 throw error;
             }
-            textoRespuesta = '{"respuesta": "Se eliminó ' + results.rowCount + ' domicilio: ' + idDomicilio + '"}';
+            textoRespuesta = '{"respuesta": "Se eliminó ' + results.rowCount + ' domicilio: ' + idDomicilioCliente + '"}';
             res.status(201).json(JSON.parse(textoRespuesta));
         }
     );
