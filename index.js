@@ -19,23 +19,24 @@ app.get('/', (request, response) => {
 
 //Endpoints de clientes
 
-app.get('/cliente/acceso/:correo/:contrasenia', db.getClienteAcceso);
+app.get('/clientes/acceso/:correo/:contrasenia', db.getClienteAcceso);
 
-app.post('/cliente', db.insertaCliente);
-app.put('/cliente', db.actualizaCliente);
-app.get('/cliente/:correo', db.getDatosCliente);
+app.post('/clientes', db.insertaCliente);
+app.put('/clientes', db.actualizaCliente);
+app.get('/clientes/:correo', db.getDatosCliente);
 
-app.post('/domicilio-cliente', db.insertaDomicilioCliente);
-app.put('/domicilio-cliente', db.actualizaDomicilioCliente);
-app.delete('/domicilio-cliente/:idDomicilioCliente', db.eliminaDomicilioCliente);
-app.get('/domicilio-cliente/:idCliente', db.getDomiciliosCliente);
+app.post('/domicilios-cliente', db.insertaDomicilioCliente);
+app.put('/domicilios-cliente', db.actualizaDomicilioCliente);
+app.delete('/domicilios-cliente/:idDomicilioCliente', db.eliminaDomicilioCliente);
+app.get('/domicilios-cliente/:idCliente', db.getDomiciliosCliente);
 
-app.post('/tarjeta', db.insertaTarjetaCliente);
-app.put('/tarjeta', db.actualizaTarjetaCliente);
-app.delete('/tarjeta/:idTarjeta', db.eliminaTarjetaCliente);
-app.get('/tarjeta/:idCliente', db.getTarjetasCliente);
+//
+//app.post('/tarjeta', db.insertaTarjetaCliente);
+//app.put('/tarjeta', db.actualizaTarjetaCliente);
+//app.delete('/tarjeta/:idTarjeta', db.eliminaTarjetaCliente);
+//app.get('/tarjeta/:idCliente', db.getTarjetasCliente);
 
-app.get('/lugar', db.getLugares);
+app.get('/lugares', db.getLugares);
 
 //Endpoints de pedido
 //app.post('/pedido', db.insertaPedido);
