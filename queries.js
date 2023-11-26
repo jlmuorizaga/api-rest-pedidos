@@ -73,6 +73,7 @@ const getDomiciliosCliente = (request, response) => {
     );
 }
 
+/*
 const getTarjetasCliente = (request, response) => {
     const idCliente = request.params.idCliente;
     pool.query(
@@ -87,6 +88,7 @@ const getTarjetasCliente = (request, response) => {
         }
     );
 }
+*/
 
 const getLugares = (request, response) => {
     pool.query(
@@ -186,6 +188,7 @@ const eliminaDomicilioCliente = (req, res) => {
     );
 }
 
+/*
 const insertaTarjetaCliente = (req, res) => {
     const { idTarjeta, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa } = req.body;
     pool.query(
@@ -236,19 +239,63 @@ const eliminaTarjetaCliente = (req, res) => {
         }
     );
 }
+*/
+
+const insertaPedido = (req, res) => {
+    const { idPedido,
+        idCliente,
+        datosCliente,
+        idDomicilioCliente,
+        datosDomicilioCliente,
+        claveSucursal,
+        datosSucursal,
+        fechaHora,
+        estatus,
+        modalidadEntrega,
+        montoTotal,
+        detallePedido,
+        instruccionesEspeciales,
+        promocionesAplicadas,
+        tipoPago, } = req.body;
+    pool.query(
+        'INSERT INTO pedidos.pedido'
+        + '(id_pedido, id_cliente, datos_cliente, id_domicilio_cliente, datos_domicilio_cliente, clave_sucursal, datos_sucursal, fecha_hora, estatus, modalidad_entrega, monto_total, detalle_pedido, instrucciones_especiales, promociones_aplicadas, tipo_pago) '
+        + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *',
+        [idPedido,
+            idCliente,
+            datosCliente,
+            idDomicilioCliente,
+            datosDomicilioCliente,
+            claveSucursal,
+            datosSucursal,
+            fechaHora,
+            estatus,
+            modalidadEntrega,
+            montoTotal,
+            detallePedido,
+            instruccionesEspeciales,
+            promocionesAplicadas,
+            tipoPago],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            textoRespuesta = '{"respuesta": "Se insertó pedido: ' + results.rows[0].id_pedido + '",' +
+                '"numeroPedido":' + results.rows[0].numero_pedido + '}';
+            res.status(201).json(JSON.parse(textoRespuesta));
+        }
+    );
+}
 
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
     getDomiciliosCliente,
-    getTarjetasCliente,
     getLugares,
     insertaCliente,
     actualizaCliente,
     insertaDomicilioCliente,
     actualizaDomicilioCliente,
     eliminaDomicilioCliente,
-    insertaTarjetaCliente,
-    actualizaTarjetaCliente,
-    eliminaTarjetaCliente,
+    insertaPedido,
 }

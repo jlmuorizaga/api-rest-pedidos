@@ -39,7 +39,7 @@ app.get('/domicilios-cliente/:idCliente', db.getDomiciliosCliente);
 app.get('/lugares', db.getLugares);
 
 //Endpoints de pedido
-//app.post('/pedido', db.insertaPedido);
+app.post('/pedidos', db.insertaPedido);
 //app.put('/pedido/:id_pedido', db.actualizaPedido);
 //app.get('/pedido/:id_pedido', db.getPedidoById);
 //app.get('/pedido/cliente/:id_cliente', db.getPedidosByCliente);
