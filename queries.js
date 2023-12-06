@@ -62,7 +62,7 @@ const getDomiciliosCliente = (request, response) => {
     const idCliente = request.params.idCliente;
     pool.query(
         'SELECT id_domicilio_cliente as "idDomicilioCliente", id_cliente as "idCliente", descripcion, punto, id_lugar as "idLugar", activo '
-        + 'FROM pedidos.domicilio_cliente WHERE id_cliente = $1',
+        + 'FROM pedidos.domicilio_cliente WHERE id_cliente = $1 ORDER BY descripcion',
         [idCliente],
         (error, results) => {
             if (error) {
