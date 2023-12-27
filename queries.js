@@ -73,23 +73,6 @@ const getDomiciliosCliente = (request, response) => {
     );
 }
 
-/*
-const getTarjetasCliente = (request, response) => {
-    const idCliente = request.params.idCliente;
-    pool.query(
-        'SELECT id_tarjeta as "idTarjeta", id_cliente as "idCliente", banco, numero_tarjeta as "numeroTarjeta", vigencia_mes as "vigenciaMes", vigencia_anio as "vigenciaAnio", cvv, cvv_dinamico as "cvvDinamico", activa '
-        + 'FROM pedidos.tarjeta WHERE id_cliente = $1',
-        [idCliente],
-        (error, results) => {
-            if (error) {
-                throw error;
-            }
-            response.status(200).json(results.rows);
-        }
-    );
-}
-*/
-
 const getLugares = (request, response) => {
     pool.query(
         'SELECT id_lugar as "idLugar", nombre, poligono '
@@ -188,58 +171,7 @@ const eliminaDomicilioCliente = (req, res) => {
     );
 }
 
-/*
-const insertaTarjetaCliente = (req, res) => {
-    const { idTarjeta, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa } = req.body;
-    pool.query(
-        'INSERT INTO pedidos.tarjeta '
-        + '(id_tarjeta, id_cliente, banco, numero_tarjeta, vigencia_mes, vigencia_anio, cvv, cvv_dinamico, activa) '
-        + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
-        [idTarjeta, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa],
-        (error, results) => {
-            if (error) {
-                throw error;
-            }
-            textoRespuesta = '{"respuesta": "Se insertó tarjeta: ' + results.rows[0].id_tarjeta + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta));
-        }
-    );
-}
 
-const actualizaTarjetaCliente = (req, res) => {
-    const { idTarjeta, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa } = req.body;
-    pool.query(
-        'UPDATE pedidos.tarjeta '
-        + 'SET id_cliente=$2, banco=$3, numero_tarjeta=$4, vigencia_mes=$5, vigencia_anio=$6, cvv=$7, cvv_dinamico=$8, activa=$9 '
-        + 'WHERE id_tarjeta=$1 '
-        + 'RETURNING *',
-        [idTarjeta, idCliente, banco, numeroTarjeta, vigenciaMes, vigenciaAnio, cvv, cvvDinamico, activa],
-        (error, results) => {
-            if (error) {
-                throw error;
-            }
-            textoRespuesta = '{"respuesta": "Se actualizó tarjeta: ' + results.rows[0].id_tarjeta + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta));
-        }
-    );
-}
-
-const eliminaTarjetaCliente = (req, res) => {
-    const idTarjeta = req.params.idTarjeta;
-    pool.query(
-        'DELETE FROM pedidos.tarjeta '
-        + 'WHERE id_tarjeta=$1 ',
-        [idTarjeta],
-        (error, results) => {
-            if (error) {
-                throw error;
-            }
-            textoRespuesta = '{"respuesta": "Se eliminó ' + results.rowCount + ' tarjeta: ' + idTarjeta + '"}';
-            res.status(201).json(JSON.parse(textoRespuesta));
-        }
-    );
-}
-*/
 
 const insertaPedido = (req, res) => {
     const { idPedido,
@@ -256,11 +188,13 @@ const insertaPedido = (req, res) => {
         detallePedido,
         instruccionesEspeciales,
         promocionesAplicadas,
-        tipoPago, } = req.body;
+        tipoPago,
+        cantidadProductos,
+        resumenPedido, } = req.body;
     pool.query(
         'INSERT INTO pedidos.pedido'
-        + '(id_pedido, id_cliente, datos_cliente, id_domicilio_cliente, datos_domicilio_cliente, clave_sucursal, datos_sucursal, fecha_hora, estatus, modalidad_entrega, monto_total, detalle_pedido, instrucciones_especiales, promociones_aplicadas, tipo_pago) '
-        + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *',
+        + '(id_pedido, id_cliente, datos_cliente, id_domicilio_cliente, datos_domicilio_cliente, clave_sucursal, datos_sucursal, fecha_hora, estatus, modalidad_entrega, monto_total, detalle_pedido, instrucciones_especiales, promociones_aplicadas, tipo_pago, cantidad_productos, resumen_pedido) '
+        + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING *',
         [idPedido,
             idCliente,
             datosCliente,
@@ -275,7 +209,9 @@ const insertaPedido = (req, res) => {
             detallePedido,
             instruccionesEspeciales,
             promocionesAplicadas,
-            tipoPago],
+            tipoPago,
+            cantidadProductos,
+            resumenPedido],
         (error, results) => {
             if (error) {
                 throw error;
@@ -283,6 +219,46 @@ const insertaPedido = (req, res) => {
             textoRespuesta = '{"respuesta": "Se insertó pedido: ' + results.rows[0].id_pedido + '",' +
                 '"numeroPedido":' + results.rows[0].numero_pedido + '}';
             res.status(201).json(JSON.parse(textoRespuesta));
+        }
+    );
+}
+
+const getPedidosByCliente = (request, response) => {
+    //Retorna todos los pedidos del cliente que no han sido atendidos
+    const idCliente = request.params.idCliente;
+    const estatusPedidoAtendido = 'AP';
+    pool.query(
+        'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", clave_sucursal as "claveSucursal", datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", monto_total as "montoTotal", cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido" '
+        + 'FROM pedidos.pedido '
+        + 'WHERE id_cliente = $1 '
+        + 'AND estatus <> $2',
+        [idCliente, estatusPedidoAtendido],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            response.status(200).json(results.rows);
+        }
+    );
+}
+
+const getPedidoById = (request, response) => {
+    const idPedido = request.params.idPedido;
+    pool.query(
+        'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", id_cliente as "idCliente", datos_cliente as "datosCliente", id_domicilio_cliente as "idDomicilioCliente", datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal", datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", monto_total as "montoTotal", detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales", promociones_aplicadas as "promocionesAplicadas", tipo_pago as "tipoPago", cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido" '
+        + 'FROM pedidos.pedido '
+        + 'WHERE id_pedido = $1',
+        [idPedido],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            if (results.rows[0]) {
+                response.status(200).json(results.rows[0]);
+            } else {
+                textoError = '{"error": "No se encontró el pedido"}';
+                response.status(404).json(JSON.parse(textoError));
+            }
         }
     );
 }
@@ -298,4 +274,6 @@ module.exports = {
     actualizaDomicilioCliente,
     eliminaDomicilioCliente,
     insertaPedido,
+    getPedidosByCliente,
+    getPedidoById,
 }

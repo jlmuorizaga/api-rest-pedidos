@@ -30,21 +30,21 @@ app.put('/domicilios-cliente', db.actualizaDomicilioCliente);
 app.delete('/domicilios-cliente/:idDomicilioCliente', db.eliminaDomicilioCliente);
 app.get('/domicilios-cliente/:idCliente', db.getDomiciliosCliente);
 
-//
-//app.post('/tarjeta', db.insertaTarjetaCliente);
-//app.put('/tarjeta', db.actualizaTarjetaCliente);
-//app.delete('/tarjeta/:idTarjeta', db.eliminaTarjetaCliente);
-//app.get('/tarjeta/:idCliente', db.getTarjetasCliente);
-
 app.get('/lugares', db.getLugares);
 
 //Endpoints de pedido
 app.post('/pedidos', db.insertaPedido);
-//app.put('/pedido/:id_pedido', db.actualizaPedido);
-//app.get('/pedido/:id_pedido', db.getPedidoById);
-//app.get('/pedido/cliente/:id_cliente', db.getPedidosByCliente);
-//app.get('/pedido/sucursal/:clave_sucursal', db.getPedidosBySucursal);
-//app.put('/pedido/estatus/:estatus/:id_pedido', db.updateEstatusPedido);
+//app.put('/pedidos/:idPedido', db.actualizaPedido);
+app.get('/pedidos/cliente/:idCliente', db.getPedidosByCliente);
+//app.get('/pedidos/historico/:idCliente', db.getPedidosHistoricosByCliente);
+
+
+//Endpoints para receptor de pedidos en sucursal
+
+//app.get('/pedidos/sucursal/:claveSucursal', db.getPedidosBySucursal);
+app.get('/pedidos/:idPedido', db.getPedidoById); //También se utiliza en aplicación móvil
+//app.put('/pedidos/estatus/:estatus/:idPedido', db.updateEstatusPedido);
+
 
 //Endpoints de utilería sólo para pruebas de desarrollo
 //app.put('/pedidosReset', db.updateEstatusPedidosReset);
