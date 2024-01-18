@@ -43,7 +43,7 @@ app.get('/pedidos/cliente/:idCliente', db.getPedidosByCliente);
 
 //app.get('/pedidos/sucursal/:claveSucursal', db.getPedidosBySucursal);
 app.get('/pedidos/:idPedido', db.getPedidoById); //También se utiliza en aplicación móvil
-//app.put('/pedidos/estatus/:estatus/:idPedido', db.updateEstatusPedido);
+app.put('/pedidos/estatus/:estatus/:idPedido', db.updateEstatusPedido);
 
 
 //Endpoints de utilería sólo para pruebas de desarrollo
