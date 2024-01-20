@@ -263,7 +263,7 @@ const getPedidoById = (request, response) => {
     );
 }
 
-const updateEstatusPedido = (req, res) => {
+const updateEstatusPedido = (request, res) => {
     const estatus = request.params.estatus;
     const idPedido = request.params.idPedido;
     pool.query(
