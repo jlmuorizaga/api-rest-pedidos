@@ -242,6 +242,26 @@ const getPedidosByCliente = (request, response) => {
     );
 }
 
+const getPedidosBySucursal = (request, response) => {
+    //Retorna todos los pedidos de la sucursal que siguen en estatus de Pedido en la Nube
+    const claveSucursal = request.params.claveSucursal;
+    const estatusPedidoNube = 'NP';
+    pool.query(
+        'SELECT id_pedido as "idPedido" '
+        + 'FROM pedidos.pedido '
+        + 'WHERE clave_sucursal = $1 '
+        + 'AND estatus = $2 '
+        + 'ORDER BY fecha_hora',
+        [claveSucursal, estatusPedidoNube],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            response.status(200).json(results.rows);
+        }
+    );
+}
+
 const getPedidoById = (request, response) => {
     const idPedido = request.params.idPedido;
     pool.query(
@@ -295,4 +315,5 @@ module.exports = {
     getPedidosByCliente,
     getPedidoById,
     updateEstatusPedido,
+    getPedidosBySucursal,
 }

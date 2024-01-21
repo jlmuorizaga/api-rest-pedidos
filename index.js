@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
 
 app.get('/', (request, response) => {
-    response.json({ info: 'API CHPSystem Pedidos Móviles Nube versión: 20231121 1049' });
+    response.json({ info: 'API CHPSystem Pedidos Móviles Nube versión: 20240120 2015' });
 });
 
 //Endpoints
@@ -41,7 +41,7 @@ app.get('/pedidos/cliente/:idCliente', db.getPedidosByCliente);
 
 //Endpoints para receptor de pedidos en sucursal
 
-//app.get('/pedidos/sucursal/:claveSucursal', db.getPedidosBySucursal);
+app.get('/pedidos/sucursal/:claveSucursal', db.getPedidosBySucursal);
 app.get('/pedidos/:idPedido', db.getPedidoById); //También se utiliza en aplicación móvil
 app.put('/pedidos/estatus/:estatus/:idPedido', db.updateEstatusPedido);
 
