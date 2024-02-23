@@ -25,6 +25,7 @@ app.get('/', (request, response) => {
             + '/productos/:cve_sucursal/:id_tipo_producto\n'
             + '/sucursalesAll\n'
             + '/promociones/:cve_sucursal\n'
+            + '/salsas/:cve_sucursal\n'
             + '/lugaresAll\n'
             + 'Version 20231007 1154'
     })
