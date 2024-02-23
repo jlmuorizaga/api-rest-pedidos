@@ -39,6 +39,7 @@ app.get('/tipoproductos/:cve_sucursal', db.getTipoProductosBySucursal)
 app.get('/productos/:cve_sucursal/:id_tipo_producto', db.getProductosByTipoProductoBySucursal)
 app.get('/sucursalesAll', db.getSucursalesAll)
 app.get('/promociones/:cve_sucursal/',db.getPromocionesBySucursal)
+app.get('/salsas/:cve_sucursal/',db.getSalsasBySucursal)
 app.get('/lugaresAll', db.getLugaresAll)
 
 app.listen(port, () => {
