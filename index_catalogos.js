@@ -20,7 +20,7 @@ app.get('/', (request, response) => {
         {sucursales:'/sucursales'},
         {especialidades:'/especialidades/:cve_sucursal'},
         {tamanios:'/tamanios/:cve_sucursal/:id_especialidad'},
-        {productos:'/productos/:cve_sucursal\n'},
+        {productos:'/productos/:cve_sucursal'},
         {tipoproductos:'/tipoproductos/:cve_sucursal'},
         {productos:'/productos/:cve_sucursal/:id_tipo_producto'},
         {sucursalesAll:'/sucursalesAll'},
