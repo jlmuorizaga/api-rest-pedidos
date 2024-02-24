@@ -42,7 +42,7 @@ const getSucursales = (request, response) => {
 const getEspecialidadesBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     pool.query(
-        'SELECT DISTINCT ep.id as "idEspecialidad",ep.nombre,ep.ingredientes,ep.ruta_imagen '
+        'SELECT DISTINCT ep.id as "idEspecialidad",ep.nombre,ep.ingredientes,ep.img_url as "imgUrl" '
         +'FROM preesppropro.especialidad_pizza as ep, '
         +'preesppropro.relacion_especialidad_tamanio_precio_sucursal as re,'
         +'preesppropro.sucursal as s '
