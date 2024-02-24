@@ -15,20 +15,20 @@ app.use(cors({
     origin: '*'
 }))
 app.get('/', (request, response) => {
-    response.json({
-        info: 'API CHPSystem Catálogos\n'
-            + '/sucursales\n'
-            + '/especialidades/:cve_sucursal\n'
-            + '/tamanios/:cve_sucursal/:id_especialidad\n'
-            + '/productos/:cve_sucursal\n'
-            + '/tipoproductos/:cve_sucursal\n'
-            + '/productos/:cve_sucursal/:id_tipo_producto\n'
-            + '/sucursalesAll\n'
-            + '/promociones/:cve_sucursal\n'
-            + '/salsas/:cve_sucursal\n'
-            + '/lugaresAll\n'
-            + 'Version 20231007 1154'
-    })
+    response.json([{
+        info: 'API CHPSystem Catálogos'},
+        {sucursales:'/sucursales'},
+        {especialidades:'/especialidades/:cve_sucursal'},
+        {tamanios:'/tamanios/:cve_sucursal/:id_especialidad'},
+        {productos:'/productos/:cve_sucursal\n'},
+        {tipoproductos:'/tipoproductos/:cve_sucursal'},
+        {productos:'/productos/:cve_sucursal/:id_tipo_producto'},
+        {sucursalesAll:'/sucursalesAll'},
+        {promociones:'/promociones/:cve_sucursal'},
+        {salsas:'/salsas/:cve_sucursal'},
+        {lugaresAll:'/lugaresAll'},
+        {version:'Version 20231007 1154'}
+    ])
 })
 
 //Endpoints para catálogos
