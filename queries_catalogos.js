@@ -100,7 +100,7 @@ const getProductosBySucursal = (request, response) => {
 const getTipoProductosBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     pool.query(
-        'SELECT distinct pt.id,pt.descripcion,pt.img_url as imgUrl '
+        'SELECT distinct pt.id,pt.descripcion,pt.img_url as "imgUrl" '
         +'FROM preesppropro.relacion_producto_sucursal as rps, '
         +'preesppropro.sucursal as s,'
         +'preesppropro.producto as p,'
