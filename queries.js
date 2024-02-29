@@ -316,7 +316,7 @@ const getAllPedidos = (request, response) => {
         + 'monto_total as "montoTotal", detalle_pedido as "detallePedido", tipo_pago as "tipoPago" ' 
         + 'FROM pedidos.pedido '
         + 'WHERE estatus = $1 '
-        + 'ORDER BY clave_sucursal',
+        + 'ORDER BY clave_sucursal, numero_pedido',
         [estatusPedidoNube],
         (error, results) => {
             if (error) {
