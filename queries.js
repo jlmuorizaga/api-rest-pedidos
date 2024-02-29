@@ -311,7 +311,8 @@ const getAllPedidos = (request, response) => {
         //modalidad_entrega, monto_total, detalle_pedido, instrucciones_especiales, 
         //promociones_aplicadas, tipo_pago, cantidad_productos, resumen_pedido
         'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", datos_cliente as "datosCliente", '
-        + 'datos_domicilio_cliente as "datosDomicilioCliente", fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", '
+        + 'datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal", '
+        + 'fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", '
         + 'monto_total as "montoTotal", detalle_pedido as "detallePedido", tipo_pago as "tipoPago" ' 
         + 'FROM pedidos.pedido '
         + 'WHERE estatus = $1 '
