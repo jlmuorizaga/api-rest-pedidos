@@ -301,6 +301,31 @@ const updateEstatusPedido = (request, res) => {
     );
 }
 
+const getAllPedidos = (request, response) => {
+    //Retorna todos los pedidos de la sucursal que siguen en estatus de Pedido en la Nube
+    //const claveSucursal = request.params.claveSucursal;
+    const estatusPedidoNube = 'NP';
+    pool.query(
+        //SELECT id_pedido, numero_pedido, id_cliente, datos_cliente, id_domicilio_cliente, 
+        //datos_domicilio_cliente, clave_sucursal, datos_sucursal, fecha_hora, estatus, 
+        //modalidad_entrega, monto_total, detalle_pedido, instrucciones_especiales, 
+        //promociones_aplicadas, tipo_pago, cantidad_productos, resumen_pedido
+        'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", datos_cliente as "datosCliente", '
+        + 'datos_domicilio_cliente as "datosDomicilioCliente", fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", '
+        + 'monto_total as "montoTotal", detalle_pedido as "detallePedido", tipo_pago as "tipoPago" ' 
+        + 'FROM pedidos.pedido '
+        + 'WHERE estatus = $1 '
+        + 'ORDER BY clave_sucursal',
+        [estatusPedidoNube],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            response.status(200).json(results.rows);
+        }
+    );
+}
+
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
@@ -316,4 +341,5 @@ module.exports = {
     getPedidoById,
     updateEstatusPedido,
     getPedidosBySucursal,
+    getAllPedidos
 }
