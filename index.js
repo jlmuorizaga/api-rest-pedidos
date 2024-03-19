@@ -24,6 +24,7 @@ app.get('/clientes/acceso/:correo/:contrasenia', db.getClienteAcceso);
 app.post('/clientes', db.insertaCliente);
 app.put('/clientes', db.actualizaCliente);
 app.get('/clientes/:correo', db.getDatosCliente);
+app.get('/clientes-recupera-contrasenia/:correo', db.getContraseniaCliente);
 
 app.post('/domicilios-cliente', db.insertaDomicilioCliente);
 app.put('/domicilios-cliente', db.actualizaDomicilioCliente);

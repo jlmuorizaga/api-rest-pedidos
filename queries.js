@@ -58,6 +58,28 @@ const getDatosCliente = (request, response) => {
     );
 }
 
+const getContraseniaCliente = (request, response) => {
+    const correo = request.params.correo;
+    pool.query(
+        'SELECT correo_electronico as "correoElectronico", contrasenia as "contraSenia", activo '
+        + 'FROM pedidos.cliente '
+        + 'WHERE correo_electronico = $1 and activo="S"',
+        [correo],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            if (results.rows[0]) {
+                response.status(200).json(results.rows[0]);
+            } else {
+                textoError = '{"error": "No se encontró el cliente"}';
+                response.status(404).json(JSON.parse(textoError));
+            }
+        }
+    );
+}
+
+
 const getDomiciliosCliente = (request, response) => {
     const idCliente = request.params.idCliente;
     pool.query(
@@ -330,6 +352,7 @@ const getAllPedidos = (request, response) => {
 module.exports = {
     getClienteAcceso,
     getDatosCliente,
+    getContraseniaCliente,
     getDomiciliosCliente,
     getLugares,
     insertaCliente,
