@@ -63,7 +63,7 @@ const getContraseniaCliente = (request, response) => {
     pool.query(
         'SELECT correo_electronico as "correoElectronico", contrasenia as "contraSenia", activo '
         + 'FROM pedidos.cliente '
-        + 'WHERE correo_electronico = $1 and activo="S"',
+        + 'WHERE correo_electronico = $1 and activo=\'S\'',
         [correo],
         (error, results) => {
             if (error) {
