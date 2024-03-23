@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 3003;
 
 app.post('/verifica-correo', correo.verificaCorreo);
+app.post('/recupera-correo', correo.recuperaCorreo);
 
 app.listen(port, () => {
     console.log('API CHPSystem Servidor de Correos corriendo en puerto', port);
