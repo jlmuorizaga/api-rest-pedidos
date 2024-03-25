@@ -42,7 +42,7 @@ const verificaCorreo = (req, res) => {
         to:correo,
         subject:asunto,
         //text:"Hola esta es una prueba de correo",
-        html:'<img src="http://ec2-52-53-193-189.us-west-1.compute.amazonaws.com/img/logo/pastor.png" width="12%"><br>'+
+        html:'<img src="http://ec2-52-53-193-189.us-west-1.compute.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png" width="12%"><br>'+
         '<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su código de verificación es: </p>'+
         '<h1>'+codigoVerificacion+'</h1>'+
         '<p>Su código será válido durante 10 minutos</p><br>'+
