@@ -88,7 +88,8 @@ const recuperaCorreo = (req, res) => {
                     to:correo,
                     subject:asunto,
                     //text:"Hola esta es una prueba de correo",
-                    html:'<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su contraseña es: </p>'+
+                    html:'<img src="http://ec2-52-53-193-189.us-west-1.compute.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png" width="12%"><br>'+                    
+                    '<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su contraseña es: </p>'+
                     '<h2>'+contra+'</h2>'+
                     '<p>Apunte su contraseña en un lugar seguro</p><br>'+
                     '<p><i>Esta es un correo automático, favor de no responder</i></p>'
