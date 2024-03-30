@@ -20,6 +20,7 @@ app.get('/', (request, response) => {
 //Endpoints de clientes
 
 app.get('/clientes/acceso/:correo/:contrasenia', db.getClienteAcceso);
+app.get('/clientes/acceso/:correo', db.getClienteExisteCorreo);
 
 app.post('/clientes', db.insertaCliente);
 app.put('/clientes', db.actualizaCliente);

@@ -37,6 +37,22 @@ const getClienteAcceso = (request, response) => {
     );
 }
 
+const getClienteExisteCorreo = (request, response) => {
+    const correo = request.params.correo;
+    pool.query(
+        'SELECT count(*) as existe '
+        + 'FROM pedidos.cliente '
+        + 'WHERE activo = $1 AND correo_electronico = $2',
+        ['S', correo],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            response.status(200).json(results.rows[0]);
+        }
+    );
+}
+
 const getDatosCliente = (request, response) => {
     const correo = request.params.correo;
     pool.query(
@@ -351,6 +367,7 @@ const getAllPedidos = (request, response) => {
 
 module.exports = {
     getClienteAcceso,
+    getClienteExisteCorreo,
     getDatosCliente,
     getContraseniaCliente,
     getDomiciliosCliente,
