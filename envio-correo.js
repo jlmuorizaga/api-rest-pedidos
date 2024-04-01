@@ -31,7 +31,11 @@ const transporter = nodeMailer.createTransport({
 
         user:"chp01ame@gmail.com",
         pass:"nxswxjiwbhylgsaz"
-    }
+    },
+    tls: {
+        servername: 'smtp.gmail.com',
+        rejectUnauthorized: false,
+      },
 })
 
 const verificaCorreo = (req, res) => {
