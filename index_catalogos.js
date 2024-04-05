@@ -44,5 +44,5 @@ app.get('/salsas/:cve_sucursal/',db.getSalsasBySucursal)
 app.get('/lugaresAll', db.getLugaresAll)
 
 app.listen(port, () => {
-    console.log('App corriendo en puerto', port)
+    console.log('API Catálogos CHPSystem Mobile corriendo en puerto', port)
 })
