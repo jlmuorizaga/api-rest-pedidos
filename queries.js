@@ -279,6 +279,28 @@ const getPedidosByCliente = (request, response) => {
         }
     );
 }
+//LGDD
+const getPedidosHistoricosByCliente = (request, response) => {
+    //Retorna todos los pedidos del cliente que ya han sido atendidos
+    const idCliente = request.params.idCliente;
+    const estatusPedidoAtendido = 'AP';
+    pool.query(
+        'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", id_cliente as "idCliente", datos_cliente as "datosCliente", id_domicilio_cliente as "idDomicilioCliente", datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal", datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", monto_total as "montoTotal", detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales", promociones_aplicadas as "promocionesAplicadas", tipo_pago as "tipoPago", cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido" '
+        + 'FROM pedidos.pedido '
+        + 'WHERE id_cliente = $1 '
+        + 'AND estatus = $2 '
+        + 'ORDER BY numero_pedido',
+        [idCliente, estatusPedidoAtendido],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            response.status(200).json(results.rows);
+        }
+    );
+}
+//LGDD
+
 
 const getPedidosBySucursal = (request, response) => {
     //Retorna todos los pedidos de la sucursal que siguen en estatus de Pedido en la Nube
@@ -351,7 +373,7 @@ const getAllPedidos = (request, response) => {
         'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", datos_cliente as "datosCliente", '
         + 'datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal", '
         + 'fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", '
-        + 'monto_total as "montoTotal", detalle_pedido as "detallePedido", tipo_pago as "tipoPago" ' 
+        + 'monto_total as "montoTotal", detalle_pedido as "detallePedido", tipo_pago as "tipoPago" '
         + 'FROM pedidos.pedido '
         + 'WHERE estatus = $1 '
         + 'ORDER BY clave_sucursal, numero_pedido',
@@ -379,6 +401,9 @@ module.exports = {
     eliminaDomicilioCliente,
     insertaPedido,
     getPedidosByCliente,
+    //LGDD
+    getPedidosHistoricosByCliente,
+    //LGDD   
     getPedidoById,
     updateEstatusPedido,
     getPedidosBySucursal,
