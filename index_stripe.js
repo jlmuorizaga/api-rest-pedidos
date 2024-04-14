@@ -3,8 +3,12 @@ const app = express();
 const bodyParser = require('body-parser');
 const pool = require('./conf_pg_stripe');
 const stripeLoader = require('stripe');
+const cors = require('cors');
 
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 
 app.post('/stripe/charge', async (req, res) => {
   try {
