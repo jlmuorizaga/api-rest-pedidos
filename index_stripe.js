@@ -11,9 +11,9 @@ app.post('/api/charge', async (req, res) => {
     // El token de Stripe es enviado con la solicitud
     const { claveSucursal, token, amount, description } = req.body;
 
-    console.log('Sucursal: ',claveSucursal)
+    //console.log('Sucursal: ',claveSucursal)
     const stripeSecretKey = await getStripeKey(claveSucursal);
-    console.log('Llave secreta: ',stripeSecretKey);
+    //console.log('Llave secreta: ',stripeSecretKey);
     const stripe = stripeLoader(stripeSecretKey);
 
     // Crear el cargo usando la API de Stripe
