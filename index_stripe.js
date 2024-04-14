@@ -6,7 +6,7 @@ const stripeLoader = require('stripe');
 
 app.use(bodyParser.json());
 
-app.post('/api/charge', async (req, res) => {
+app.post('/stripe/charge', async (req, res) => {
   try {
     // El token de Stripe es enviado con la solicitud
     const { claveSucursal, token, amount, description } = req.body;
