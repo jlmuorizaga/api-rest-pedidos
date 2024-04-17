@@ -228,11 +228,15 @@ const insertaPedido = (req, res) => {
         promocionesAplicadas,
         tipoPago,
         cantidadProductos,
-        resumenPedido, } = req.body;
+        resumenPedido,
+        urlReciboPago } = req.body;
     pool.query(
         'INSERT INTO pedidos.pedido'
-        + '(id_pedido, id_cliente, datos_cliente, id_domicilio_cliente, datos_domicilio_cliente, clave_sucursal, datos_sucursal, fecha_hora, estatus, modalidad_entrega, monto_total, detalle_pedido, instrucciones_especiales, promociones_aplicadas, tipo_pago, cantidad_productos, resumen_pedido) '
-        + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING *',
+        + '(id_pedido, id_cliente, datos_cliente, id_domicilio_cliente, datos_domicilio_cliente, '
+        + 'clave_sucursal, datos_sucursal, fecha_hora, estatus, modalidad_entrega, monto_total, '
+        + 'detalle_pedido, instrucciones_especiales, promociones_aplicadas, tipo_pago, '
+        + 'cantidad_productos, resumen_pedido, url_recibo_pago) '
+        + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING *',
         [idPedido,
             idCliente,
             datosCliente,
@@ -249,7 +253,8 @@ const insertaPedido = (req, res) => {
             promocionesAplicadas,
             tipoPago,
             cantidadProductos,
-            resumenPedido],
+            resumenPedido,
+            urlReciboPago],
         (error, results) => {
             if (error) {
                 throw error;
@@ -266,7 +271,12 @@ const getPedidosByCliente = (request, response) => {
     const idCliente = request.params.idCliente;
     const estatusPedidoAtendido = 'AP';
     pool.query(
-        'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", clave_sucursal as "claveSucursal", datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", monto_total as "montoTotal", cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido" '
+        'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", '
+        + 'clave_sucursal as "claveSucursal", datos_sucursal as "datosSucursal", '
+        + 'fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", '
+        + 'monto_total as "montoTotal", cantidad_productos as "cantidadProductos", '
+        + 'resumen_pedido as "resumenPedido", '
+        + 'url_recibo_pago as "urlReciboPago" '
         + 'FROM pedidos.pedido '
         + 'WHERE id_cliente = $1 '
         + 'AND estatus <> $2',
@@ -325,7 +335,15 @@ const getPedidosBySucursal = (request, response) => {
 const getPedidoById = (request, response) => {
     const idPedido = request.params.idPedido;
     pool.query(
-        'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", id_cliente as "idCliente", datos_cliente as "datosCliente", id_domicilio_cliente as "idDomicilioCliente", datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal", datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", monto_total as "montoTotal", detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales", promociones_aplicadas as "promocionesAplicadas", tipo_pago as "tipoPago", cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido" '
+        'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", id_cliente as "idCliente", '
+        + 'datos_cliente as "datosCliente", id_domicilio_cliente as "idDomicilioCliente", '
+        + 'datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal", '
+        + 'datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, '
+        + 'modalidad_entrega as "modalidadEntrega", monto_total as "montoTotal", '
+        + 'detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales", '
+        + 'promociones_aplicadas as "promocionesAplicadas", tipo_pago as "tipoPago", '
+        + 'cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido", '
+        + 'url_recibo_pago as "urlReciboPago" '
         + 'FROM pedidos.pedido '
         + 'WHERE id_pedido = $1',
         [idPedido],
