@@ -9,6 +9,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+const port = process.env.PORT || 3002;
+
 app.get('/', (request, response) => {
   response.json({ info: 'API CHPSystem Pedidos Móviles Stripe versión: 20240416 2120' });
 });
@@ -54,4 +56,4 @@ async function getStripeKey(claveSucursal) {
   }
 }
 
-app.listen(3002, () => console.log('Server Stripe started on port 3002'));
+app.listen(port, () => console.log('Server Stripe started on port',port));
