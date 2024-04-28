@@ -56,4 +56,4 @@ async function getStripeKey(claveSucursal) {
   }
 }
 
-app.listen(port, () => console.log('Server Stripe started on port',port));
+app.listen(port, () => console.log('API CHPSystem Stripe Server started on port',port));
