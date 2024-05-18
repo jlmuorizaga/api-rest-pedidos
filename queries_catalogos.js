@@ -73,6 +73,10 @@ const getTamaniosBySucursal = (request, response) => {
             if (error) {
                 throw error
             }
+            results.rows.forEach(element => {
+                element.precio = Number(element.precio);
+                element.precioP1 = Number(element.precioP1);
+            });
             response.status(200).json(results.rows)
         }
     )
