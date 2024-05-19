@@ -229,14 +229,16 @@ const insertaPedido = (req, res) => {
         tipoPago,
         cantidadProductos,
         resumenPedido,
-        urlReciboPago } = req.body;
+        urlReciboPago,
+        montoSubtotal,
+        montoDescuento } = req.body;
     pool.query(
         'INSERT INTO pedidos.pedido'
         + '(id_pedido, id_cliente, datos_cliente, id_domicilio_cliente, datos_domicilio_cliente, '
         + 'clave_sucursal, datos_sucursal, fecha_hora, estatus, modalidad_entrega, monto_total, '
         + 'detalle_pedido, instrucciones_especiales, promociones_aplicadas, tipo_pago, '
-        + 'cantidad_productos, resumen_pedido, url_recibo_pago) '
-        + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING *',
+        + 'cantidad_productos, resumen_pedido, url_recibo_pago, monto_subtotal, monto_descuento) '
+        + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING *',
         [idPedido,
             idCliente,
             datosCliente,
@@ -254,7 +256,9 @@ const insertaPedido = (req, res) => {
             tipoPago,
             cantidadProductos,
             resumenPedido,
-            urlReciboPago],
+            urlReciboPago,
+            montoSubtotal,
+            montoDescuento],
         (error, results) => {
             if (error) {
                 throw error;
