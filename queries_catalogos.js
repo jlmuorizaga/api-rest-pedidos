@@ -42,7 +42,7 @@ const getSucursales = (request, response) => {
 const getEspecialidadesBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     pool.query(
-        'SELECT DISTINCT ep.id as "idEspecialidad",ep.nombre,ep.ingredientes,ep.img_url as "imgUrl",aplica_2x1 as "aplica2x1",aplica_p1 as "aplicaP1" '
+        'SELECT DISTINCT ep.id as "idEspecialidad",ep.nombre,ep.ingredientes,ep.img_url as "imgUrl",ep.aplica_2x1 as "aplica2x1",ep.aplica_p1 as "aplicaP1" '
         +'FROM preesppropro.especialidad_pizza as ep, '
         +'preesppropro.relacion_especialidad_tamanio_precio_sucursal as re,'
         +'preesppropro.sucursal as s '
@@ -62,8 +62,8 @@ const getTamaniosBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     const id_especialidad = request.params.id_especialidad
     pool.query(
-        'SELECT id_especialidad_pizza as "idEspecialidadPizza",r.id_tamanio_pizza as "idTamanioPizza",t.nombre,r.precio,t.aplica_2x1 as "aplica2x1", ' 
-        + 't.aplica_p1 as "aplicaP1", r.precio_p1 as "precioP1" '
+        'SELECT id_especialidad_pizza as "idEspecialidadPizza",r.id_tamanio_pizza as "idTamanioPizza",t.nombre,r.precio,r.aplica_2x1 as "aplica2x1", ' 
+        + 'r.aplica_p1 as "aplicaP1", r.precio_p1 as "precioP1" '
         +'FROM preesppropro.relacion_especialidad_tamanio_precio_sucursal AS r,'
         +'preesppropro.sucursal as s, preesppropro.tamanio_pizza as t '
         +'WHERE s.id=r.id_sucursal and r.id_tamanio_pizza=t.id ' 
