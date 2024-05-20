@@ -63,7 +63,7 @@ const getTamaniosBySucursal = (request, response) => {
     const id_especialidad = request.params.id_especialidad
     pool.query(
         'SELECT id_especialidad_pizza as "idEspecialidadPizza",r.id_tamanio_pizza as "idTamanioPizza",t.nombre,r.precio,r.aplica_2x1 as "aplica2x1", ' 
-        + 'r.aplica_p1 as "aplicaP1", r.precio_p1 as "precioP1" '
+        + 'r.aplica_p1 as "aplicaP1", r.precio_p1 as "precioP1", r.aplica_bebida_chica_gratis as "aplicaBebidaChicaGratis" '
         +'FROM preesppropro.relacion_especialidad_tamanio_precio_sucursal AS r,'
         +'preesppropro.sucursal as s, preesppropro.tamanio_pizza as t '
         +'WHERE s.id=r.id_sucursal and r.id_tamanio_pizza=t.id ' 
