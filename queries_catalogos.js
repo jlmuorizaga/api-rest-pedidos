@@ -142,6 +142,9 @@ const getProductosByTipoProductoBySucursal = (request, response) => {
             if (error) {
                 throw error
             }
+            results.rows.forEach(element => {
+                element.precioNormal = Number(element.precioNormal);
+            });
             response.status(200).json(results.rows)
         }
     )
