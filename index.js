@@ -42,6 +42,7 @@ app.get('/pedidos/cliente/:idCliente', db.getPedidosByCliente);
 
 //LGDD
 app.get('/pedidos/historico/:idCliente', db.getPedidosHistoricosByCliente);
+app.get('/pedidos/historico/:idCliente/:registrosXPagina/:iniciaEn', db.getPedidosHistoricosByCliente);
 //LGDD
 
 //Endpoints para receptor de pedidos en sucursal

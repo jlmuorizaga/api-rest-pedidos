@@ -293,18 +293,45 @@ const getPedidosByCliente = (request, response) => {
         }
     );
 }
-//LGDD
+// LGDD
+const getTotalPedidosHistoricosByCliente = (request, response) => {
+    //    //Retorna todos los pedidos del cliente que ya han sido atendidos
+    const idCliente = request.params.idCliente;
+    const estatusPedidoAtendido = 'AP';
+    pool.query(
+        'SELECT count(*) as totalPedidos '
+        + 'FROM pedidos.pedido '
+        + 'WHERE id_cliente = $1 '
+        + 'AND estatus = $2 ',
+        [idCliente, estatusPedidoAtendido],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            if (results.rows[0]) {
+                response.status(200).json(results.rows[0]);
+            } else {
+                textoError = '{"error": "No se encontró el cliente"}';
+                response.status(404).json(JSON.parse(textoError));
+            }
+        }
+    );
+}
+
 const getPedidosHistoricosByCliente = (request, response) => {
     //Retorna todos los pedidos del cliente que ya han sido atendidos
     const idCliente = request.params.idCliente;
+    const registrosXPagina = request.params.registrosXPagina;
+    const iniciaEn = request.params.iniciaEn;
     const estatusPedidoAtendido = 'AP';
     pool.query(
         'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", id_cliente as "idCliente", datos_cliente as "datosCliente", id_domicilio_cliente as "idDomicilioCliente", datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal", datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, modalidad_entrega as "modalidadEntrega", monto_total as "montoTotal", detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales", promociones_aplicadas as "promocionesAplicadas", tipo_pago as "tipoPago", cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido" '
         + 'FROM pedidos.pedido '
         + 'WHERE id_cliente = $1 '
         + 'AND estatus = $2 '
-        + 'ORDER BY numero_pedido',
-        [idCliente, estatusPedidoAtendido],
+        + 'ORDER BY numero_pedido '
+        + 'limit $3 offset $4',
+        [idCliente, estatusPedidoAtendido, registrosXPagina, iniciaEn],
         (error, results) => {
             if (error) {
                 throw error;
@@ -313,8 +340,7 @@ const getPedidosHistoricosByCliente = (request, response) => {
         }
     );
 }
-//LGDD
-
+// LGDD
 
 const getPedidosBySucursal = (request, response) => {
     //Retorna todos los pedidos de la sucursal que siguen en estatus de Pedido en la Nube
@@ -423,9 +449,10 @@ module.exports = {
     eliminaDomicilioCliente,
     insertaPedido,
     getPedidosByCliente,
-    //LGDD
+    // LGDD
+    getTotalPedidosHistoricosByCliente,
     getPedidosHistoricosByCliente,
-    //LGDD   
+    // LGDD  
     getPedidoById,
     updateEstatusPedido,
     getPedidosBySucursal,
