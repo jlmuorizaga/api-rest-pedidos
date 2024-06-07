@@ -320,6 +320,7 @@ const getTotalPedidosHistoricosByCliente = (request, response) => {
 
 const getPedidosHistoricosByCliente = (request, response) => {
     //Retorna todos los pedidos del cliente que ya han sido atendidos
+    console.log('')
     const idCliente = request.params.idCliente;
     const registrosXPagina = request.params.registrosXPagina;
     const iniciaEn = request.params.iniciaEn;

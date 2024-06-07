@@ -40,10 +40,10 @@ app.post('/pedidos', db.insertaPedido);
 app.get('/pedidos/cliente/:idCliente', db.getPedidosByCliente);
 //app.get('/pedidos/historico/:idCliente', db.getPedidosHistoricosByCliente);
 
-//LGDD
-app.get('/pedidos/historico/:idCliente', db.getPedidosHistoricosByCliente);
+// LGDD
+app.get('/pedidos/historico/:idCliente', db.getTotalPedidosHistoricosByCliente);
 app.get('/pedidos/historico/:idCliente/:registrosXPagina/:iniciaEn', db.getPedidosHistoricosByCliente);
-//LGDD
+// LGDD
 
 //Endpoints para receptor de pedidos en sucursal
 
