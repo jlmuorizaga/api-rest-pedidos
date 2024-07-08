@@ -26,7 +26,7 @@ app.get('/', (request, response) => {
         {sucursalesAll:'/sucursalesAll'},
         {promociones:'/promociones/:cve_sucursal'},
         {salsas:'/salsas/:cve_sucursal'},
-        {lugaresAll:'/lugaresAll'},
+        {regionesAll:'/regionesAll'},
         {version:'Version 20231007 1154'}
     ])
 })
