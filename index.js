@@ -32,7 +32,7 @@ app.put('/domicilios-cliente', db.actualizaDomicilioCliente);
 app.delete('/domicilios-cliente/:idDomicilioCliente', db.eliminaDomicilioCliente);
 app.get('/domicilios-cliente/:idCliente', db.getDomiciliosCliente);
 
-app.get('/lugares', db.getLugares);
+app.get('/regiones', db.getRegiones);
 
 //Endpoints de pedido
 app.post('/pedidos', db.insertaPedido);

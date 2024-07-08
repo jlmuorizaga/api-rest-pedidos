@@ -111,10 +111,10 @@ const getDomiciliosCliente = (request, response) => {
     );
 }
 
-const getLugares = (request, response) => {
+const getRegiones = (request, response) => {
     pool.query(
-        'SELECT id_lugar as "idLugar", nombre, poligono '
-        + 'FROM pedidos.lugar',
+        'SELECT id_region as "idRegion", nombre, poligono '
+        + 'FROM pedidos.region',
         (error, results) => {
             if (error) {
                 throw error;
@@ -442,7 +442,7 @@ module.exports = {
     getDatosCliente,
     getContraseniaCliente,
     getDomiciliosCliente,
-    getLugares,
+    getRegiones,
     insertaCliente,
     actualizaCliente,
     insertaDomicilioCliente,
