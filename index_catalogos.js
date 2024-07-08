@@ -41,7 +41,7 @@ app.get('/productos/:cve_sucursal/:id_tipo_producto', db.getProductosByTipoProdu
 app.get('/sucursalesAll', db.getSucursalesAll)
 app.get('/promociones/:cve_sucursal/',db.getPromocionesBySucursal)
 app.get('/salsas/:cve_sucursal/',db.getSalsasBySucursal)
-app.get('/lugaresAll', db.getLugaresAll)
+app.get('/regionesAll', db.getRegionesAll)
 
 app.listen(port, () => {
     console.log('API Catálogos CHPSystem Mobile corriendo en puerto', port)

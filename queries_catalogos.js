@@ -24,7 +24,7 @@ const pool = new Pool({
 const getSucursales = (request, response) => {
     pool.query(
         'SELECT distinct clave, nombre_sucursal as "nombreSucursal",domicilio,hora_inicio as "horaInicio",hora_fin as "horaFin", '
-        +'latitud, longitud, id_lugar as "idLugar", venta_activa as "ventaActiva", pk as "stripePublicKey" '
+        +'latitud, longitud, id_Region as "idRegion", venta_activa as "ventaActiva", pk as "stripePublicKey" '
         +'FROM preesppropro.sucursal as suc, '
         +'preesppropro.relacion_especialidad_tamanio_precio_sucursal as relespec,'
         +'preesppropro.relacion_producto_sucursal as relprod '
@@ -204,11 +204,11 @@ const getSalsasBySucursal = (request, response) => {
 }
 
 
-const getLugaresAll = (request, response) => {
+const getRegionesAll = (request, response) => {
     pool.query(
         'SELECT DISTINCT(l.id), nombre '
-	    +'FROM preesppropro.lugar as l, preesppropro.sucursal as s '
-	    +'WHERE l.id=s.id_lugar '
+	    +'FROM preesppropro.region as l, preesppropro.sucursal as s '
+	    +'WHERE l.id=s.id_region '
 	    +'ORDER BY nombre ASC',
         (error, results) => {
             if (error) {
@@ -229,5 +229,5 @@ module.exports = {
     getSucursalesAll,
     getPromocionesBySucursal,
     getSalsasBySucursal,
-    getLugaresAll
+    getRegionesAll
 }
