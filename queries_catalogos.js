@@ -128,7 +128,7 @@ const getProductosByTipoProductoBySucursal = (request, response) => {
     const cve_sucursal = request.params.cve_sucursal
     const id_tipo_producto = request.params.id_tipo_producto
     pool.query(
-        'SELECT p.id, p.descripcion,p.tamanio,p.usa_salsa as "usaSalsa", '
+        'SELECT p.id, p.descripcion,p.tamanio,p.usa_salsa as "usaSalsa", p.categoria, p.subcategoria, '
         +'rps.precio_normal as "precioNormal", rps.aplica_bebida_chica_gratis as "aplicaBebidaChicaGratis" '
         +'FROM preesppropro.producto as p,'
         +'preesppropro.producto_tipo as pt,'
