@@ -169,7 +169,7 @@ const getPromocionesBySucursal = (request, response) => {
   const cve_sucursal = request.params.cve_sucursal;
   pool.query(
     'SELECT DISTINCT cpe.id_promocion as "idPromocion",cpe.nombre, ' +
-      'cpe.descripcion, cpe.tipo, cpe.categorias_productos as "categoriasProductos", cpe.precio ' +
+      'cpe.descripcion, cpe.tipo, cpe.definicion, cpe.precio ' +
       "FROM preesppropro.promocion_especial as cpe, " +
       "preesppropro.relacion_promocion_especial_sucursal as re, " +
       "preesppropro.sucursal as s " +
