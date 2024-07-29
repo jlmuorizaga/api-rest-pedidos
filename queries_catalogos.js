@@ -63,7 +63,7 @@ const getTamaniosBySucursal = (request, response) => {
   const id_especialidad = request.params.id_especialidad;
   pool.query(
     'SELECT id_especialidad_pizza as "idEspecialidadPizza",r.id_tamanio_pizza as "idTamanioPizza",' +
-      't.nombre,r.precio,r.aplica_2x1 as "aplica2x1", r.categoria, r.subcategoria, ' +
+      't.nombre,r.precio,r.aplica_2x1 as "aplica2x1", r.categoria1, r.categoria2, r.categoria3, ' +
       'r.aplica_p1 as "aplicaP1", r.precio_p1 as "precioP1", r.aplica_bebida_chica_gratis as "aplicaBebidaChicaGratis" ' +
       "FROM preesppropro.relacion_especialidad_tamanio_precio_sucursal AS r," +
       "preesppropro.sucursal as s, preesppropro.tamanio_pizza as t " +
@@ -130,7 +130,7 @@ const getProductosByTipoProductoBySucursal = (request, response) => {
   const cve_sucursal = request.params.cve_sucursal;
   const id_tipo_producto = request.params.id_tipo_producto;
   pool.query(
-    'SELECT p.id, p.descripcion,p.tamanio,p.usa_salsa as "usaSalsa", p.categoria, p.subcategoria, ' +
+    'SELECT p.id, p.descripcion,p.tamanio,p.usa_salsa as "usaSalsa", p.categoria1, p.categoria2, p.categoria3, ' +
       'rps.precio_normal as "precioNormal", rps.aplica_bebida_chica_gratis as "aplicaBebidaChicaGratis" ' +
       "FROM preesppropro.producto as p," +
       "preesppropro.producto_tipo as pt," +
@@ -169,7 +169,7 @@ const getPromocionesBySucursal = (request, response) => {
   const cve_sucursal = request.params.cve_sucursal;
   pool.query(
     'SELECT DISTINCT cpe.id_promocion as "idPromocion",cpe.nombre, ' +
-      'cpe.descripcion, cpe.tipo, cpe.definicion, cpe.precio ' +
+      "cpe.descripcion, cpe.tipo, cpe.definicion, cpe.precio " +
       "FROM preesppropro.promocion_especial as cpe, " +
       "preesppropro.relacion_promocion_especial_sucursal as re, " +
       "preesppropro.sucursal as s " +
