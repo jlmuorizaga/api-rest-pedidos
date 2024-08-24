@@ -40,8 +40,7 @@ const getSucursales = (request, response) => {
 const getEspecialidadesBySucursal = (request, response) => {
   const cve_sucursal = request.params.cve_sucursal;
   pool.query(
-    'SELECT DISTINCT ep.id as "idEspecialidad",ep.nombre,ep.ingredientes,ep.img_url as "imgUrl",' +
-      'ep.aplica_2x1 as "aplica2x1",ep.aplica_p1 as "aplicaP1" ' +
+    'SELECT DISTINCT ep.id as "idEspecialidad",ep.nombre,ep.ingredientes,ep.img_url as "imgUrl" ' +
       "FROM preesppropro.especialidad_pizza as ep, " +
       "preesppropro.relacion_especialidad_tamanio_precio_sucursal as re," +
       "preesppropro.sucursal as s " +
@@ -63,8 +62,7 @@ const getTamaniosBySucursal = (request, response) => {
   const id_especialidad = request.params.id_especialidad;
   pool.query(
     'SELECT id_especialidad_pizza as "idEspecialidadPizza",r.id_tamanio_pizza as "idTamanioPizza",' +
-      't.nombre,r.precio,r.aplica_2x1 as "aplica2x1", r.categoria1, r.categoria2, r.categoria3, ' +
-      'r.aplica_p1 as "aplicaP1", r.precio_p1 as "precioP1", r.aplica_bebida_chica_gratis as "aplicaBebidaChicaGratis" ' +
+      't.nombre,r.precio, r.categoria1, r.categoria2, r.categoria3 ' +
       "FROM preesppropro.relacion_especialidad_tamanio_precio_sucursal AS r," +
       "preesppropro.sucursal as s, preesppropro.tamanio_pizza as t " +
       "WHERE s.id=r.id_sucursal and r.id_tamanio_pizza=t.id " +
@@ -77,7 +75,6 @@ const getTamaniosBySucursal = (request, response) => {
       }
       results.rows.forEach((element) => {
         element.precio = Number(element.precio);
-        element.precioP1 = Number(element.precioP1);
       });
       response.status(200).json(results.rows);
     }
@@ -131,7 +128,7 @@ const getProductosByTipoProductoBySucursal = (request, response) => {
   const id_tipo_producto = request.params.id_tipo_producto;
   pool.query(
     'SELECT p.id, p.descripcion,p.tamanio,p.usa_salsa as "usaSalsa", p.categoria1, p.categoria2, p.categoria3, ' +
-      'rps.precio_normal as "precioNormal", rps.aplica_bebida_chica_gratis as "aplicaBebidaChicaGratis" ' +
+      'rps.precio as "precio" ' +
       "FROM preesppropro.producto as p," +
       "preesppropro.producto_tipo as pt," +
       "preesppropro.sucursal as s," +
@@ -146,7 +143,7 @@ const getProductosByTipoProductoBySucursal = (request, response) => {
         throw error;
       }
       results.rows.forEach((element) => {
-        element.precioNormal = Number(element.precioNormal);
+        element.precio = Number(element.precio);
       });
       response.status(200).json(results.rows);
     }
@@ -183,6 +180,9 @@ const getPromocionesBySucursal = (request, response) => {
       if (error) {
         throw error;
       }
+      results.rows.forEach((element) => {
+        element.precio = Number(element.precio);
+      });
       response.status(200).json(results.rows);
     }
   );
