@@ -435,7 +435,8 @@ const getPedidoById = (request, response) => {
       'datos_cliente as "datosCliente", id_domicilio_cliente as "idDomicilioCliente", ' +
       'datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal", ' +
       'datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, ' +
-      'modalidad_entrega as "modalidadEntrega", monto_total as "montoTotal", ' +
+      'modalidad_entrega as "modalidadEntrega", ' +
+      'monto_subtotal as "montoSubtotal", monto_descuento as "montoDescuento", monto_total as "montoTotal", ' +
       'detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales", ' +
       'promociones_aplicadas as "promocionesAplicadas", tipo_pago as "tipoPago", ' +
       'cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido", ' +
