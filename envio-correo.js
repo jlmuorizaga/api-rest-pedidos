@@ -22,18 +22,22 @@ const pool = new Pool({
 });
 
 const transporter = nodeMailer.createTransport({
-  host: "smtp.gmail.com",
+  //host: "smtp.gmail.com",
+  host:'mail.cheesepizza.com.mx',
   port: 465,
   secure: true,
   auth: {
     //user:"jlmuorizaga@gmail.com",
     //pass:"klzkllfyjxijplos"
 
-    user: "chp01ame@gmail.com",
-    pass: "nxswxjiwbhylgsaz",
+   // user: "chp01ame@gmail.com",
+   // pass: "nxswxjiwbhylgsaz",
+    user:'registro_app@cheesepizza.com.mx',
+    pass: "Olaf2020chp$",
   },
   tls: {
-    servername: "smtp.gmail.com",
+    //servername: "smtp.gmail.com",
+    servername:'mail.cheesepizza.com.mx',
     rejectUnauthorized: false,
   },
 });
