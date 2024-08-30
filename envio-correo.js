@@ -35,11 +35,11 @@ const transporter = nodeMailer.createTransport({
     user:'registro_app@cheesepizza.com.mx',
     pass: "Olaf2020chp$",
   },
-  tls: {
+  /*tls: {
     //servername: "smtp.gmail.com",
     servername:'mail.cheesepizza.com.mx',
     rejectUnauthorized: false,
-  },
+  },*/
 });
 
 const verificaCorreo = (req, res) => {
