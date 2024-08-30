@@ -48,6 +48,7 @@ const verificaCorreo = (req, res) => {
   let mail = {
     //from:"jlmuorizaga@gmail.com",
     //from:"chp01ame@gmail.com",
+    from:'registro_app@cheesepizza.com.mx',
     to: correo,
     subject: asunto,
     //text:"Hola esta es una prueba de correo",
@@ -61,7 +62,7 @@ const verificaCorreo = (req, res) => {
       "<p><i>Esta es un correo automático, favor de no responder</i></p>",
   };
 
-  transporter.sendMail(mail, (error, info) => {
+   transporter.sendMail(mail, (error, info) => {
     if (error) {
       textoRespuesta =
         '{"respuesta": "Error al enviar correo a ' + correo + '"}';
