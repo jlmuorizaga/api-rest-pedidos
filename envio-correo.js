@@ -26,6 +26,7 @@ const transporter = nodeMailer.createTransport({
   host:'mail.cheesepizza.com.mx',
   port: 465,
   secure: true,
+  rejectUnauthorized: false, 
   auth: {
     //user:"jlmuorizaga@gmail.com",
     //pass:"klzkllfyjxijplos"
