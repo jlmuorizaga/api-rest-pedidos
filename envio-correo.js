@@ -23,17 +23,17 @@ const pool = new Pool({
 
 const transporter = nodeMailer.createTransport({
   //host: "smtp.gmail.com",
-  host:'mail.cheesepizza.com.mx',
+  host: "mail.cheesepizza.com.mx",
   port: 465,
   secure: true,
-  rejectUnauthorized: false, 
+  rejectUnauthorized: false,
   auth: {
     //user:"jlmuorizaga@gmail.com",
     //pass:"klzkllfyjxijplos"
 
-   // user: "chp01ame@gmail.com",
-   // pass: "nxswxjiwbhylgsaz",
-    user:'registro_app@cheesepizza.com.mx',
+    // user: "chp01ame@gmail.com",
+    // pass: "nxswxjiwbhylgsaz",
+    user: "registro_app@cheesepizza.com.mx",
     pass: "Olaf2020chp$",
   },
   /*tls: {
@@ -48,12 +48,11 @@ const verificaCorreo = (req, res) => {
   let mail = {
     //from:"jlmuorizaga@gmail.com",
     //from:"chp01ame@gmail.com",
-    from:'registro_app@cheesepizza.com.mx',
+    from: "registro_app@cheesepizza.com.mx",
     to: correo,
     subject: asunto,
     //text:"Hola esta es una prueba de correo",
     html:
-    
       '<img src="http://ec2-54-153-58-93.us-west-1.compute.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png" width="12%"><br>' +
       "<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su código de verificación es: </p>" +
       "<h1>" +
@@ -63,7 +62,7 @@ const verificaCorreo = (req, res) => {
       "<p><i>Esta es un correo automático, favor de no responder</i></p>",
   };
 
-   transporter.sendMail(mail, (error, info) => {
+  transporter.sendMail(mail, (error, info) => {
     if (error) {
       textoRespuesta =
         '{"respuesta": "Error al enviar correo a ' + correo + '"}';
@@ -95,6 +94,7 @@ const recuperaCorreo = (req, res) => {
         let mail = {
           //from:"jlmuorizaga@gmail.com",
           //from:"chp01ame@gmail.com",
+          from: "registro_app@cheesepizza.com.mx",
           to: correo,
           subject: asunto,
           //text:"Hola esta es una prueba de correo",
