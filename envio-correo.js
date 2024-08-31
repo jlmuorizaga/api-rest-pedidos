@@ -58,7 +58,7 @@ const verificaCorreo = (req, res) => {
     html:
       '<img src="' +
       logo +
-      '" width="10rem"><br>' +
+      '" width="25%"><br>' +
       "<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su código de verificación es: </p>" +
       "<h1>" +
       codigoVerificacion +
@@ -106,7 +106,7 @@ const recuperaCorreo = (req, res) => {
           html:
             '<img src="' +
             logo +
-            '" width="10rem"><br>' +
+            '" width="25%"><br>' +
             "<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su contraseña es: </p>" +
             "<h2>" +
             contra +
