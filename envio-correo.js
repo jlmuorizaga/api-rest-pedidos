@@ -9,6 +9,9 @@ const DB_PASSWORD = process.env.DB_PASSWORD || "cheesepizza2001";
 const DB_NAME = process.env.DB_NAME || "cheesepizzapedidosmovilesdb";
 const DB_PORT = process.env.DB_PORT || 5432;
 
+const logo =
+  "http://ec2-54-153-58-93.us-west-1.compute.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png";
+
 //Pool de conexiones a base de datos
 const pool = new Pool({
   user: DB_USER,
@@ -53,7 +56,9 @@ const verificaCorreo = (req, res) => {
     subject: asunto,
     //text:"Hola esta es una prueba de correo",
     html:
-      '<img src="http://ec2-54-153-58-93.us-west-1.compute.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png" width="12%"><br>' +
+      '<img src="' +
+      logo +
+      '" width="10rem"><br>' +
       "<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su código de verificación es: </p>" +
       "<h1>" +
       codigoVerificacion +
@@ -99,7 +104,9 @@ const recuperaCorreo = (req, res) => {
           subject: asunto,
           //text:"Hola esta es una prueba de correo",
           html:
-            '<img src="http://ec2-52-53-193-189.us-west-1.compute.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png" width="12%"><br>' +
+            '<img src="' +
+            logo +
+            '" width="10rem"><br>' +
             "<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su contraseña es: </p>" +
             "<h2>" +
             contra +
