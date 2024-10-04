@@ -223,6 +223,20 @@ const getRegionesAll = (request, response) => {
   );
 };
 
+const getCategorias = (request, response) => {
+  pool.query(
+    'SELECT codigo, nombre ' +
+      'FROM preesppropro.categoria ' +
+      'ORDER BY codigo ASC',
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
 module.exports = {
   getSucursales,
   getEspecialidadesBySucursal,
@@ -234,4 +248,5 @@ module.exports = {
   getPromocionesBySucursal,
   getSalsasBySucursal,
   getRegionesAll,
+  getCategorias,
 };
