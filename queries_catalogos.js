@@ -100,6 +100,9 @@ const getProductosBySucursal = (request, response) => {
       if (error) {
         throw error;
       }
+      results.rows.forEach((element) => {
+        element.precio = Number(element.precio);
+      });
       response.status(200).json(results.rows);
     }
   );
