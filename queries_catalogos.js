@@ -88,13 +88,13 @@ const getTamaniosBySucursal = (request, response) => {
 const getProductosBySucursal = (request, response) => {
   const cve_sucursal = request.params.cve_sucursal;
   pool.query(
-    'SELECT pro.id, descripcion, tamanio,usa_salsa as "usaSalsa", rs.precio_normal as "precioNormal" ' +
-      'FROM preesppropro.producto as pro,' +
-      'preesppropro.relacion_producto_sucursal as rs,' +
-      'preesppropro.sucursal as s ' +
-      'WHERE pro.id=rs.id_producto AND rs.id_sucursal=s.id ' +
-      'AND s.clave=$1 ' +
-      'ORDER BY descripcion,tamanio',
+    'SELECT p.id, p.descripcion,p.tamanio,p.usa_salsa as "usaSalsa", p.categoria1, p.categoria2, p.categoria3, ' +
+      'rps.precio as "precio" ' +
+      'FROM preesppropro.producto as p,' +
+      'preesppropro.sucursal as s,' +
+      'preesppropro.relacion_producto_sucursal as rps ' +
+      'WHERE rps.id_sucursal=s.id and s.clave=$1 ' +
+      'and rps.id_producto=p.id ',
     [cve_sucursal],
     (error, results) => {
       if (error) {
