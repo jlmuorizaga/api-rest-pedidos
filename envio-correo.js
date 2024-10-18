@@ -2,15 +2,23 @@ const nodeMailer = require("nodemailer");
 const Pool = require("pg").Pool;
 
 //Datos de conexión a base de datos en AWS
+//Servidor viejito
+//const DB_HOST =
+//  process.env.DB_HOST || "database-1.cgujpjkz4fsl.us-west-1.rds.amazonaws.com";
+
+//Servidor nuevo 18 Oct 2024
 const DB_HOST =
-  process.env.DB_HOST || "database-1.cgujpjkz4fsl.us-west-1.rds.amazonaws.com";
+process.env.DB_HOST || "database-1.czyiomwau3kc.us-east-1.rds.amazonaws.com";  
 const DB_USER = process.env.DB_USER || "cheesepizzauser";
 const DB_PASSWORD = process.env.DB_PASSWORD || "cheesepizza2001";
 const DB_NAME = process.env.DB_NAME || "cheesepizzapedidosmovilesdb";
 const DB_PORT = process.env.DB_PORT || 5432;
 
+//const logo =
+//"http://ec2-54-153-58-93.us-west-1.compute.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png";
+  
 const logo =
-  "http://ec2-54-153-58-93.us-west-1.compute.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png";
+  "http://ec2-54-144-58-67.compute-1.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png";
 
 //Pool de conexiones a base de datos
 const pool = new Pool({

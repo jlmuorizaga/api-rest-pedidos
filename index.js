@@ -11,7 +11,8 @@ const port = process.env.PORT || 3000;
 
 app.get("/", (request, response) => {
   response.json({
-    info: "API CHPSystem Pedidos Móviles Nube versión: 20240416 2120",
+    //info: "API CHPSystem Pedidos Móviles Nube versión: 20240416 2120",
+    info: "API CHPSystem Pedidos Móviles Nube versión: 20241018 1215",
   });
 });
 

@@ -13,7 +13,8 @@ const port = process.env.PORT || 3002;
 
 app.get("/", (request, response) => {
   response.json({
-    info: "API CHPSystem Pedidos Móviles Stripe versión: 20240416 2120",
+    //info: "API CHPSystem Pedidos Móviles Stripe versión: 20240416 2120",
+    info: "API CHPSystem Pedidos Móviles Stripe versión: 20241018 1215",
   });
 });
 

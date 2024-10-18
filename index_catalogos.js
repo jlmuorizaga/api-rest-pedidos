@@ -31,7 +31,8 @@ app.get("/", (request, response) => {
     { promociones: "/promociones/:cve_sucursal" },
     { salsas: "/salsas/:cve_sucursal" },
     { regionesAll: "/regionesAll " },
-    { version: "Version 20231007 1154" },
+    //{ version: "Version 20231007 1154" },
+    { version: "Version 20241018 1215" },
   ]);
 });
 
