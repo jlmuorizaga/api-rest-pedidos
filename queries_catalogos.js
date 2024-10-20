@@ -25,13 +25,12 @@ const pool = new Pool({
 
 const getSucursales = (request, response) => {
   pool.query(
-    'SELECT distinct clave, nombre_sucursal as "nombreSucursal",domicilio,hora_inicio as "horaInicio",hora_fin as "horaFin", ' +
-      'latitud, longitud, id_Region as "idRegion", venta_activa as "ventaActiva", pk as "stripePublicKey" ' +
-      'FROM preesppropro.sucursal as suc, ' +
-      'preesppropro.relacion_especialidad_tamanio_precio_sucursal as relespec,' +
-      'preesppropro.relacion_producto_sucursal as relprod ' +
-      'WHERE suc.id=relespec.id_sucursal or suc.id=relprod.id_sucursal ' +
-      'order by clave',
+    'SELECT distinct clave, nombre_sucursal as "nombreSucursal",domicilio,hora_inicio as "horaInicio",hora_fin as "horaFin", '+
+    'latitud, longitud, id_Region as "idRegion", venta_activa as "ventaActiva", pk as "stripePublicKey" '+
+    'FROM preesppropro.sucursal as suc, '+
+    'preesppropro.relacion_pizza_sucursal as relpizzasucursal, '+
+    'preesppropro.relacion_producto_sucursal as relprod '+
+    'WHERE suc.id=relpizzasucursal.id_sucursal or suc.id=relprod.id_sucursal order by clave',
     (error, results) => {
       if (error) {
         throw error;
