@@ -249,9 +249,7 @@ const getCategorias = (request, response) => {
 
 const getIngredientesAll = (request, response) => {
   pool.query(
-    'SELECT o.id,o.descripcion,tp.id as "idTamanio", tp.nombre as nombre '+
-    'FROM preesppropro.orilla as o,preesppropro.tamanio_pizza as tp '+
-    'WHERE o.id_tamanio=tp.id ORDER BY id ASC ',
+    'SELECT *  ' + 'FROM preesppropro.ingrediente ' + 'order by nombre',
     (error, results) => {
       if (error) {
         throw error;
@@ -263,7 +261,9 @@ const getIngredientesAll = (request, response) => {
 
 const getOrillasAll = (request, response) => {
   pool.query(
-    'SELECT *  ' + 'FROM preesppropro.sucursal ' + 'order by clave',
+    'SELECT o.id,o.descripcion,tp.id as "idTamanio", tp.nombre as nombre '+
+    'FROM preesppropro.orilla as o,preesppropro.tamanio_pizza as tp '+
+    'WHERE o.id_tamanio=tp.id ORDER BY id ASC ',
     (error, results) => {
       if (error) {
         throw error;
