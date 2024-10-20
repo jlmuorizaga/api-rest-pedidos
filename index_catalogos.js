@@ -33,6 +33,7 @@ app.get("/", (request, response) => {
     { regionesAll: "/regionesAll " },
     { ingredientesAll:"/ingredientesAll"},
     { orillasAll:"/orillasAll"},
+    { orillas: "/orillas/:cve_sucursal" },
 
     //{ version: "Version 20231007 1154" },
     { version: "Version 20241018 1215" },
