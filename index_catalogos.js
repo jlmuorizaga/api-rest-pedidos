@@ -57,6 +57,8 @@ app.get("/regionesAll", db.getRegionesAll);
 app.get("/categorias", db.getCategorias);
 app.get("/ingredientesAll", db.getIngredientesAll);
 app.get("/orillasAll", db.getOrillasAll);
+app.get("/orillas/:cve_sucursal/", db.getOrillasBySucursal);
+
 
 app.listen(port, () => {
   console.log("API Catálogos CHPSystem Mobile corriendo en puerto", port);

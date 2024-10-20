@@ -273,6 +273,25 @@ const getOrillasAll = (request, response) => {
   );
 };
 
+const getOrillasBySucursal = (request, response) => {
+  const cve_sucursal = request.params.cve_sucursal;
+  pool.query(
+'SELECT os.id_orilla, o.descripcion,tp.id as "idTamanio",tp.nombre as nombre, os.precio FROM '+
+'preesppropro.relacion_orilla_sucursal as os,preesppropro.sucursal as s,'+
+'preesppropro.orilla as o,preesppropro.tamanio_pizza as tp '+
+'WHERE os.id_orilla=o.id and o.id_tamanio=tp.id and os.id_sucursal=s.id '+
+'and s.clave=$1 ORDER BY o.descripcion,nombre ASC',
+
+    [cve_sucursal],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
 module.exports = {
   getSucursales,
   getPizzasBySucursal,
@@ -287,5 +306,6 @@ module.exports = {
   getCategorias,
   getIngredientesAll,
   getOrillasAll,
+  getOrillasBySucursal,
 
 };
