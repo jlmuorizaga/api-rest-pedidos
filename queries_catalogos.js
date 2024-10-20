@@ -247,6 +247,32 @@ const getCategorias = (request, response) => {
   );
 };
 
+const getIngredientesAll = (request, response) => {
+  pool.query(
+    'SELECT o.id,o.descripcion,tp.id as "idTamanio", tp.nombre as nombre '+
+    'FROM preesppropro.orilla as o,preesppropro.tamanio_pizza as tp '+
+    'WHERE o.id_tamanio=tp.id ORDER BY id ASC ',
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
+const getOrillasAll = (request, response) => {
+  pool.query(
+    'SELECT *  ' + 'FROM preesppropro.sucursal ' + 'order by clave',
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
 module.exports = {
   getSucursales,
   getPizzasBySucursal,
@@ -259,4 +285,7 @@ module.exports = {
   getSalsasBySucursal,
   getRegionesAll,
   getCategorias,
+  getIngredientesAll,
+  getOrillasAll,
+
 };

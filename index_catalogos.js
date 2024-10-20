@@ -31,6 +31,9 @@ app.get("/", (request, response) => {
     { promociones: "/promociones/:cve_sucursal" },
     { salsas: "/salsas/:cve_sucursal" },
     { regionesAll: "/regionesAll " },
+    { ingredientesAll:"/ingredientesAll"},
+    { orillasAll:"/orillasAll"},
+
     //{ version: "Version 20231007 1154" },
     { version: "Version 20241018 1215" },
   ]);
@@ -52,6 +55,8 @@ app.get("/promociones/:cve_sucursal/", db.getPromocionesBySucursal);
 app.get("/salsas/:cve_sucursal/", db.getSalsasBySucursal);
 app.get("/regionesAll", db.getRegionesAll);
 app.get("/categorias", db.getCategorias);
+app.get("/ingredientesAll", db.getIngredientesAll);
+app.get("/orillasAll", db.getOrillasAll);
 
 app.listen(port, () => {
   console.log("API Catálogos CHPSystem Mobile corriendo en puerto", port);
