@@ -276,7 +276,7 @@ const getOrillasAll = (request, response) => {
 const getOrillasBySucursal = (request, response) => {
   const cve_sucursal = request.params.cve_sucursal;
   pool.query(
-'SELECT os.id_orilla, o.descripcion,tp.id as "idTamanio",tp.nombre as nombre, os.precio FROM '+
+'SELECT os.id_orilla, o.descripcion,tp.id as "idTamanio",tp.nombre as nombre, os.precio as "precio" FROM '+
 'preesppropro.relacion_orilla_sucursal as os,preesppropro.sucursal as s,'+
 'preesppropro.orilla as o,preesppropro.tamanio_pizza as tp '+
 'WHERE os.id_orilla=o.id and o.id_tamanio=tp.id and os.id_sucursal=s.id '+
@@ -287,6 +287,9 @@ const getOrillasBySucursal = (request, response) => {
       if (error) {
         throw error;
       }
+      results.rows.forEach((element) => {
+        element.precio = Number(element.precio);
+      });
       response.status(200).json(results.rows);
     }
   );
