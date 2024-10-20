@@ -40,21 +40,25 @@ const getSucursales = (request, response) => {
   );
 };
 
-const getEspecialidadesBySucursal = (request, response) => {
+const getPizzasBySucursal = (request, response) => {
   const cve_sucursal = request.params.cve_sucursal;
   pool.query(
-    'SELECT DISTINCT ep.id as "idEspecialidad",ep.nombre,ep.ingredientes,ep.img_url as "imgUrl" ' +
-      'FROM preesppropro.especialidad_pizza as ep, ' +
-      'preesppropro.relacion_especialidad_tamanio_precio_sucursal as re,' +
-      'preesppropro.sucursal as s ' +
-      'WHERE ep.id=re.id_especialidad_pizza ' +
-      'AND s.id=re.id_sucursal and s.clave=$1 ' +
-      'ORDER BY ep.nombre',
+  'SELECT DISTINCT ep.id as "idEspecialidad",ep.nombre as "nombreEspecialidad",tp.nombre as "tamanioPizza",ep.ingredientes,ep.img_url as "imgUrl",'+
+  'ep.orden, rps.precio_x2 as "precioX2",rps.precio_x1 as "precioX1",p.cantidad_ingredientes as "cantidadIngredientes",'+
+  'p.es_de_un_ingrediente as "esDeUnIngrediente",p.aplica_2x1 as "aplica2x1",p.categoria1,p.categoria2,p.categoria3 '+
+  'FROM preesppropro.especialidad_pizza as ep, preesppropro.tamanio_pizza as tp, preesppropro.pizza as p, '+
+  'preesppropro.relacion_pizza_sucursal as rps, preesppropro.sucursal as s '+
+  'WHERE ep.id=p.id_especialidad AND tp.id=p.id_tamanio AND p.id=rps.id_pizza AND s.id=rps.id_sucursal '+
+  'AND s.clave=$1 ORDER BY ep.nombre',
     [cve_sucursal],
     (error, results) => {
       if (error) {
         throw error;
       }
+      results.rows.forEach((element) => {
+        element.precioX2 = Number(element.precioX2);
+        element.precioX1 = Number(element.precioX1);
+      });   
       response.status(200).json(results.rows);
     }
   );
@@ -245,7 +249,7 @@ const getCategorias = (request, response) => {
 
 module.exports = {
   getSucursales,
-  getEspecialidadesBySucursal,
+  getPizzasBySucursal,
   getTamaniosBySucursal,
   getProductosBySucursal,
   getTipoProductosBySucursal,

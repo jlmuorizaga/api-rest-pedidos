@@ -22,7 +22,7 @@ app.get("/", (request, response) => {
       info: "API CHPSystem Catálogos",
     },
     { sucursales: "/sucursales" },
-    { especialidades: "/especialidades/:cve_sucursal" },
+    { pizzas: "/pizzas/:cve_sucursal" },
     { tamanios: "/tamanios/:cve_sucursal/:id_especialidad" },
     { productos: "/productos/:cve_sucursal" },
     { tipoproductos: "/tipoproductos/:cve_sucursal" },
@@ -38,7 +38,8 @@ app.get("/", (request, response) => {
 
 //Endpoints para catálogos
 app.get("/sucursales", db.getSucursales);
-app.get("/especialidades/:cve_sucursal", db.getEspecialidadesBySucursal);
+//Creado el 19 de octubre 2024
+app.get("/pizzas/:cve_sucursal", db.getPizzasBySucursal);
 app.get("/tamanios/:cve_sucursal/:id_especialidad", db.getTamaniosBySucursal);
 app.get("/productos/:cve_sucursal", db.getProductosBySucursal);
 app.get("/tipoproductos/:cve_sucursal", db.getTipoProductosBySucursal);
