@@ -48,7 +48,7 @@ const getPizzasBySucursal = (request, response) => {
     'ep.orden, rps.precio_x2 as "precioX2",rps.precio_x1 as "precioX1",p.id as"idPizza",p.cantidad_ingredientes as "cantidadIngredientes",'+
     'p.es_de_un_ingrediente as "esDeUnIngrediente",p.aplica_2x1 as "aplica2x1",p.categoria1,p.categoria2,p.categoria3 '+
     'FROM preesppropro.especialidad_pizza as ep, preesppropro.tamanio_pizza as tp, preesppropro.pizza as p,'+
-    'preesppropro.relacion_pizza_sucursal as rps, preesppropro.sucursal as s'+
+    'preesppropro.relacion_pizza_sucursal as rps, preesppropro.sucursal as s '+
     'WHERE ep.id=p.id_especialidad AND tp.id=p.id_tamanio AND p.id=rps.id_pizza AND s.id=rps.id_sucursal '+
     'AND s.clave=$1 ORDER BY p.categoria1,p.categoria2, p.categoria3,tp.orden ASC',
     [cve_sucursal],
