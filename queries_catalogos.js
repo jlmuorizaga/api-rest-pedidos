@@ -274,6 +274,18 @@ const getOrillasAll = (request, response) => {
   );
 };
 
+const getCategoriasAll = (request, response) => {
+  pool.query(
+    'SELECT codigo, nombre FROM preesppropro.categoria ORDER BY id ASC ',
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
 const getOrillasBySucursal = (request, response) => {
   const cve_sucursal = request.params.cve_sucursal;
   pool.query(
@@ -311,5 +323,6 @@ module.exports = {
   getIngredientesAll,
   getOrillasAll,
   getOrillasBySucursal,
+  getCategoriasAll,
 
 };
