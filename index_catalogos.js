@@ -59,8 +59,8 @@ app.get("/regionesAll", db.getRegionesAll);
 app.get("/categorias", db.getCategorias);
 app.get("/ingredientesAll", db.getIngredientesAll);
 app.get("/orillasAll", db.getOrillasAll);
-app.get("/categoriasAll", db.getCategoriasAll);
 app.get("/orillas/:cve_sucursal/", db.getOrillasBySucursal);
+app.get("/categoriasAll", db.getCategoriasAll);
 
 
 app.listen(port, () => {
