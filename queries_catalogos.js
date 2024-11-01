@@ -276,7 +276,7 @@ const getOrillasAll = (request, response) => {
 
 const getCategoriasAll = (request, response) => {
   pool.query(
-    'SELECT codigo, nombre FROM preesppropro.categoria ORDER BY id ASC ',
+    'SELECT codigo, nombre FROM preesppropro.categoria ORDER BY codigo ASC ',
     (error, results) => {
       if (error) {
         throw error;
