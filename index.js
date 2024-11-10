@@ -58,7 +58,7 @@ app.get(
 
 app.get("/pedidos/sucursal/:claveSucursal", db.getPedidosBySucursal);
 // Se agregó para la demostración con Nacho en marzo 2024
-app.get("/pedidos/sucursal", db.getAllPedidos);
+//app.get("/pedidos/sucursal", db.getAllPedidos);
 app.get("/pedidos/:idPedido", db.getPedidoById); //También se utiliza en aplicación móvil
 app.put("/pedidos/estatus/:estatus/:idPedido", db.updateEstatusPedido);
 
