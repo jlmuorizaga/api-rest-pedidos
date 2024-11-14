@@ -324,5 +324,6 @@ module.exports = {
   getOrillasAll,
   getOrillasBySucursal,
   getCategoriasAll,
+  updateEstatusPedidoBody,
 
 };
