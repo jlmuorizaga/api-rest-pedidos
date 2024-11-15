@@ -471,7 +471,7 @@ const getPedidoById = (request, response) => {
   );
 };
 
-const updateEstatusPedido = (request, res) => {
+const updateEstatusPedido = (req, res) => {
   const { idPedido, estatus} = req.body;
   pool.query(
     'UPDATE pedidos.pedido ' +
@@ -491,7 +491,7 @@ const updateEstatusPedido = (request, res) => {
   );
 };
 
-const updateEstatusPedidoBody = (request, res) => {
+const updateEstatusPedidoBody = (req, res) => {
   //const estatus = request.params.estatus;
   //const idPedido = request.params.idPedido;
   const { idPedido, estatus} = req.body;
