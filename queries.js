@@ -561,5 +561,5 @@ module.exports = {
   updateEstatusPedido,
   getPedidosBySucursal,
   getAllPedidos,
-  updateEstatusPedidoBody
+  //updateEstatusPedidoBody
 };
