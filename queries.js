@@ -472,12 +472,14 @@ const getPedidoById = (request, response) => {
 };
 
 const updateEstatusPedido = (req, res) => {
-  const { idPedido, estatus} = req.body;
+ // const { idPedido, estatus} = req.body;
+  const estatus = request.params.estatus;
+  const idPedido = request.params.idPedido;
   pool.query(
     'UPDATE pedidos.pedido ' +
       'SET estatus=$2 ' +
       'WHERE id_pedido=$1 RETURNING *',
-    [idPedido, estatus],
+    [estatus,idPedido],
     (error, results) => {
       if (error) {
         throw error;
