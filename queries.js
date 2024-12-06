@@ -471,7 +471,7 @@ const getPedidoById = (request, response) => {
   );
 };
 
-const updateEstatusPedido = (req, res) => {
+const updateEstatusPedido = (request, response) => {
  // const { idPedido, estatus} = req.body;
   const estatus = request.params.estatus;
   const idPedido = request.params.idPedido;
@@ -490,7 +490,7 @@ const updateEstatusPedido = (req, res) => {
         '{"respuesta": "Se actualizó pedido: ' +
         results.rows[0].id_pedido +
         '"}';
-      res.status(201).json(JSON.parse(textoRespuesta));
+      response.status(201).json(JSON.parse(textoRespuesta));
     }
   );
 };
