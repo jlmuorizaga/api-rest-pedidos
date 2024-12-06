@@ -479,7 +479,7 @@ const updateEstatusPedido = (req, res) => {
     'UPDATE pedidos.pedido ' +
       'SET estatus=$2 ' +
       'WHERE id_pedido=$1 RETURNING *',
-    [estatus,idPedido],
+    [idPedido,estatus],
     (error, results) => {
       if (error) {
         throw error;
