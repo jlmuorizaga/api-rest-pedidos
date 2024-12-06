@@ -505,9 +505,7 @@ const updateEstatusPedidoBody = (req, res) => {
         throw error;
       }
       textoRespuesta =
-        '{"respuesta": "Se actualizó pedido: ' +
-        results.rows[0].id_pedido +
-        '"}';
+        '{"respuesta": "Se actualizó pedido: "}';
       res.status(201).json(JSON.parse(textoRespuesta));
     }
   );
