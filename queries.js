@@ -495,7 +495,7 @@ const updateEstatusPedido = (req, resp) => {
   );
 };
 
-const updateEstatusPedidoBody = (request, response) => {
+/*const updateEstatusPedidoBody = (request, response) => {
   const estatus = request.params.estatus;
   const idPedido = request.params.idPedido;
   //const { idPedido, estatus} = req.body;
@@ -515,7 +515,7 @@ const updateEstatusPedidoBody = (request, response) => {
       response.status(201).json(JSON.parse(textoRespuesta));
     }
   );
-};
+};*/
 
 const getAllPedidos = (request, response) => {
   //Retorna todos los pedidos de la sucursal que siguen en estatus de Pedido en la Nube
@@ -565,5 +565,5 @@ module.exports = {
   updateEstatusPedido,
   getPedidosBySucursal,
   getAllPedidos,
-  updateEstatusPedidoBody
+  //updateEstatusPedidoBody
 };
