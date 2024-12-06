@@ -495,7 +495,7 @@ const updateEstatusPedido = (req, resp) => {
   );
 };
 
-const updateEstatusPedidoBody = (req, res) => {
+const updateEstatusPedidoBody = (request, response) => {
   const estatus = request.params.estatus;
   const idPedido = request.params.idPedido;
   //const { idPedido, estatus} = req.body;
@@ -510,7 +510,7 @@ const updateEstatusPedidoBody = (req, res) => {
       }
       textoRespuesta =
         '{"respuesta": "Se actualizó pedido en updateEstatusPedidoBody "}';
-      res.status(201).json(JSON.parse(textoRespuesta));
+      response.status(201).json(JSON.parse(textoRespuesta));
     }
   );
 };
