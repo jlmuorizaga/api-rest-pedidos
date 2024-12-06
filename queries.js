@@ -471,26 +471,26 @@ const getPedidoById = (request, response) => {
   );
 };
 
-const updateEstatusPedido = (request, response) => {
+const updateEstatusPedido = (req, resp) => {
  // const { idPedido, estatus} = req.body;
-  const estatus = request.params.estatus;
-  const idPedido = request.params.idPedido;
+  const estatus = req.params.estatus;
+  const idPedido = req.params.idPedido;
   console.log('estatus=',estatus);
   console.log('idPedido=',idPedido);
   pool.query(
     'UPDATE pedidos.pedido ' +
-      'SET estatus=$2 ' +
-      'WHERE id_pedido=$1 RETURNING *',
-    [idPedido,estatus],
+      'SET estatus=$1 ' +
+      'WHERE id_pedido=$2 RETURNING *',
+    [estatus,idPedido],
     (error, results) => {
       if (error) {
         throw error;
       }
       textoRespuesta =
-        '{"respuesta": "Se actualizó pedido: ' +
+        '{"respuesta": "Se actualizó pedido Ger: ' +
         results.rows[0].id_pedido +
         '"}';
-      response.status(201).json(JSON.parse(textoRespuesta));
+      resp.status(201).json(JSON.parse(textoRespuesta));
     }
   );
 };
