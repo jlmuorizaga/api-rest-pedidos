@@ -496,9 +496,9 @@ const updateEstatusPedido = (req, resp) => {
 };
 
 const updateEstatusPedidoBody = (req, res) => {
-  //const estatus = request.params.estatus;
-  //const idPedido = request.params.idPedido;
-  const { idPedido, estatus} = req.body;
+  const estatus = request.params.estatus;
+  const idPedido = request.params.idPedido;
+  //const { idPedido, estatus} = req.body;
   pool.query(
     'UPDATE pedidos.pedido ' +
       'SET estatus=$2 ' +
