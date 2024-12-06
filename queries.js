@@ -487,7 +487,7 @@ const updateEstatusPedido = (req, resp) => {
         throw error;
       }
       textoRespuesta =
-        '{"respuesta": "Se actualizó pedido Ger: ' +
+        '{"respuesta": "Se actualizó pedido en updateEstatusPedido ' +
         results.rows[0].id_pedido +
         '"}';
       resp.status(201).json(JSON.parse(textoRespuesta));
@@ -509,7 +509,7 @@ const updateEstatusPedidoBody = (req, res) => {
         throw error;
       }
       textoRespuesta =
-        '{"respuesta": "Se actualizó pedido: "}';
+        '{"respuesta": "Se actualizó pedido en updateEstatusPedidoBody "}';
       res.status(201).json(JSON.parse(textoRespuesta));
     }
   );
