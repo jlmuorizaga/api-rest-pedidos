@@ -351,6 +351,9 @@ const getPedidosByCliente = (request, response) => {
       if (error) {
         throw error;
       }
+      results.rows.forEach((element) => {
+        element.montoTotal = Number(element.montoTotal);
+      });
       response.status(200).json(results.rows);
     }
   );
@@ -406,6 +409,9 @@ const getPedidosHistoricosByCliente = (request, response) => {
       if (error) {
         throw error;
       }
+      results.rows.forEach((element) => {
+        element.montoTotal = Number(element.montoTotal);
+      });
       response.status(200).json(results.rows);
     }
   );
@@ -436,6 +442,9 @@ const getPedidosBySucursal = (request, response) => {
       if (error) {
         throw error;
       }
+      results.rows.forEach((element) => {
+        element.montoTotal = Number(element.montoTotal);
+      });
       response.status(200).json(results.rows);
     }
   );
@@ -461,6 +470,11 @@ const getPedidoById = (request, response) => {
       if (error) {
         throw error;
       }
+      results.rows.forEach((element) => {
+        element.montoTotal = Number(element.montoTotal);
+        element.montoDescuento = Number(element.montoDescuento);
+        element.montoSubtotal = Number(element.montoSubtotal);
+      });
       if (results.rows[0]) {
         response.status(200).json(results.rows[0]);
       } else {
