@@ -79,6 +79,7 @@ const getDatosCliente = (request, response) => {
   );
 };
 
+/*
 const getContraseniaCliente = (request, response) => {
   const correo = request.params.correo;
   pool.query(
@@ -99,13 +100,15 @@ const getContraseniaCliente = (request, response) => {
     }
   );
 };
+*/
 
 const getDomiciliosCliente = (request, response) => {
   const idCliente = request.params.idCliente;
   pool.query(
-    'SELECT id_domicilio_cliente as "idDomicilioCliente", id_cliente as "idCliente", ' +
-      'descripcion, punto, id_lugar as "idLugar", activo ' +
-      'FROM pedidos.domicilio_cliente WHERE id_cliente = $1 ORDER BY descripcion',
+    'SELECT id_domicilio_cliente as "idDomicilioCliente", id_cliente as "idCliente", '+
+    'id_region as "idRegion", activo, calle, numero, codigo_postal as "codigoPostal", ' +
+      'estado, ciudad, colonia, informacion_adicional as "informacionAdicional", latitud, longitud ' +
+      'FROM pedidos.domicilio_cliente WHERE id_cliente = $1 ORDER BY calle, numero',
     [idCliente],
     (error, results) => {
       if (error) {
@@ -116,6 +119,7 @@ const getDomiciliosCliente = (request, response) => {
   );
 };
 
+/*
 const getRegiones = (request, response) => {
   pool.query(
     'SELECT id_region as "idRegion", nombre, poligono ' + 'FROM pedidos.region',
@@ -127,6 +131,7 @@ const getRegiones = (request, response) => {
     }
   );
 };
+*/
 
 const insertaCliente = (req, res) => {
   const {
@@ -201,13 +206,43 @@ const actualizaCliente = (req, res) => {
 };
 
 const insertaDomicilioCliente = (req, res) => {
-  const { idDomicilioCliente, idCliente, descripcion, punto, idLugar, activo } =
-    req.body;
+  const {
+    idDomicilioCliente,
+    idCliente,
+    idRegion,
+    activo,
+    calle,
+    numero,
+    codigoPostal,
+    estado,
+    ciudad,
+    colonia,
+    informacionAdicional,
+    latitud,
+    longitud,
+  } = req.body;
   pool.query(
     'INSERT INTO pedidos.domicilio_cliente' +
-      '(id_domicilio_cliente, id_cliente, descripcion, punto, id_lugar, activo) ' +
-      'VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-    [idDomicilioCliente, idCliente, descripcion, punto, idLugar, activo],
+      '(id_domicilio_cliente, ' +
+      'id_cliente, id_region, activo, calle, numero, codigo_postal, ' +
+      'estado, ciudad, colonia, informacion_adicional, ' +
+      'latitud, longitud) ' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *',
+    [
+      idDomicilioCliente,
+      idCliente,
+      idRegion,
+      activo,
+      calle,
+      numero,
+      codigoPostal,
+      estado,
+      ciudad,
+      colonia,
+      informacionAdicional,
+      latitud,
+      longitud,
+    ],
     (error, results) => {
       if (error) {
         throw error;
@@ -222,14 +257,42 @@ const insertaDomicilioCliente = (req, res) => {
 };
 
 const actualizaDomicilioCliente = (req, res) => {
-  const { idDomicilioCliente, idCliente, descripcion, punto, idLugar, activo } =
-    req.body;
+  const {
+    idDomicilioCliente,
+    idCliente,
+    idRegion,
+    activo,
+    calle,
+    numero,
+    codigoPostal,
+    estado,
+    ciudad,
+    colonia,
+    informacionAdicional,
+    latitud,
+    longitud,
+  } = req.body;
   pool.query(
     'UPDATE pedidos.domicilio_cliente ' +
-      'SET id_cliente=$2, descripcion=$3, punto=$4, id_lugar=$5, activo=$6 ' +
+      'SET id_cliente=$2, id_region=$3, activo=$4, calle=$5, numero=$6, codigo_postal=$7, estado=$8, ' +
+      'ciudad=$9, colonia=$10, informacion_adicional=$11, latitud=$12, longitud=$13 ' +
       'WHERE id_domicilio_cliente=$1 ' +
       'RETURNING *',
-    [idDomicilioCliente, idCliente, descripcion, punto, idLugar, activo],
+    [
+      idDomicilioCliente,
+      idCliente,
+      idRegion,
+      activo,
+      calle,
+      numero,
+      codigoPostal,
+      estado,
+      ciudad,
+      colonia,
+      informacionAdicional,
+      latitud,
+      longitud,
+    ],
     (error, results) => {
       if (error) {
         throw error;
@@ -278,21 +341,18 @@ const insertaPedido = (req, res) => {
     montoTotal,
     detallePedido,
     instruccionesEspeciales,
-    promocionesAplicadas,
     tipoPago,
     cantidadProductos,
     resumenPedido,
     urlReciboPago,
-    montoSubtotal,
-    montoDescuento,
   } = req.body;
   pool.query(
     'INSERT INTO pedidos.pedido' +
       '(id_pedido, id_cliente, datos_cliente, id_domicilio_cliente, datos_domicilio_cliente, ' +
       'clave_sucursal, datos_sucursal, fecha_hora, estatus, modalidad_entrega, monto_total, ' +
-      'detalle_pedido, instrucciones_especiales, promociones_aplicadas, tipo_pago, ' +
-      'cantidad_productos, resumen_pedido, url_recibo_pago, monto_subtotal, monto_descuento) ' +
-      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) ' +
+      'detalle_pedido, instrucciones_especiales, tipo_pago, ' +
+      'cantidad_productos, resumen_pedido, url_recibo_pago) ' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) ' +
       'RETURNING *',
     [
       idPedido,
@@ -308,13 +368,10 @@ const insertaPedido = (req, res) => {
       montoTotal,
       detallePedido,
       instruccionesEspeciales,
-      promocionesAplicadas,
       tipoPago,
       cantidadProductos,
       resumenPedido,
       urlReciboPago,
-      montoSubtotal,
-      montoDescuento,
     ],
     (error, results) => {
       if (error) {
@@ -397,7 +454,7 @@ const getPedidosHistoricosByCliente = (request, response) => {
       'datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, ' +
       'modalidad_entrega as "modalidadEntrega", monto_total as "montoTotal", ' +
       'detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales", ' +
-      'promociones_aplicadas as "promocionesAplicadas", tipo_pago as "tipoPago", ' +
+      'tipo_pago as "tipoPago", ' +
       'cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido" ' +
       'FROM pedidos.pedido ' +
       'WHERE id_cliente = $1 ' +
@@ -430,7 +487,7 @@ const getPedidosBySucursal = (request, response) => {
       'modalidad_entrega as "modalidadEntrega", ' +
       'monto_total as "montoTotal", ' +
       'detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales", ' +
-      'promociones_aplicadas as "promocionesAplicadas", tipo_pago as "tipoPago", ' +
+      'tipo_pago as "tipoPago", ' +
       'cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido", ' +
       'url_recibo_pago as "urlReciboPago" ' +
       'FROM pedidos.pedido ' +
@@ -458,9 +515,9 @@ const getPedidoById = (request, response) => {
       'datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal", ' +
       'datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus, ' +
       'modalidad_entrega as "modalidadEntrega", ' +
-      'monto_subtotal as "montoSubtotal", monto_descuento as "montoDescuento", monto_total as "montoTotal", ' +
+      'monto_total as "montoTotal", ' +
       'detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales", ' +
-      'promociones_aplicadas as "promocionesAplicadas", tipo_pago as "tipoPago", ' +
+      'tipo_pago as "tipoPago", ' +
       'cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido", ' +
       'url_recibo_pago as "urlReciboPago" ' +
       'FROM pedidos.pedido ' +
@@ -472,8 +529,6 @@ const getPedidoById = (request, response) => {
       }
       results.rows.forEach((element) => {
         element.montoTotal = Number(element.montoTotal);
-        element.montoDescuento = Number(element.montoDescuento);
-        element.montoSubtotal = Number(element.montoSubtotal);
       });
       if (results.rows[0]) {
         response.status(200).json(results.rows[0]);
@@ -486,24 +541,29 @@ const getPedidoById = (request, response) => {
 };
 
 const updateEstatusPedido = (req, resp) => {
- // const { idPedido, estatus} = req.body;
+  // const { idPedido, estatus} = req.body;
   const estatus = req.params.estatus;
   const idPedido = req.params.idPedido;
-  console.log('estatus=',estatus);
-  console.log('idPedido=',idPedido);
+  //console.log('estatus=', estatus);
+  //console.log('idPedido=', idPedido);
   pool.query(
     'UPDATE pedidos.pedido ' +
       'SET estatus=$1 ' +
       'WHERE id_pedido=$2 RETURNING *',
-    [estatus,idPedido],
+    [estatus, idPedido],
     (error, results) => {
       if (error) {
         throw error;
       }
-      textoRespuesta =
-        '{"respuesta": "Se actualizó pedido en updateEstatusPedido ' +
-        results.rows[0].id_pedido +
-        '"}';
+      if (results && results.rows && results.rows.length > 0) {
+        textoRespuesta =
+          '{"respuesta": "Se actualizó pedido en updateEstatusPedido ' +
+          results.rows[0].id_pedido +
+          '"}';
+      } else {
+        textoRespuesta =
+          '{"respuesta": "No existe el pedido ' + idPedido + '"}';
+      }
       resp.status(201).json(JSON.parse(textoRespuesta));
     }
   );
@@ -561,9 +621,9 @@ module.exports = {
   getClienteAcceso,
   getClienteExisteCorreo,
   getDatosCliente,
-  getContraseniaCliente,
+  //getContraseniaCliente,
   getDomiciliosCliente,
-  getRegiones,
+  //getRegiones,
   insertaCliente,
   actualizaCliente,
   insertaDomicilioCliente,
