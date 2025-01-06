@@ -105,8 +105,8 @@ const getContraseniaCliente = (request, response) => {
 const getDomiciliosCliente = (request, response) => {
   const idCliente = request.params.idCliente;
   pool.query(
-    'SELECT id_domicilio_cliente as "idDomicilioCliente", id_cliente as "idCliente", '+
-    'id_region as "idRegion", activo, calle, numero, codigo_postal as "codigoPostal", ' +
+    'SELECT id_domicilio_cliente as "idDomicilioCliente", id_cliente as "idCliente", ' +
+      'id_region as "idRegion", activo, calle, numero, codigo_postal as "codigoPostal", ' +
       'estado, ciudad, colonia, informacion_adicional as "informacionAdicional", latitud, longitud ' +
       'FROM pedidos.domicilio_cliente WHERE id_cliente = $1 ORDER BY calle, numero',
     [idCliente],
@@ -569,6 +569,32 @@ const updateEstatusPedido = (req, resp) => {
   );
 };
 
+const updatePedidoPago = (req, resp) => {
+  const { estatus, urlReciboPago } = req.body;
+  const idPedido = req.params.idPedido;
+  pool.query(
+    'UPDATE pedidos.pedido ' +
+      'SET estatus=$1, url_recibo_pago=$2 ' +
+      'WHERE id_pedido=$3 RETURNING *',
+    [estatus, urlReciboPago, idPedido],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      if (results && results.rows && results.rows.length > 0) {
+        textoRespuesta =
+          '{"respuesta": "Se actualizó pedido pago ' +
+          results.rows[0].id_pedido +
+          '"}';
+      } else {
+        textoRespuesta =
+          '{"respuesta": "No existe el pedido ' + idPedido + '"}';
+      }
+      resp.status(201).json(JSON.parse(textoRespuesta));
+    }
+  );
+};
+
 /*const updateEstatusPedidoBody = (request, response) => {
   const estatus = request.params.estatus;
   const idPedido = request.params.idPedido;
@@ -630,6 +656,7 @@ module.exports = {
   actualizaDomicilioCliente,
   eliminaDomicilioCliente,
   insertaPedido,
+  updatePedidoPago,
   getPedidosByCliente,
   // LGDD
   getTotalPedidosHistoricosByCliente,

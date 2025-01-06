@@ -42,6 +42,7 @@ app.get('/domicilios-cliente/:idCliente', db.getDomiciliosCliente);
 
 //Endpoints de pedido
 app.post('/pedidos', db.insertaPedido);
+app.put('/pedidos/pago/:idPedido', db.updatePedidoPago);
 //app.put('/pedidos/:idPedido', db.actualizaPedido);
 app.get('/pedidos/cliente/:idCliente', db.getPedidosByCliente);
 //app.get('/pedidos/historico/:idCliente', db.getPedidosHistoricosByCliente);
