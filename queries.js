@@ -389,6 +389,23 @@ const insertaPedido = (req, res) => {
   );
 };
 
+const getSiguienteNumeroPedido = (request, response) => {
+  pool.query(
+    "SELECT nextval('pedidos.pedido_numero_pedido_seq'::regclass)" +
+      ' as "numeroPedido"',
+
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      results.rows.forEach((element) => {
+        element.numeroPedido = Number(element.numeroPedido);
+      });
+      response.status(200).json(results.rows[0]);
+    }
+  );
+};
+
 const getPedidosByCliente = (request, response) => {
   //Retorna todos los pedidos del cliente que no han sido atendidos
   const idCliente = request.params.idCliente;
@@ -570,13 +587,13 @@ const updateEstatusPedido = (req, resp) => {
 };
 
 const updatePedidoPago = (req, resp) => {
-  const { estatus, urlReciboPago } = req.body;
+  const { numeroPedido, estatus, urlReciboPago } = req.body;
   const idPedido = req.params.idPedido;
   pool.query(
     'UPDATE pedidos.pedido ' +
-      'SET estatus=$1, url_recibo_pago=$2 ' +
-      'WHERE id_pedido=$3 RETURNING *',
-    [estatus, urlReciboPago, idPedido],
+      'SET numero_pedido=$1, estatus=$2, url_recibo_pago=$3 ' +
+      'WHERE id_pedido=$4 RETURNING *',
+    [numeroPedido, estatus, urlReciboPago, idPedido],
     (error, results) => {
       if (error) {
         throw error;
@@ -656,6 +673,7 @@ module.exports = {
   actualizaDomicilioCliente,
   eliminaDomicilioCliente,
   insertaPedido,
+  getSiguienteNumeroPedido,
   updatePedidoPago,
   getPedidosByCliente,
   // LGDD
