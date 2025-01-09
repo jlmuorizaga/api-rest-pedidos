@@ -410,6 +410,7 @@ const getPedidosByCliente = (request, response) => {
   //Retorna todos los pedidos del cliente que no han sido atendidos
   const idCliente = request.params.idCliente;
   const estatusPedidoAtendido = 'AP';
+  const estatusPedidoPendientePago = 'PP';
   pool.query(
     'SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", ' +
       'clave_sucursal as "claveSucursal", datos_sucursal as "datosSucursal", ' +
@@ -419,8 +420,10 @@ const getPedidosByCliente = (request, response) => {
       'url_recibo_pago as "urlReciboPago" ' +
       'FROM pedidos.pedido ' +
       'WHERE id_cliente = $1 ' +
-      'AND estatus <> $2',
-    [idCliente, estatusPedidoAtendido],
+      'AND estatus <> $2 AND estatus <> $3 ' +
+      'ORDER BY numero_pedido',
+
+    [idCliente, estatusPedidoAtendido, estatusPedidoPendientePago],
     (error, results) => {
       if (error) {
         throw error;
