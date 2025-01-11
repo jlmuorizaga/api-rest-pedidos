@@ -221,7 +221,7 @@ const getSalsasBySucursal = (request, response) => {
 
 const getRegionesAll = (request, response) => {
   pool.query(
-    'SELECT DISTINCT(l.id), nombre, latitud, longitud ' +
+    'SELECT DISTINCT(l.id), nombre, l.latitud, l.longitud ' +
       'FROM preesppropro.region as l, preesppropro.sucursal as s ' +
       'WHERE l.id=s.id_region ' +
       'ORDER BY nombre ASC',
