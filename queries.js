@@ -24,6 +24,42 @@ const pool = new Pool({
   },
 });
 
+const verificaLogin = async (req, res) => {
+  const { correo, contrasenia } = req.body;
+
+  if (!correo || !contrasenia) {
+    return res.status(400).json({ error: 'Se requiere correo y contraseña' });
+  }
+
+  try {
+    // Buscar un cliente por su correo
+    const result = await pool.query(
+      'SELECT * FROM pedidos.cliente WHERE correo_electronico = $1',
+      [correo]
+    );
+
+    // Si no se encontró el cliente, se retorna error de credenciales inválidas
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+
+    const cliente = result.rows[0];
+
+    // Comparar la contraseña (en producción, comparar contra la versión hasheada)
+    if (cliente.contrasenia !== contrasenia) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+
+    // Eliminar la contraseña del objeto cliente
+    delete cliente.contrasenia;
+    // Si todo es correcto, se retorna un mensaje de éxito (y opcionalmente datos del cliente)
+    res.json({ message: 'Autenticación exitosa', cliente });
+  } catch (error) {
+    console.error('Error en la autenticación:', error);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
+};
+
 const getClienteAcceso = (request, response) => {
   const correo = request.params.correo;
   const contrasenia = request.params.contrasenia;
@@ -169,6 +205,28 @@ const insertaCliente = (req, res) => {
   );
 };
 
+const actualizaDatosCliente = async (req, res) => {
+  const { idCliente } = req.params;
+  const { contrasenia, nombre, telefono } = req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE pedidos.cliente 
+       SET contrasenia = $1, nombre = $2, telefono = $3
+       WHERE id_cliente = $4
+       RETURNING *`,
+      [contrasenia, nombre, telefono, idCliente]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Cliente no encontrado' });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error al actualizar cliente:', error);
+    res.status(500).json({ error: 'Error al actualizar el cliente' });
+  }
+};
+
+/*
 const actualizaCliente = (req, res) => {
   const {
     idCliente,
@@ -204,6 +262,7 @@ const actualizaCliente = (req, res) => {
     }
   );
 };
+*/
 
 const insertaDomicilioCliente = (req, res) => {
   const {
@@ -664,6 +723,7 @@ const getAllPedidos = (request, response) => {
 };
 
 module.exports = {
+  verificaLogin,
   getClienteAcceso,
   getClienteExisteCorreo,
   getDatosCliente,
@@ -671,7 +731,8 @@ module.exports = {
   getDomiciliosCliente,
   //getRegiones,
   insertaCliente,
-  actualizaCliente,
+  // actualizaCliente,
+  actualizaDatosCliente,
   insertaDomicilioCliente,
   actualizaDomicilioCliente,
   eliminaDomicilioCliente,

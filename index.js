@@ -22,11 +22,14 @@ app.get('/', (request, response) => {
 
 //Endpoints de clientes
 
+app.post('/login', db.verificaLogin);
+
 app.get('/clientes/acceso/:correo/:contrasenia', db.getClienteAcceso);
 app.get('/clientes/acceso/:correo', db.getClienteExisteCorreo);
 
 app.post('/clientes', db.insertaCliente);
-app.put('/clientes', db.actualizaCliente);
+//app.put('/clientes', db.actualizaCliente);
+app.put('/clientes/:idCliente', db.actualizaDatosCliente);
 app.get('/clientes/:correo', db.getDatosCliente);
 //app.get('/clientes-recupera-contrasenia/:correo', db.getContraseniaCliente);
 
