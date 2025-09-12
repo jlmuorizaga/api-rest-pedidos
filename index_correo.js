@@ -11,6 +11,9 @@ const port = process.env.PORT || 3003;
 
 app.post("/verifica-correo", correo.verificaCorreo);
 app.post("/recupera-correo", correo.recuperaCorreo);
+app.get("/", (req, res) => {
+  res.send("Servidor de correo corriendo en puerto " + port);
+});
 
 app.listen(port, () => {
   console.log("API CHPSystem Servidor de Correos corriendo en puerto", port);
