@@ -40,8 +40,10 @@ const transporter = nodeMailer.createTransport({
   //secure: true, // true para el puerto 465
   secure:false,
   auth: {
-    user: 'registro_app@cheesepizza.com.mx',
-    pass: 'Olaf2020chp$',
+    //user: 'registro_app@cheesepizza.com.mx',
+    user:'ses-smtp-cheesepizza',
+    //pass: 'Olaf2020chp$',
+    pass:'BFyoCG2Xj+q8ru5jSB/Dcls2AyV/xPUdjW957H4zZo0b',
   },
   tls: {
     // ESTA ES LA SOLUCIÓN
