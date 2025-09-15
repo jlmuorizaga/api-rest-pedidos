@@ -41,7 +41,7 @@ const transporter = nodeMailer.createTransport({
   secure:false,
   auth: {
     //user: 'registro_app@cheesepizza.com.mx',
-    user:'ses-smtp-cheesepizza',
+    user:'AKIAQ4J5X5GGTVGDSCO4',
     //pass: 'Olaf2020chp$',
     pass:'BFyoCG2Xj+q8ru5jSB/Dcls2AyV/xPUdjW957H4zZo0b',
   },
