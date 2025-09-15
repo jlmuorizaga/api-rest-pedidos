@@ -34,22 +34,25 @@ const pool = new Pool({
 
 const transporter = nodeMailer.createTransport({
   //host: 'mail.cheesepizza.com.mx',
-  host:'email-smtp.us-east-1.amazonaws.com',
+  host: 'email-smtp.us-east-1.amazonaws.com',
   //port: 465,
-  port:587,
+  port: 587,
   //secure: true, // true para el puerto 465
-  secure:false,
+  secure: false,
   auth: {
     //user: 'registro_app@cheesepizza.com.mx',
-    user:'AKIAQ4J5X5GGTVGDSCO4',
+    user: 'AKIAQ4J5X5GGTVGDSCO4',
     //pass: 'Olaf2020chp$',
-    pass:'BFyoCG2Xj+q8ru5jSB/Dcls2AyV/xPUdjW957H4zZo0b',
+    pass: 'BFyoCG2Xj+q8ru5jSB/Dcls2AyV/xPUdjW957H4zZo0b',
   },
-  tls: {
-    // ESTA ES LA SOLUCIÓN
-    // Le dice a Node.js que ignore los certificados autofirmados.
-    rejectUnauthorized: false,
-  },
+  authMethod: 'LOGIN', // fuerza LOGIN si PLAIN diera lata
+  logger: true, // logs verbosos a consola
+  debug: true,
+  //tls: {
+  // ESTA ES LA SOLUCIÓN
+  // Le dice a Node.js que ignore los certificados autofirmados.
+  rejectUnauthorized: false,
+  //},
 });
 
 const verificaCorreo = (req, res) => {
@@ -87,15 +90,23 @@ const verificaCorreo = (req, res) => {
       //console.log("Correo enviado ");
     }
   });
+  // PRUEBA de login SMTP al iniciar (te dice si el user/pass están bien)
+  transporter.verify((err, success) => {
+    if (err) {
+      console.error('SMTP verify error:', err);
+    } else {
+      console.log('SMTP listo para enviar correos');
+    }
+  });
 };
 
 const recuperaCorreo = (req, res) => {
   const { correo, asunto } = req.body;
   pool.query(
     'SELECT correo_electronico as "correoElectronico", contrasenia as "contraSenia", activo ' +
-      "FROM pedidos.cliente " +
-      "WHERE correo_electronico = $1 and activo= $2",
-    [correo, "S"],
+      'FROM pedidos.cliente ' +
+      'WHERE correo_electronico = $1 and activo= $2',
+    [correo, 'S'],
     (error, results) => {
       if (error) {
         throw error;
@@ -103,32 +114,37 @@ const recuperaCorreo = (req, res) => {
       if (results.rows[0]) {
         let contra = results.rows[0].contraSenia;
         let mail = {
-          from: "registro_app@cheesepizza.com.mx",
+          from: 'registro_app@cheesepizza.com.mx',
           to: correo,
           subject: asunto,
           html:
-            '<img src="' + logo + '" width="25%"><br>' +
-            "<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su contraseña es: </p>" +
-            "<h2>" + contra + "</h2>" +
-            "<p>Apunte su contraseña en un lugar seguro</p><br>" +
-            "<p><i>Este es un correo automático, favor de no responder</i></p>",
+            '<img src="' +
+            logo +
+            '" width="25%"><br>' +
+            '<h3>Sistema CheesePizza de Pedidos Móviles</h3><p>Su contraseña es: </p>' +
+            '<h2>' +
+            contra +
+            '</h2>' +
+            '<p>Apunte su contraseña en un lugar seguro</p><br>' +
+            '<p><i>Este es un correo automático, favor de no responder</i></p>',
         };
 
         transporter.sendMail(mail, (error, info) => {
           if (error) {
-            console.error("Error enviando correo: ", error);
+            console.error('Error enviando correo: ', error);
             // Envía solo UNA respuesta en caso de error
-            res.status(422).json({ respuesta: "Error al enviar correo a " + correo });
+            res
+              .status(422)
+              .json({ respuesta: 'Error al enviar correo a ' + correo });
           } else {
-            console.log("Correo enviado ", info);
+            console.log('Correo enviado ', info);
             // Envía solo UNA respuesta en caso de éxito
             res.status(200).json(results.rows[0]);
           }
         });
-
       } else {
         // Usa 'res' en lugar de 'response'
-        res.status(404).json({ error: "No se encontró el cliente" });
+        res.status(404).json({ error: 'No se encontró el cliente' });
       }
     }
   );
