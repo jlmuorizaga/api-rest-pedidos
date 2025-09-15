@@ -33,9 +33,12 @@ const pool = new Pool({
 });
 
 const transporter = nodeMailer.createTransport({
-  host: 'mail.cheesepizza.com.mx',
-  port: 465,
-  secure: true, // true para el puerto 465
+  //host: 'mail.cheesepizza.com.mx',
+  host:'process.env.email-smtp.us-east-1.amazonaws.com',
+  //port: 465,
+  port:587,
+  //secure: true, // true para el puerto 465
+  secure:false,
   auth: {
     user: 'registro_app@cheesepizza.com.mx',
     pass: 'Olaf2020chp$',
