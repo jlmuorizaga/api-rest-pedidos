@@ -26,7 +26,10 @@ const pool = new Pool({
   database: DB_NAME,
   port: Number(DB_PORT),
   // Con RDS, usa SSL pero sin desactivar verificación
-  ssl: { require: true }
+  //ssl: { require: true }
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 /* ====== SMTP (SES) ====== */
