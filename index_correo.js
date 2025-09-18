@@ -1,3 +1,4 @@
+require('dotenv').config();   // debe ir antes de requerir otros módulos
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");

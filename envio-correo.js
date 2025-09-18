@@ -1,5 +1,4 @@
 // envio-correo.js (versión mejorada)
-require('dotenv').config();
 const nodemailer = require('nodemailer');
 const { Pool } = require('pg');
 
