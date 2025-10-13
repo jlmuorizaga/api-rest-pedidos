@@ -71,6 +71,9 @@ app.put('/pedidos/estatus/:estatus/:idPedido', db.updateEstatusPedido);
 //Endpoints de utilería sólo para pruebas de desarrollo
 //app.put('/pedidosReset', db.updateEstatusPedidosReset);
 
+// Endpoint para configuración de mínimos y máximos
+app.get("/configuracion", db.getConfiguracion);
+
 app.listen(port, () => {
   console.log('API CHPSystem Pedidos Móviles Nube corriendo en puerto', port);
 });

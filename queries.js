@@ -722,6 +722,31 @@ const getAllPedidos = (request, response) => {
   );
 };
 
+/**
+ * Obtiene los parámetros de configuración de la tabla minimos_maximos.
+ */
+const getConfiguracion = (req, res) => {
+  pool.query(
+    'SELECT * FROM configuracion.minimos_maximos LIMIT 1',
+    (error, results) => {
+      if (error) {
+        console.error('Error al consultar la configuración:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+      }
+
+      if (results.rows.length > 0) {
+        // Devuelve el primer (y único) registro de configuración
+        res.status(200).json(results.rows[0]);
+      } else {
+        // Si la tabla está vacía, devuelve un error claro
+        res
+          .status(404)
+          .json({ error: 'No se encontraron parámetros de configuración.' });
+      }
+    }
+  );
+};
+
 module.exports = {
   verificaLogin,
   getClienteAcceso,
@@ -749,4 +774,5 @@ module.exports = {
   getPedidosBySucursal,
   getAllPedidos,
   //updateEstatusPedidoBody
+  getConfiguracion,
 };
