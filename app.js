@@ -1,44 +1,38 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+// app.js
+
+import express from 'express';
+import cors from 'cors';
+import pagosRouter from './routes/pagos.js'; // 1. Importamos el enrutador de pagos
+
+// --- Inicialización del Servidor ---
 const app = express();
+const PORT = process.env.PORT || 3005;
+
+// --- Middlewares Esenciales ---
+
+// 2. Habilita CORS para permitir peticiones desde tu app Ionic
+// Puedes configurarlo para ser más restrictivo en producción
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-const port = 3001;
 
-app.get("/", (req, res) => res.send("Hello World!"));
+// 3. Permite que Express entienda las peticiones con cuerpo en formato JSON
+app.use(express.json());
 
-app.get("/products", (req, res) => {
-  console.log("Se invocó el get a products");
-  const products = [
-    {
-      id: 1,
-      name: "hammer",
-    },
-    {
-      id: 2,
-      name: "screwdriver",
-    },
-    {
-      id: 3,
-      name: "wrench",
-    },
-  ];
 
-  res.json(products);
+// --- Definición de Rutas ---
+
+// 4. Le decimos a Express que cualquier petición que empiece con '/api/pagos'
+//    debe ser manejada por nuestro 'pagosRouter'.
+//    Ej: POST a http://localhost:3000/api/pagos/crear-intento-pago
+app.use('/api/pagos', pagosRouter);
+
+
+// --- Ruta de Bienvenida (Opcional) ---
+app.get('/', (req, res) => {
+  res.send('API de Pagos funcionando correctamente.');
 });
 
-app.post("/products", (req, res) => {
-  console.log("Se invocó el post a products");
-  const product = req.body;
-  console.log(product);
 
-  const mensaje = {
-    mensaje: "Producto recibido",
-  };
-
-  res.send(mensaje);
+// --- Arranque del Servidor ---
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
