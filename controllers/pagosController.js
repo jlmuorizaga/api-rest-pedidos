@@ -7,9 +7,11 @@ const { Pool } = pkg;
 const pool = new Pool({
   user: 'cheesepizzauser',
   host: 'database-1.czyiomwau3kc.us-east-1.rds.amazonaws.com',
-  database: 'cheesepizzapedidosmovilesdb',
+  database: 'chppreciosespecprodpromocdb',
   password: 'cheesepizza2001',
-  port: 5432,
+  port: 5432,ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 // Función para obtener la llave secreta (sk) de una sucursal
