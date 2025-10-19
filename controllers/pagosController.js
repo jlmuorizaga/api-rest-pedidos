@@ -9,7 +9,8 @@ const pool = new Pool({
   host: 'database-1.czyiomwau3kc.us-east-1.rds.amazonaws.com',
   database: 'chppreciosespecprodpromocdb',
   password: 'cheesepizza2001',
-  port: 5432,ssl: {
+  port: 5432,
+  ssl: {
     rejectUnauthorized: false,
   },
 });
@@ -60,14 +61,16 @@ export const crearIntentoPago = async (req, res) => {
   }
 };
 
-// --- ENDPOINT 2: Confirmar Pago y Guardar Pedido ---
+// --- ENDPOINT 2: Confirmar Pago y Guardar Pedido (VERSIÓN CORREGIDA) ---
 export const confirmarYGuardarPedido = async (req, res) => {
   const { paymentIntentId, pedido } = req.body;
 
   if (!paymentIntentId || !pedido) {
-    return res.status(400).send({
-      error: 'Faltan datos: paymentIntentId y pedido son requeridos.',
-    });
+    return res
+      .status(400)
+      .send({
+        error: 'Faltan datos: paymentIntentId y pedido son requeridos.',
+      });
   }
 
   try {
@@ -79,7 +82,6 @@ export const confirmarYGuardarPedido = async (req, res) => {
 
     // 2. VALIDACIÓN: Asegúrate de que el pago fue exitoso
     if (paymentIntent.status === 'succeeded') {
-      // Valida también que el monto coincide para mayor seguridad
       const montoRecibido = paymentIntent.amount / 100;
       if (montoRecibido !== pedido.montoTotal) {
         return res
@@ -87,9 +89,18 @@ export const confirmarYGuardarPedido = async (req, res) => {
           .send({ error: 'La cantidad del pago no coincide con el pedido.' });
       }
 
-      // 3. INSERCIÓN: Guarda el pedido en la base de datos
-      const urlRecibo = paymentIntent.charges.data[0].receipt_url;
+      // 3. *** EL CAMBIO CLAVE ESTÁ AQUÍ ***
+      // Obtenemos el ID del cargo desde el PaymentIntent
+      const chargeId = paymentIntent.latest_charge;
+      if (!chargeId) {
+        throw new Error('No se encontró un ID de cargo en el PaymentIntent.');
+      }
 
+      // Usamos el ID para obtener el objeto de cargo completo
+      const charge = await stripe.charges.retrieve(chargeId);
+      const urlRecibo = charge.receipt_url; // ¡Ahora sí tenemos la URL!
+
+      // 4. INSERCIÓN: Guarda el pedido en la base de datos
       const query = `
         INSERT INTO pedidos.pedido (
           id_pedido, numero_pedido, id_cliente, datos_cliente, id_domicilio_cliente,
@@ -119,7 +130,7 @@ export const confirmarYGuardarPedido = async (req, res) => {
         pedido.tipoPago,
         pedido.cantidadProductos,
         pedido.resumenPedido,
-        urlRecibo, // Aquí se inserta la URL del recibo de Stripe
+        urlRecibo, // Se inserta la URL del recibo obtenida correctamente
       ];
 
       await pool.query(query, values);
@@ -128,11 +139,12 @@ export const confirmarYGuardarPedido = async (req, res) => {
         .status(200)
         .send({ success: true, message: 'Pedido guardado exitosamente.' });
     } else {
-      // Si el estado no es 'succeeded', rechaza la inserción
-      res.status(400).send({
-        success: false,
-        message: `El pago no fue exitoso. Estado: ${paymentIntent.status}`,
-      });
+      res
+        .status(400)
+        .send({
+          success: false,
+          message: `El pago no fue exitoso. Estado: ${paymentIntent.status}`,
+        });
     }
   } catch (error) {
     console.error('Error al confirmar y guardar el pedido:', error);
