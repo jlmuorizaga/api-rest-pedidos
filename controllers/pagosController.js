@@ -61,7 +61,7 @@ export const crearIntentoPago = async (req, res) => {
   }
 };
 
-// --- ENDPOINT 2: Confirmar Pago y Guardar Pedido (VERSIÓN CORREGIDA) ---
+// --- ENDPOINT 2: Confirmar Pago y Guardar Pedido (VERSIÓN CORREGIDA CON SECUENCIA) ---
 export const confirmarYGuardarPedido = async (req, res) => {
   const { paymentIntentId, pedido } = req.body;
 
@@ -77,10 +77,8 @@ export const confirmarYGuardarPedido = async (req, res) => {
     const secretKey = await getStripeSecretKey(pedido.claveSucursal);
     const stripe = new Stripe(secretKey);
 
-    // 1. VERIFICACIÓN: Consulta el PaymentIntent a Stripe
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-    // 2. VALIDACIÓN: Asegúrate de que el pago fue exitoso
     if (paymentIntent.status === 'succeeded') {
       const montoRecibido = paymentIntent.amount / 100;
       if (montoRecibido !== pedido.montoTotal) {
@@ -89,18 +87,16 @@ export const confirmarYGuardarPedido = async (req, res) => {
           .send({ error: 'La cantidad del pago no coincide con el pedido.' });
       }
 
-      // 3. *** EL CAMBIO CLAVE ESTÁ AQUÍ ***
-      // Obtenemos el ID del cargo desde el PaymentIntent
       const chargeId = paymentIntent.latest_charge;
       if (!chargeId) {
         throw new Error('No se encontró un ID de cargo en el PaymentIntent.');
       }
 
-      // Usamos el ID para obtener el objeto de cargo completo
       const charge = await stripe.charges.retrieve(chargeId);
-      const urlRecibo = charge.receipt_url; // ¡Ahora sí tenemos la URL!
+      const urlRecibo = charge.receipt_url;
 
-      // 4. INSERCIÓN: Guarda el pedido en la base de datos
+      // 👇 --- CAMBIO 1: La consulta SQL ahora usa nextval() ---
+      // Se le pasa el nombre completo de la secuencia, incluyendo el esquema 'pedidos'.
       const query = `
         INSERT INTO pedidos.pedido (
           id_pedido, numero_pedido, id_cliente, datos_cliente, id_domicilio_cliente,
@@ -108,13 +104,14 @@ export const confirmarYGuardarPedido = async (req, res) => {
           modalidad_entrega, monto_total, detalle_pedido, instrucciones_especiales,
           tipo_pago, cantidad_productos, resumen_pedido, url_recibo_pago
         ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
+          $1, nextval('pedidos.pedido_numero_pedido_seq'), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
         )
       `;
 
+      // 👇 --- CAMBIO 2: Se elimina 'pedido.numeroPedido' del array de valores ---
       const values = [
         pedido.idPedido,
-        pedido.numeroPedido,
+        // Se quita pedido.numeroPedido de aquí
         pedido.idCliente,
         pedido.datosCliente,
         pedido.idDomicilioCliente,
@@ -130,8 +127,9 @@ export const confirmarYGuardarPedido = async (req, res) => {
         pedido.tipoPago,
         pedido.cantidadProductos,
         pedido.resumenPedido,
-        urlRecibo, // Se inserta la URL del recibo obtenida correctamente
+        urlRecibo,
       ];
+      // Los placeholders ($2, $3, etc.) se ajustan automáticamente.
 
       await pool.query(query, values);
 
