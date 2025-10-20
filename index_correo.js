@@ -1,8 +1,8 @@
-require('dotenv').config();   // debe ir antes de requerir otros módulos
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const correo = require("./envio-correo");
+require('dotenv').config(); // debe ir antes de requerir otros módulos
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const correo = require('./envio-correo');
 const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -10,12 +10,15 @@ app.use(bodyParser.json());
 
 const port = process.env.PORT || 3003;
 
-app.post("/verifica-correo", correo.verificaCorreo);
-app.post("/recupera-correo", correo.recuperaCorreo);
-app.get("/", (req, res) => {
-  res.send("Servidor de correo corriendo en puerto " + port);
+app.post('/verifica-correo-prueba', correo.verificaCorreoPrueba);
+app.post('/recupera-correo-prueba', correo.recuperaCorreoPrueba);
+
+app.post('/verifica-correo', correo.verificaCorreo);
+app.post('/recupera-correo', correo.recuperaCorreo);
+app.get('/', (req, res) => {
+  res.send('Servidor de correo corriendo en puerto ' + port);
 });
 
 app.listen(port, () => {
-  console.log("API CHPSystem Servidor de Correos corriendo en puerto", port);
+  console.log('API CHPSystem Servidor de Correos corriendo en puerto', port);
 });

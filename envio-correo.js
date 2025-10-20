@@ -11,11 +11,11 @@ const {
   DB_PORT = 5432,
 
   SMTP_HOST = 'email-smtp.us-east-1.amazonaws.com',
-  SMTP_PORT = 587,                // STARTTLS
+  SMTP_PORT = 587, // STARTTLS
   SMTP_USER,
   SMTP_PASS,
   MAIL_FROM = 'registro_app@cheesepizza.com.mx',
-  LOGO_URL = 'https://ec2-54-144-58-67.compute-1.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png'
+  LOGO_URL = 'https://ec2-54-144-58-67.compute-1.amazonaws.com/img/logo/logo_cheese_pizza_sombra.png',
 } = process.env;
 
 /* ====== DB Pool ====== */
@@ -36,17 +36,18 @@ const pool = new Pool({
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: Number(SMTP_PORT),
-  secure: false,                   // 587 = STARTTLS
+  secure: false, // 587 = STARTTLS
   auth: { user: SMTP_USER, pass: SMTP_PASS },
-  pool: true,                      // reutiliza conexión
+  pool: true, // reutiliza conexión
   maxConnections: 5,
-  maxMessages: 100
+  maxMessages: 100,
 });
 
 // Verifica una sola vez al cargar el módulo
-transporter.verify()
+transporter
+  .verify()
   .then(() => console.log('SMTP listo para enviar correos'))
-  .catch(err => console.error('SMTP verify error:', err));
+  .catch((err) => console.error('SMTP verify error:', err));
 
 /* ====== Helpers ====== */
 const buildHtmlHeader = () => `
@@ -81,15 +82,27 @@ async function verificaCorreo(req, res) {
       to: correo,
       subject: asunto || 'Verificación de correo',
       text: `Tu código de verificación es: ${codigoVerificacion}. Válido por 10 minutos.`,
-      html
+      html,
     });
 
     console.log('Correo enviado:', info.messageId);
-    return res.status(201).json({ respuesta: `Se ha enviado un correo a ${correo}` });
+    return res
+      .status(201)
+      .json({ respuesta: `Se ha enviado un correo a ${correo}` });
   } catch (error) {
     console.error('Error enviando correo:', error);
-    return res.status(422).json({ respuesta: `Error al enviar correo a ${req.body?.correo || ''}` });
+    return res.status(422).json({
+      respuesta: `Error al enviar correo a ${req.body?.correo || ''}`,
+    });
   }
+}
+
+async function verificaCorreoPrueba(req, res) {
+  const { correo, asunto, codigoVerificacion } = req.body;
+  console.log('Simulación de Correo enviado');
+  return res
+    .status(201)
+    .json({ respuesta: `Se ha enviado un correo a ${correo}` });
 }
 
 async function recuperaCorreo(req, res) {
@@ -125,16 +138,32 @@ async function recuperaCorreo(req, res) {
       to: correo,
       subject: asunto || 'Recuperación de contraseña',
       text: `Tu contraseña es: ${contra}. Te recomendamos cambiarla.`,
-      html
+      html,
     });
 
     console.log('Correo enviado:', info.messageId);
     // Devuelve solo datos necesarios; evita exponer la contraseña aquí
-    return res.status(200).json({ correoElectronico: rows[0].correoElectronico, activo: 'S' });
+    return res
+      .status(200)
+      .json({ correoElectronico: rows[0].correoElectronico, activo: 'S' });
   } catch (error) {
     console.error('Error recuperaCorreo:', error);
     return res.status(500).json({ error: 'Error al procesar la solicitud' });
   }
 }
 
-module.exports = { verificaCorreo, recuperaCorreo };
+async function recuperaCorreoPrueba(req, res) {
+  const { correo, asunto } = req.body;
+  console.log('Correo enviado:', info.messageId);
+  // Devuelve solo datos necesarios; evita exponer la contraseña aquí
+  return res
+    .status(200)
+    .json({ correoElectronico: rows[0].correoElectronico, activo: 'S' });
+}
+
+module.exports = {
+  verificaCorreo,
+  recuperaCorreo,
+  verificaCorreoPrueba,
+  recuperaCorreoPrueba,
+};
