@@ -6,7 +6,7 @@ import pagosRouter from './routes/pagos.js'; // 1. Importamos el enrutador de pa
 
 // --- Inicialización del Servidor ---
 const app = express();
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 3004;
 
 // --- Middlewares Esenciales ---
 
