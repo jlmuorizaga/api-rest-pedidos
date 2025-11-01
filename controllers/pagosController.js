@@ -1,19 +1,8 @@
 // controllers/pagosController.js
 import Stripe from 'stripe';
-import pkg from 'pg';
-const { Pool } = pkg;
 
-// Configura tu pool de conexión a PostgreSQL
-const pool = new Pool({
-  user: 'cheesepizzauser',
-  host: 'database-1.czyiomwau3kc.us-east-1.rds.amazonaws.com',
-  database: 'chppreciosespecprodpromocdb',
-  password: 'cheesepizza2001',
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+// IMPORTAMOS el pool centralizado
+import pool from '../db/database.js';
 
 // Función para obtener la llave secreta (sk) de una sucursal
 const getStripeSecretKey = async (claveSucursal) => {

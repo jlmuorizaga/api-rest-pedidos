@@ -2,37 +2,46 @@
 
 import express from 'express';
 import cors from 'cors';
-import pagosRouter from './routes/pagos.js'; // 1. Importamos el enrutador de pagos
+
+//Importación de enrutadores
+import pagosRouter from './routes/pagos.js';
+import catalogosRouter from './routes/catalogos.js';
+import authRouter from './routes/auth.js';
+import clientesRouter from './routes/clientes.js';
+import pedidosRouter from './routes/pedidos.js';
+import correoRouter from './routes/correo.js';
 
 // --- Inicialización del Servidor ---
 const app = express();
-const PORT = process.env.PORT || 3004;
+const PORT = process.env.PORT || 3000;
 
-// --- Middlewares Esenciales ---
-
-// 2. Habilita CORS para permitir peticiones desde tu app Ionic
-// Puedes configurarlo para ser más restrictivo en producción
+// Middlewares
 app.use(cors());
-
-// 3. Permite que Express entienda las peticiones con cuerpo en formato JSON
 app.use(express.json());
+// app.use(express.urlencoded({ extended: false })); // (Opcional, si no usas formularios HTML)
 
-
-// --- Definición de Rutas ---
-
-// 4. Le decimos a Express que cualquier petición que empiece con '/api/pagos'
-//    debe ser manejada por nuestro 'pagosRouter'.
-//    Ej: POST a http://localhost:3000/api/pagos/crear-intento-pago
+// Define las rutas base de tu API
+// Todo lo de pagos estará en /api/pagos/...
 app.use('/api/pagos', pagosRouter);
+// Todo lo de catálogos estará en /api/catalogos/...
+app.use('/api/catalogos', catalogosRouter);
+// Todo lo de autenticación estará en /api/auth/...
+app.use('/api/auth', authRouter);
+// Todo lo de clientes y domicilios estará en /api/...
+app.use('/api', clientesRouter); // (Nota: /api y no /api/clientes para que coincida con tus rutas)
+// Todo lo de pedidos y config estará en /api/...
+app.use('/api', pedidosRouter); // (Nota: /api para que coincida con tus rutas)
+app.use('/api', correoRouter);
 
-
-// --- Ruta de Bienvenida (Opcional) ---
+// Ruta raíz de la API unificada
 app.get('/', (req, res) => {
-  res.send('API de Pagos funcionando correctamente.');
+  res.json({
+    info: 'API CHPSystem Pedidos Móviles Nube versión: 20251101 1401',
+    status: 'Operacional',
+  });
 });
-
 
 // --- Arranque del Servidor ---
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor CHP System corriendo en http://localhost:${PORT}`);
 });
