@@ -5,6 +5,7 @@ import {
   getTotalPedidosHistoricosByCliente,
   getPedidosHistoricosByCliente,
   getPedidosBySucursal,
+  getPedidosEstatusBySucursal,
   getPedidoById,
   updateEstatusPedido,
   getAllPedidos, // (El de la demo de Nacho)
@@ -22,6 +23,8 @@ router.get(
   getPedidosHistoricosByCliente
 );
 router.get('/sucursal/:claveSucursal', getPedidosBySucursal);
+router.get('/sucursal/:claveSucursal/:estatus', getPedidosEstatusBySucursal);
+
 router.get('/sucursal', getAllPedidos); // (Tu ruta demo)
 router.get('/id/:idPedido', getPedidoById);
 router.put('/estatus/:estatus/:idPedido', updateEstatusPedido);

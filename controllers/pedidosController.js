@@ -158,6 +158,47 @@ export const getPedidosBySucursal = async (req, res) => {
   }
 };
 
+export const getPedidosEstatusBySucursal = async (req, res) => {
+  const { claveSucursal, estatus } = req.params;
+  if (
+    estatus != 'NP' &&
+    estatus != 'RP' &&
+    estatus != 'CP' &&
+    estatus != 'EP' &&
+    estatus != 'LP'
+  ) {
+    estatus = '00';
+  }
+
+  const query = `
+    SELECT id_pedido as "idPedido", numero_pedido as "numeroPedido", id_cliente as "idCliente",
+    datos_cliente as "datosCliente", id_domicilio_cliente as "idDomicilioCliente",
+    datos_domicilio_cliente as "datosDomicilioCliente", clave_sucursal as "claveSucursal",
+    datos_sucursal as "datosSucursal", fecha_hora as "fechaHora", estatus,
+    modalidad_entrega as "modalidadEntrega",
+    monto_total as "montoTotal",
+    detalle_pedido as "detallePedido", instrucciones_especiales as "instruccionesEspeciales",
+    tipo_pago as "tipoPago",
+    cantidad_productos as "cantidadProductos", resumen_pedido as "resumenPedido",
+    url_recibo_pago as "urlReciboPago"
+    FROM pedidos.pedido
+    WHERE clave_sucursal = $1
+    AND estatus = $2
+    ORDER BY fecha_hora
+  `;
+  try {
+    const results = await pool.query(query, [claveSucursal, estatus]);
+    const rows = results.rows.map((element) => ({
+      ...element,
+      montoTotal: Number(element.montoTotal),
+    }));
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error en getPedidosBySucursal:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // Convertido a async/await
 export const getPedidoById = async (req, res) => {
   const { idPedido } = req.params;
