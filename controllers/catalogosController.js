@@ -1,4 +1,3 @@
-
 // controllers/catalogosController.js
 
 // Importamos el pool de conexión CENTRALIZADO
@@ -152,7 +151,9 @@ export const getProductosByTipoProductoBySucursal = async (req, res) => {
 
 export const getSucursalesAll = async (req, res) => {
   try {
-    const results = await pool.query('SELECT * FROM preesppropro.sucursal ORDER BY clave');
+    const results = await pool.query(
+      'SELECT * FROM preesppropro.sucursal ORDER BY clave'
+    );
     res.status(200).json(results.rows);
   } catch (error) {
     console.error('Error en getSucursalesAll:', error);
@@ -224,7 +225,9 @@ export const getRegionesAll = async (req, res) => {
 
 export const getCategorias = async (req, res) => {
   try {
-    const results = await pool.query('SELECT codigo, nombre FROM preesppropro.categoria ORDER BY codigo ASC');
+    const results = await pool.query(
+      'SELECT codigo, nombre FROM preesppropro.categoria ORDER BY codigo ASC'
+    );
     res.status(200).json(results.rows);
   } catch (error) {
     console.error('Error en getCategorias:', error);
@@ -234,7 +237,9 @@ export const getCategorias = async (req, res) => {
 
 export const getIngredientesAll = async (req, res) => {
   try {
-    const results = await pool.query('SELECT * FROM preesppropro.ingrediente ORDER BY nombre');
+    const results = await pool.query(
+      'SELECT * FROM preesppropro.ingrediente ORDER BY nombre'
+    );
     res.status(200).json(results.rows);
   } catch (error) {
     console.error('Error en getIngredientesAll:', error);
@@ -259,7 +264,9 @@ export const getOrillasAll = async (req, res) => {
 
 export const getCategoriasAll = async (req, res) => {
   try {
-    const results = await pool.query('SELECT codigo, nombre FROM preesppropro.categoria ORDER BY codigo ASC');
+    const results = await pool.query(
+      'SELECT codigo, nombre FROM preesppropro.categoria ORDER BY codigo ASC'
+    );
     res.status(200).json(results.rows);
   } catch (error) {
     console.error('Error en getCategoriasAll:', error);
@@ -287,26 +294,4 @@ export const getOrillasBySucursal = async (req, res) => {
     console.error('Error en getOrillasBySucursal:', error);
     res.status(500).json({ error: error.message });
   }
-};
-
-// Esta es la función para la ruta raíz que tenías
-export const getApiInfo = (req, res) => {
-  res.json([
-    { info: "API CHPSystem Catálogos" },
-    { sucursales: "/sucursales" },
-    { pizzas: "/pizzas/:cve_sucursal" },
-    { tamanios: "/tamanios/:cve_sucursal/:id_especialidad" },
-    { productos: "/productos/:cve_sucursal" },
-    { tipoproductos: "/tipoproductos/:cve_sucursal" },
-    { productos: "/productos/:cve_sucursal/:id_tipo_producto" },
-    { sucursalesAll: "/sucursalesAll" },
-    { promociones: "/promociones/:cve_sucursal" },
-    { salsas: "/salsas/:cve_sucursal" },
-    { regionesAll: "/regionesAll " },
-    { ingredientesAll:"/ingredientesAll"},
-    { orillasAll:"/orillasAll"},
-    { categoriasAll:"/categoriasAll"},
-    { orillas: "/orillas/:cve_sucursal" },
-    { version: "Version 20241018 1215" },
-  ]);
 };

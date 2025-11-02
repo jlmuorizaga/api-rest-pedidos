@@ -25,7 +25,10 @@ router.post('/domicilios-cliente', insertaDomicilioCliente);
 // PUT /api/domicilios-cliente
 router.put('/domicilios-cliente', actualizaDomicilioCliente);
 // DELETE /api/domicilios-cliente/:idDomicilioCliente
-router.delete('/domicilios-cliente/:idDomicilioCliente', eliminaDomicilioCliente);
+router.delete(
+  '/domicilios-cliente/:idDomicilioCliente',
+  eliminaDomicilioCliente
+);
 // GET /api/domicilios-cliente/:idCliente
 router.get('/domicilios-cliente/:idCliente', getDomiciliosCliente);
 

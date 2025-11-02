@@ -104,8 +104,19 @@ export const getDomiciliosCliente = async (req, res) => {
 // Convertido a async/await
 export const insertaDomicilioCliente = async (req, res) => {
   const {
-    idDomicilioCliente, idCliente, idRegion, activo, calle, numero,
-    codigoPostal, estado, ciudad, colonia, informacionAdicional, latitud, longitud,
+    idDomicilioCliente,
+    idCliente,
+    idRegion,
+    activo,
+    calle,
+    numero,
+    codigoPostal,
+    estado,
+    ciudad,
+    colonia,
+    informacionAdicional,
+    latitud,
+    longitud,
   } = req.body;
   const query = `
     INSERT INTO pedidos.domicilio_cliente
@@ -115,8 +126,19 @@ export const insertaDomicilioCliente = async (req, res) => {
   `;
   try {
     const results = await pool.query(query, [
-      idDomicilioCliente, idCliente, idRegion, activo, calle, numero,
-      codigoPostal, estado, ciudad, colonia, informacionAdicional, latitud, longitud,
+      idDomicilioCliente,
+      idCliente,
+      idRegion,
+      activo,
+      calle,
+      numero,
+      codigoPostal,
+      estado,
+      ciudad,
+      colonia,
+      informacionAdicional,
+      latitud,
+      longitud,
     ]);
     res.status(201).json({
       respuesta: `Se insertó domicilio: ${results.rows[0].id_domicilio_cliente}`,
@@ -130,8 +152,19 @@ export const insertaDomicilioCliente = async (req, res) => {
 // Convertido a async/await
 export const actualizaDomicilioCliente = async (req, res) => {
   const {
-    idDomicilioCliente, idCliente, idRegion, activo, calle, numero,
-    codigoPostal, estado, ciudad, colonia, informacionAdicional, latitud, longitud,
+    idDomicilioCliente,
+    idCliente,
+    idRegion,
+    activo,
+    calle,
+    numero,
+    codigoPostal,
+    estado,
+    ciudad,
+    colonia,
+    informacionAdicional,
+    latitud,
+    longitud,
   } = req.body;
   const query = `
     UPDATE pedidos.domicilio_cliente
@@ -142,8 +175,19 @@ export const actualizaDomicilioCliente = async (req, res) => {
   `;
   try {
     const results = await pool.query(query, [
-      idDomicilioCliente, idCliente, idRegion, activo, calle, numero,
-      codigoPostal, estado, ciudad, colonia, informacionAdicional, latitud, longitud,
+      idDomicilioCliente,
+      idCliente,
+      idRegion,
+      activo,
+      calle,
+      numero,
+      codigoPostal,
+      estado,
+      ciudad,
+      colonia,
+      informacionAdicional,
+      latitud,
+      longitud,
     ]);
     res.status(201).json({
       respuesta: `Se actualizó domicilio: ${results.rows[0].id_domicilio_cliente}`,
@@ -157,7 +201,8 @@ export const actualizaDomicilioCliente = async (req, res) => {
 // Convertido a async/await
 export const eliminaDomicilioCliente = async (req, res) => {
   const { idDomicilioCliente } = req.params;
-  const query = 'DELETE FROM pedidos.domicilio_cliente WHERE id_domicilio_cliente=$1';
+  const query =
+    'DELETE FROM pedidos.domicilio_cliente WHERE id_domicilio_cliente=$1';
   try {
     const results = await pool.query(query, [idDomicilioCliente]);
     res.status(201).json({
