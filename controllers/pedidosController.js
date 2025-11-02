@@ -1,6 +1,7 @@
 import pool from '../db/database.js';
 
 // Convertido a async/await
+/*
 export const updatePedidoPago = async (req, res) => {
   const { numeroPedido, estatus, urlReciboPago } = req.body;
   const { idPedido } = req.params;
@@ -28,6 +29,7 @@ export const updatePedidoPago = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+*/
 
 // Convertido a async/await
 export const getPedidosByCliente = async (req, res) => {

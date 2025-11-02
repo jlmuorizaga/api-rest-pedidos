@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  updatePedidoPago,
+  //updatePedidoPago,
   getPedidosByCliente,
   getTotalPedidosHistoricosByCliente,
   getPedidosHistoricosByCliente,
@@ -14,7 +14,7 @@ import {
 const router = express.Router();
 
 // RUTAS DE PEDIDOS
-router.put('/pago/:idPedido', updatePedidoPago);
+//router.put('/pago/:idPedido', updatePedidoPago);
 router.get('/cliente/:idCliente', getPedidosByCliente);
 router.get('/historico/:idCliente', getTotalPedidosHistoricosByCliente);
 router.get(
