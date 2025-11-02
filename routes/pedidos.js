@@ -13,21 +13,18 @@ import {
 
 const router = express.Router();
 
-// Nota: agrupé las rutas de pedidos bajo /pedidos/
-// y /configuracion por separado
-
 // RUTAS DE PEDIDOS
-router.put('/pedidos/pago/:idPedido', updatePedidoPago);
-router.get('/pedidos/cliente/:idCliente', getPedidosByCliente);
-router.get('/pedidos/historico/:idCliente', getTotalPedidosHistoricosByCliente);
+router.put('/pago/:idPedido', updatePedidoPago);
+router.get('/cliente/:idCliente', getPedidosByCliente);
+router.get('/historico/:idCliente', getTotalPedidosHistoricosByCliente);
 router.get(
-  '/pedidos/historico/:idCliente/:registrosXPagina/:iniciaEn',
+  '/historico/:idCliente/:registrosXPagina/:iniciaEn',
   getPedidosHistoricosByCliente
 );
-router.get('/pedidos/sucursal/:claveSucursal', getPedidosBySucursal);
-router.get('/pedidos/sucursal', getAllPedidos); // (Tu ruta demo)
-router.get('/pedidos/:idPedido', getPedidoById);
-router.put('/pedidos/estatus/:estatus/:idPedido', updateEstatusPedido);
+router.get('/sucursal/:claveSucursal', getPedidosBySucursal);
+router.get('/sucursal', getAllPedidos); // (Tu ruta demo)
+router.get('/id/:idPedido', getPedidoById);
+router.put('/estatus/:estatus/:idPedido', updateEstatusPedido);
 
 // RUTA DE CONFIGURACIÓN
 router.get('/configuracion', getConfiguracion);
