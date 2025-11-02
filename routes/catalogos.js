@@ -3,7 +3,6 @@ import express from 'express';
 
 // Importamos TODAS las funciones del controlador
 import {
-  getApiInfo,
   getSucursales,
   getPizzasBySucursal,
   getTamaniosBySucursal,
@@ -22,9 +21,6 @@ import {
 } from '../controllers/catalogosController.js';
 
 const router = express.Router();
-
-// Ruta raíz de la API de Catálogos (la que tenías en '/')
-router.get('/', getApiInfo);
 
 // Endpoints para catálogos
 router.get('/sucursales', getSucursales);

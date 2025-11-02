@@ -55,11 +55,9 @@ export const confirmarYGuardarPedido = async (req, res) => {
   const { paymentIntentId, pedido } = req.body;
 
   if (!paymentIntentId || !pedido) {
-    return res
-      .status(400)
-      .send({
-        error: 'Faltan datos: paymentIntentId y pedido son requeridos.',
-      });
+    return res.status(400).send({
+      error: 'Faltan datos: paymentIntentId y pedido son requeridos.',
+    });
   }
 
   try {
@@ -126,12 +124,10 @@ export const confirmarYGuardarPedido = async (req, res) => {
         .status(200)
         .send({ success: true, message: 'Pedido guardado exitosamente.' });
     } else {
-      res
-        .status(400)
-        .send({
-          success: false,
-          message: `El pago no fue exitoso. Estado: ${paymentIntent.status}`,
-        });
+      res.status(400).send({
+        success: false,
+        message: `El pago no fue exitoso. Estado: ${paymentIntent.status}`,
+      });
     }
   } catch (error) {
     console.error('Error al confirmar y guardar el pedido:', error);

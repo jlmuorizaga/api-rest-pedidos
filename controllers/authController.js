@@ -19,7 +19,7 @@ export const verificaLogin = async (req, res) => {
     }
 
     const cliente = result.rows[0];
-    
+
     // IMPORTANTE: Aquí se compara texto plano. En un futuro deberías hashear contraseñas.
     if (cliente.contrasenia !== contrasenia) {
       return res.status(401).json({ error: 'Credenciales inválidas' });

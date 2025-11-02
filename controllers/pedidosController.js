@@ -1,6 +1,7 @@
 import pool from '../db/database.js';
 
 // Convertido a async/await
+/*
 export const updatePedidoPago = async (req, res) => {
   const { numeroPedido, estatus, urlReciboPago } = req.body;
   const { idPedido } = req.params;
@@ -21,15 +22,14 @@ export const updatePedidoPago = async (req, res) => {
         respuesta: `Se actualizó pedido pago ${results.rows[0].id_pedido}`,
       });
     } else {
-      res
-        .status(404)
-        .json({ respuesta: `No existe el pedido ${idPedido}` });
+      res.status(404).json({ respuesta: `No existe el pedido ${idPedido}` });
     }
   } catch (error) {
     console.error('Error en updatePedidoPago:', error);
     res.status(500).json({ error: error.message });
   }
 };
+*/
 
 // Convertido a async/await
 export const getPedidosByCliente = async (req, res) => {
@@ -195,7 +195,8 @@ export const getPedidoById = async (req, res) => {
 // Convertido a async/await
 export const updateEstatusPedido = async (req, res) => {
   const { estatus, idPedido } = req.params;
-  const query = 'UPDATE pedidos.pedido SET estatus=$1 WHERE id_pedido=$2 RETURNING *';
+  const query =
+    'UPDATE pedidos.pedido SET estatus=$1 WHERE id_pedido=$2 RETURNING *';
   try {
     const results = await pool.query(query, [estatus, idPedido]);
     if (results.rows.length > 0) {
@@ -203,9 +204,7 @@ export const updateEstatusPedido = async (req, res) => {
         respuesta: `Se actualizó pedido ${results.rows[0].id_pedido}`,
       });
     } else {
-      res
-        .status(404)
-        .json({ respuesta: `No existe el pedido ${idPedido}` });
+      res.status(404).json({ respuesta: `No existe el pedido ${idPedido}` });
     }
   } catch (error) {
     console.error('Error en updateEstatusPedido:', error);
