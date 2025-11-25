@@ -5,6 +5,7 @@ import express from 'express';
 import {
   verificaCorreoPrueba,
   recuperaCorreoPrueba,
+  verificaCorreo,
 } from '../controllers/correoController.js';
 
 const router = express.Router();
@@ -12,6 +13,10 @@ const router = express.Router();
 // Ruta de prueba para verificar correo
 // POST /api/verifica-correo-prueba
 router.post('/verifica-correo-prueba', verificaCorreoPrueba);
+
+// Ruta para verificar correo
+// POST /api/verifica-correo
+router.post('/verifica-correo', verificaCorreo);
 
 // Ruta de prueba para recuperar contraseña
 // POST /api/recupera-correo-prueba
