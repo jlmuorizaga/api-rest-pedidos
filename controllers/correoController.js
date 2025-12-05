@@ -50,13 +50,6 @@ export const verificaCorreo = async (req, res) => {
   <body style="font-family: Arial, sans-serif; background-color: #ffffff; margin: 0; padding: 0;">
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
 
-      <div style="text-align: center; margin-bottom: 20px;">
-        <img
-          src="http://ec2-3-148-103-201.us-east-2.compute.amazonaws.com/img/icon.png"  alt="Cheese Pizza"
-          style="max-width: 150px; height: auto;"
-        />
-      </div>
-
       <h1 style="color: #d62828; text-align: center;">
         ${asunto}
       </h1>
