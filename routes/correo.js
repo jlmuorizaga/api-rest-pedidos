@@ -6,6 +6,7 @@ import {
   verificaCorreoPrueba,
   recuperaCorreoPrueba,
   verificaCorreo,
+  recuperarContrasenia,
 } from '../controllers/correoController.js';
 
 const router = express.Router();
@@ -21,5 +22,9 @@ router.post('/verifica-correo', verificaCorreo);
 // Ruta de prueba para recuperar contraseña
 // POST /api/recupera-correo-prueba
 router.post('/recupera-correo-prueba', recuperaCorreoPrueba);
+
+// Ruta para recuperar contraseña
+// POST /api/recupera-contrasenia
+router.post('/recupera-contrasenia', recuperarContrasenia);
 
 export default router;

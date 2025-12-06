@@ -2,6 +2,8 @@
 
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import dotenv from 'dotenv';
+import pool from '../db/database.js';
+
 dotenv.config();
 
 // --- Configuración de AWS SES ---
@@ -30,8 +32,8 @@ export const verificaCorreoPrueba = async (req, res) => {
 /**
  * Verifica el correo de un usuario.
  */
+
 export const verificaCorreo = async (req, res) => {
-  // Obtenemos el correo
   const { correo, asunto, codigoVerificacion } = req.body;
 
   // 1. Validar parámetros requeridos
@@ -42,38 +44,109 @@ export const verificaCorreo = async (req, res) => {
     });
   }
 
-  // 2. Cuerpo del correo
-  const emailBodyText = `Hola,\n\nEste es el contenido de prueba. El dato proporcionado es: ${codigoVerificacion}\n\nSaludos.`;
+  // URL del Logo (Idealmente deberías tener tu logo alojado en S3 o tu servidor público)
+  // Si no tienes uno aún, usa un placeholder o texto, pero aquí dejo la estructura lista.
+  const logoUrl = 'https://tu-dominio.com/assets/logo-cheese-pizza-white.png';
 
+  // 2. Cuerpo del correo (Versión Texto Plano - Importante para accesibilidad y filtros spam)
+  const emailBodyText = `
+Hola,
+
+Gracias por registrarte en Cheese Pizza.
+Para completar tu verificación, por favor utiliza el siguiente código:
+
+${codigoVerificacion}
+
+Este código es válido por 10 minutos.
+Si no solicitaste este código, puedes ignorar este mensaje de forma segura.
+
+Saludos,
+El equipo de Cheese Pizza
+`;
+
+  // 3. Cuerpo del correo (Versión HTML Profesional)
   const emailBodyHtml = `
+<!DOCTYPE html>
 <html>
-  <body style="font-family: Arial, sans-serif; background-color: #ffffff; margin: 0; padding: 0;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+<head>
+  <meta charset="utf-8">
+  <title>${asunto}</title>
+</head>
+<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; -webkit-text-size-adjust: none;">
+  
+  <!-- Contenedor Principal -->
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f4f4; padding: 20px;">
+    <tr>
+      <td align="center">
+        
+        <!-- Tarjeta del Correo -->
+        <table width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          
+          <!-- Encabezado Rojo -->
+          <tr>
+            <td style="background-color: #d62828; padding: 30px; text-align: center;">
+              <!-- Si tienes logo usa la etiqueta IMG, si no, usa el H1 -->
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; letter-spacing: 1px;">
+                CHEESE PIZZA
+              </h1>
+            </td>
+          </tr>
 
-      <h1 style="color: #d62828; text-align: center;">
-        ${asunto}
-      </h1>
+          <!-- Contenido Principal -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <h2 style="color: #333333; margin-top: 0; font-size: 22px;">¡Hola!</h2>
+              <p style="color: #666666; font-size: 16px; line-height: 1.5;">
+                Gracias por comenzar tu registro en la App Móvil de Cheese Pizza. Para proteger tu cuenta, necesitamos verificar tu correo electrónico.
+              </p>
+              
+              <p style="color: #666666; font-size: 16px; line-height: 1.5;">
+                Usa el siguiente código para completar el proceso:
+              </p>
 
-      <p style="font-size: 16px; line-height: 1.5; text-align: center;">
-        <b>${codigoVerificacion}</b>
-      </p>
+              <!-- Caja del Código -->
+              <div style="background-color: #f8f9fa; border: 2px dashed #e9ecef; border-radius: 6px; padding: 20px; text-align: center; margin: 30px 0;">
+                <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #d62828; display: block;">
+                  ${codigoVerificacion}
+                </span>
+              </div>
 
-      <br>
+              <p style="color: #999999; font-size: 14px; text-align: center;">
+                Este código expira en 10 minutos.
+              </p>
+              
+              <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 30px 0;">
 
-      <p style="font-size: 14px; line-height: 1.4;">
-        Saludos,<br>
-        <b>Cheese Pizza</b>
-      </p>
+              <p style="color: #999999; font-size: 13px; line-height: 1.4;">
+                Si tú no creaste esta cuenta, es posible que alguien haya escrito mal su correo. Puedes ignorar este mensaje y no se creará ninguna cuenta.
+              </p>
+            </td>
+          </tr>
 
-    </div>
-  </body>
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #333333; padding: 20px; text-align: center;">
+              <p style="color: #ffffff; font-size: 12px; margin: 0;">
+                &copy; ${new Date().getFullYear()} Cheese Pizza. Todos los derechos reservados.
+              </p>
+              <p style="color: #888888; font-size: 12px; margin: 5px 0 0;">
+                Este es un mensaje automático, por favor no respondas a este correo.
+              </p>
+            </td>
+          </tr>
+        </table>
+        
+      </td>
+    </tr>
+  </table>
+
+</body>
 </html>
+`;
 
-  `;
-
-  // 3. Crear el comando de SES
+  // 4. Crear el comando de SES
   const sendEmailCommand = new SendEmailCommand({
-    Source: SENDER_EMAIL,
+    Source: process.env.SENDER_EMAIL, // Asegúrate de usar tu variable de entorno
     Destination: {
       ToAddresses: [correo],
     },
@@ -95,7 +168,7 @@ export const verificaCorreo = async (req, res) => {
     },
   });
 
-  // 4. Enviar el correo
+  // 5. Enviar el correo
   try {
     const data = await sesClient.send(sendEmailCommand);
     console.log('Correo enviado exitosamente:', data.MessageId);
@@ -127,4 +200,91 @@ export const recuperaCorreoPrueba = async (req, res) => {
   // Simulamos la respuesta que daría la función real (que consulta la BD)
   // Devuelve solo datos necesarios, simulando que se encontró el usuario.
   return res.status(200).json({ correoElectronico: correo, activo: 'S' });
+};
+
+/**
+ * Recupera la contraseña de un usuario.
+ */
+export const recuperarContrasenia = async (req, res) => {
+  // 1. Recibir el correo del body (POST) o query (GET)
+  const { correo } = req.body;
+
+  if (!correo) {
+    return res.status(400).json({
+      mensaje: 'Por favor, proporciona un correo electrónico.',
+    });
+  }
+
+  try {
+    // 2. Buscar en la base de datos
+    // Usamos parámetros parametrizados ($1) para evitar inyección SQL
+    const consulta = `
+            SELECT nombre, contrasenia 
+            FROM pedidos.cliente 
+            WHERE correo_electronico = $1 
+            LIMIT 1
+        `;
+
+    const resultado = await pool.query(consulta, [correo]);
+
+    // 3. Validar si existe el usuario
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({
+        exito: false,
+        mensaje:
+          'El correo electrónico no se encuentra registrado en nuestra base de datos.',
+      });
+    }
+
+    const usuario = resultado.rows[0];
+
+    // 4. Configurar el envío con SES
+    // NOTA: Asegúrate de que process.env.SENDER_EMAIL esté definido en tu .env
+    const params = {
+      Source: process.env.SENDER_EMAIL,
+      Destination: {
+        ToAddresses: [correo],
+      },
+      Message: {
+        Subject: {
+          Data: 'Recuperación de contraseña - Pedidos',
+        },
+        Body: {
+          Text: {
+            Data: `Hola ${usuario.nombre},\n\nHemos recibido una solicitud para recuperar tu contraseña.\n\nTu contraseña actual es: ${usuario.contrasenia}\n\nSi no solicitaste esto, por favor contacta a soporte.`,
+          },
+          Html: {
+            Data: `
+                            <div style="font-family: Arial, sans-serif; color: #333;">
+                                <h2>Hola ${usuario.nombre},</h2>
+                                <p>Hemos recibido una solicitud para recuperar tus credenciales.</p>
+                                <p>Tu contraseña actual es: <strong>${usuario.contrasenia}</strong></p>
+                                <hr/>
+                                <p style="font-size: 12px; color: #777;">Si no realizaste esta solicitud, ignora este mensaje.</p>
+                            </div>
+                        `,
+          },
+        },
+      },
+    };
+
+    // 5. Enviar el correo
+    const command = new SendEmailCommand(params);
+    await sesClient.send(command);
+
+    // 6. Responder al cliente
+    return res.status(200).json({
+      exito: true,
+      mensaje: 'Se ha enviado la contraseña a tu correo electrónico.',
+    });
+  } catch (error) {
+    console.error('Error en recuperaContrasenia:', error);
+
+    // Manejo de errores de AWS SES o Base de datos
+    return res.status(500).json({
+      exito: false,
+      mensaje: 'Ocurrió un error interno al procesar la solicitud.',
+      error: error.message,
+    });
+  }
 };
