@@ -206,7 +206,6 @@ export const recuperaCorreoPrueba = async (req, res) => {
  * Recupera la contraseña de un usuario.
  */
 export const recuperarContrasenia = async (req, res) => {
-  // 1. Recibir el correo del body (POST) o query (GET)
   const { correo } = req.body;
 
   if (!correo) {
@@ -216,8 +215,6 @@ export const recuperarContrasenia = async (req, res) => {
   }
 
   try {
-    // 2. Buscar en la base de datos
-    // Usamos parámetros parametrizados ($1) para evitar inyección SQL
     const consulta = `
             SELECT nombre, contrasenia 
             FROM pedidos.cliente 
@@ -227,60 +224,96 @@ export const recuperarContrasenia = async (req, res) => {
 
     const resultado = await pool.query(consulta, [correo]);
 
-    // 3. Validar si existe el usuario
     if (resultado.rows.length === 0) {
       return res.status(404).json({
         exito: false,
-        mensaje:
-          'El correo electrónico no se encuentra registrado en nuestra base de datos.',
+        mensaje: 'El correo electrónico no se encuentra registrado.',
       });
     }
 
     const usuario = resultado.rows[0];
 
-    // 4. Configurar el envío con SES
-    // NOTA: Asegúrate de que process.env.SENDER_EMAIL esté definido en tu .env
+    // --- DISEÑO DEL CORREO ---
+    // Definimos el HTML aquí para mantener limpio el objeto params
+    const htmlTemplate = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Recuperación de Contraseña</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td align="center" style="padding: 40px 0;">
+                        <!-- Tarjeta Principal -->
+                        <div style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 600px; width: 100%; text-align: left;">
+                            
+                            <!-- Encabezado Azul -->
+                            <div style="background-color: #2563EB; padding: 24px; text-align: center;">
+                                <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: bold;">Recuperación de Acceso</h1>
+                            </div>
+
+                            <!-- Contenido -->
+                            <div style="padding: 32px;">
+                                <p style="font-size: 16px; color: #333333; margin-top: 0;">Hola <strong>${usuario.nombre}</strong>,</p>
+                                
+                                <p style="font-size: 16px; color: #555555; line-height: 1.5;">
+                                    Hemos recibido una solicitud para recuperar tu contraseña de acceso a la plataforma de Pedidos.
+                                </p>
+
+                                <p style="font-size: 16px; color: #555555;">Aquí tienes tu credencial actual:</p>
+
+                                <!-- Caja de Contraseña Destacada -->
+                                <div style="background-color: #f3f4f6; border-left: 4px solid #2563EB; padding: 20px; margin: 24px 0; text-align: center;">
+                                    <span style="display: block; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Tu Contraseña</span>
+                                    <span style="display: block; font-size: 28px; font-weight: bold; color: #111827; letter-spacing: 1px;">${usuario.contrasenia}</span>
+                                </div>
+
+                                <p style="font-size: 14px; color: #666666; margin-top: 32px; border-top: 1px solid #eeeeee; padding-top: 20px;">
+                                    Por seguridad, te recomendamos eliminar este correo una vez hayas ingresado a tu cuenta.
+                                </p>
+                            </div>
+                            
+                            <!-- Footer -->
+                            <div style="background-color: #f9fafb; padding: 16px; text-align: center; font-size: 12px; color: #9ca3af;">
+                                <p style="margin: 0;">Si no solicitaste esta recuperación, ignora este mensaje.</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
+        `;
+
     const params = {
       Source: process.env.SENDER_EMAIL,
-      Destination: {
-        ToAddresses: [correo],
-      },
+      Destination: { ToAddresses: [correo] },
       Message: {
-        Subject: {
-          Data: 'Recuperación de contraseña - Pedidos',
-        },
+        Subject: { Data: 'Recuperación de contraseña - Pedidos' },
         Body: {
+          // Versión texto plano para clientes antiguos
           Text: {
-            Data: `Hola ${usuario.nombre},\n\nHemos recibido una solicitud para recuperar tu contraseña.\n\nTu contraseña actual es: ${usuario.contrasenia}\n\nSi no solicitaste esto, por favor contacta a soporte.`,
+            Data: `Hola ${usuario.nombre},\n\nTu contraseña es: ${usuario.contrasenia}\n\nSi no solicitaste esto, ignora este mensaje.`,
           },
+          // Versión HTML bonita
           Html: {
-            Data: `
-                            <div style="font-family: Arial, sans-serif; color: #333;">
-                                <h2>Hola ${usuario.nombre},</h2>
-                                <p>Hemos recibido una solicitud para recuperar tus credenciales.</p>
-                                <p>Tu contraseña actual es: <strong>${usuario.contrasenia}</strong></p>
-                                <hr/>
-                                <p style="font-size: 12px; color: #777;">Si no realizaste esta solicitud, ignora este mensaje.</p>
-                            </div>
-                        `,
+            Data: htmlTemplate,
           },
         },
       },
     };
 
-    // 5. Enviar el correo
     const command = new SendEmailCommand(params);
     await sesClient.send(command);
 
-    // 6. Responder al cliente
     return res.status(200).json({
       exito: true,
       mensaje: 'Se ha enviado la contraseña a tu correo electrónico.',
     });
   } catch (error) {
     console.error('Error en recuperaContrasenia:', error);
-
-    // Manejo de errores de AWS SES o Base de datos
     return res.status(500).json({
       exito: false,
       mensaje: 'Ocurrió un error interno al procesar la solicitud.',
