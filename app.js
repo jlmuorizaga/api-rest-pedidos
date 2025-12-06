@@ -37,7 +37,7 @@ app.use('/api/correo', correoRouter);
 // Ruta raíz de la API unificada
 app.get('/', (req, res) => {
   res.json({
-    info: 'API CHPSystem Pedidos Móviles Nube versión: 20251101 1401',
+    info: 'API CHPSystem Pedidos Móviles Nube versión: 20251206 1415',
     status: 'Operacional',
   });
 });
