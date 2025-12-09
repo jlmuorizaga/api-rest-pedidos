@@ -1,13 +1,14 @@
 import pkg from 'pg';
 const { Pool } = pkg;
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Leemos las variables de entorno para la conexión
-const DB_HOST =
-  process.env.DB_HOST || 'database-1.czyiomwau3kc.us-east-1.rds.amazonaws.com';
-const DB_USER = process.env.DB_USER || 'cheesepizzauser';
-const DB_PASSWORD = process.env.DB_PASSWORD || 'cheesepizza2001';
-const DB_NAME = process.env.DB_NAME || 'chppreciosespecprodpromocdb';
-const DB_PORT = process.env.DB_PORT || 5432;
+const DB_HOST = process.env.DB_HOST;
+const DB_USER = process.env.DB_USER;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_NAME = process.env.DB_NAME;
+const DB_PORT = process.env.DB_PORT;
 
 // Pool de conexiones a base de datos
 const pool = new Pool({

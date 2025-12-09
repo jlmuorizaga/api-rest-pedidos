@@ -1,10 +1,11 @@
 // controllers/correoController.js
 
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import dotenv from 'dotenv';
-import pool from '../db/database.js';
 
-dotenv.config();
+//import dotenv from 'dotenv';
+//dotenv.config();
+
+import pool from '../db/database.js';
 
 // --- Configuración de AWS SES ---
 const REGION = process.env.AWS_REGION;

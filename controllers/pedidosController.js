@@ -1,37 +1,6 @@
 import pool from '../db/database.js';
 
 // Convertido a async/await
-/*
-export const updatePedidoPago = async (req, res) => {
-  const { numeroPedido, estatus, urlReciboPago } = req.body;
-  const { idPedido } = req.params;
-  const query = `
-    UPDATE pedidos.pedido
-    SET numero_pedido=$1, estatus=$2, url_recibo_pago=$3
-    WHERE id_pedido=$4 RETURNING *
-  `;
-  try {
-    const results = await pool.query(query, [
-      numeroPedido,
-      estatus,
-      urlReciboPago,
-      idPedido,
-    ]);
-    if (results.rows.length > 0) {
-      res.status(201).json({
-        respuesta: `Se actualizó pedido pago ${results.rows[0].id_pedido}`,
-      });
-    } else {
-      res.status(404).json({ respuesta: `No existe el pedido ${idPedido}` });
-    }
-  } catch (error) {
-    console.error('Error en updatePedidoPago:', error);
-    res.status(500).json({ error: error.message });
-  }
-};
-*/
-
-// Convertido a async/await
 export const getPedidosByCliente = async (req, res) => {
   const { idCliente } = req.params;
   const estatusPedidoAtendido = 'AP';
