@@ -82,47 +82,28 @@ export const confirmarYGuardarPedido = async (req, res) => {
       const charge = await stripe.charges.retrieve(chargeId);
       const urlRecibo = charge.receipt_url;
 
-      // 👇 --- CAMBIO 1: La consulta SQL ahora usa nextval() ---
-      // Se le pasa el nombre completo de la secuencia, incluyendo el esquema 'pedidos'.
+      // 👇 --- CAMBIO: Se actualiza el pedido existente de PP a NP ---
       const query = `
-        INSERT INTO pedidos.pedido (
-          id_pedido, numero_pedido, id_cliente, datos_cliente, id_domicilio_cliente,
-          datos_domicilio_cliente, clave_sucursal, datos_sucursal, fecha_hora, estatus,
-          modalidad_entrega, monto_total, detalle_pedido, instrucciones_especiales,
-          tipo_pago, cantidad_productos, resumen_pedido, url_recibo_pago
-        ) VALUES (
-          $1, nextval('pedidos.pedido_numero_pedido_seq'), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
-        )
+        UPDATE pedidos.pedido 
+        SET estatus = 'NP', url_recibo_pago = $1 
+        WHERE id_pedido = $2 AND estatus = 'PP'
+        RETURNING id_pedido
       `;
 
-      // 👇 --- CAMBIO 2: Se elimina 'pedido.numeroPedido' del array de valores ---
       const values = [
-        pedido.idPedido,
-        // Se quita pedido.numeroPedido de aquí
-        pedido.idCliente,
-        pedido.datosCliente,
-        pedido.idDomicilioCliente,
-        pedido.datosDomicilioCliente,
-        pedido.claveSucursal,
-        pedido.datosSucursal,
-        pedido.fechaHora,
-        pedido.estatus,
-        pedido.modalidadEntrega,
-        pedido.montoTotal,
-        pedido.detallePedido,
-        pedido.instruccionesEspeciales,
-        pedido.tipoPago,
-        pedido.cantidadProductos,
-        pedido.resumenPedido,
         urlRecibo,
+        pedido.idPedido
       ];
-      // Los placeholders ($2, $3, etc.) se ajustan automáticamente.
 
-      await pool.query(query, values);
+      const result = await pool.query(query, values);
+
+      if (result.rowCount === 0) {
+        throw new Error('No se encontró el pedido pendiente (PP) a actualizar, o el ID no coincide.');
+      }
 
       res
         .status(200)
-        .send({ success: true, message: 'Pedido guardado exitosamente.' });
+        .send({ success: true, message: 'Pedido pago confirmado y actualizado exitosamente.' });
     } else {
       res.status(400).send({
         success: false,

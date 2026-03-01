@@ -1,6 +1,65 @@
 import pool from '../db/database.js';
 
 // Convertido a async/await
+export const insertPedido = async (req, res) => {
+  const pedido = req.body;
+  
+  if (!pedido) {
+    return res.status(400).send({ error: 'Faltan datos del pedido.' });
+  }
+
+  try {
+    const query = `
+      INSERT INTO pedidos.pedido (
+        id_pedido, numero_pedido, id_cliente, datos_cliente, id_domicilio_cliente,
+        datos_domicilio_cliente, clave_sucursal, datos_sucursal, fecha_hora, estatus,
+        modalidad_entrega, monto_total, detalle_pedido, instrucciones_especiales,
+        tipo_pago, cantidad_productos, resumen_pedido
+        -- Nota: No insertamos url_recibo_pago aquí porque es pendiente de pago
+      ) VALUES (
+        $1, nextval('pedidos.pedido_numero_pedido_seq'), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
+      ) RETURNING id_pedido
+    `;
+
+    // SEGURIDAD: Forzamos el estatus a "PP" (Pendiente de Pago)
+    const estatusSeguro = 'PP';
+
+    const values = [
+      pedido.idPedido,
+      pedido.idCliente,
+      pedido.datosCliente,
+      pedido.idDomicilioCliente,
+      pedido.datosDomicilioCliente,
+      pedido.claveSucursal,
+      pedido.datosSucursal,
+      pedido.fechaHora,
+      estatusSeguro, // Usamos la variable forzada, no pedido.estatus
+      pedido.modalidadEntrega,
+      pedido.montoTotal,
+      pedido.detallePedido,
+      pedido.instruccionesEspeciales,
+      pedido.tipoPago,
+      pedido.cantidadProductos,
+      pedido.resumenPedido,
+    ];
+
+    const result = await pool.query(query, values);
+    
+    // Retornamos éxito e ID del pedido insertado
+    res.status(201).send({ 
+      success: true, 
+      message: 'Pedido pendiente guardado existosamente.',
+      idPedido: result.rows[0].id_pedido
+    });
+
+  } catch (error) {
+    console.error('Error en insertPedido:', error);
+    res.status(500).send({ error: error.message });
+  }
+};
+
+
+// Convertido a async/await
 export const getPedidosByCliente = async (req, res) => {
   const { idCliente } = req.params;
   const estatusPedidoAtendido = 'AP';
@@ -205,6 +264,14 @@ export const getPedidoById = async (req, res) => {
 // Convertido a async/await
 export const updateEstatusPedido = async (req, res) => {
   const { estatus, idPedido } = req.params;
+
+  // SEGURIDAD: Bloquear cambios manuales al estatus 'NP'
+  if (estatus === 'NP') {
+    return res.status(403).json({ 
+      error: 'Prohibido: No se puede cambiar el estatus a NP manualmente. Debe completarse mediante el flujo de pago.' 
+    });
+  }
+
   const query =
     'UPDATE pedidos.pedido SET estatus=$1 WHERE id_pedido=$2 RETURNING *';
   try {
