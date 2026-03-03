@@ -3,12 +3,35 @@ import pool from '../db/database.js';
 // Convertido a async/await
 export const insertPedido = async (req, res) => {
   const pedido = req.body;
-  
+
   if (!pedido) {
     return res.status(400).send({ error: 'Faltan datos del pedido.' });
   }
 
   try {
+    // 1. Verificar si el pedido ya existe (para reintentos de pago desde la app)
+    if (pedido.idPedido) {
+      const checkResult = await pool.query(
+        'SELECT id_pedido, estatus FROM pedidos.pedido WHERE id_pedido = $1',
+        [pedido.idPedido]
+      );
+      if (checkResult.rows.length > 0) {
+        const estatusActual = checkResult.rows[0].estatus;
+        if (estatusActual === 'PP') {
+          // Ya se insertó antes, regresamos éxito sin hacer otra inserción
+          return res.status(200).send({
+            success: true,
+            message: 'El pedido ya fue registrado previamente como pendiente.',
+            idPedido: pedido.idPedido
+          });
+        } else {
+          return res.status(400).send({
+            error: `No se puede modificar. El pedido tiene estatus: ${estatusActual}`
+          });
+        }
+      }
+    }
+
     const query = `
       INSERT INTO pedidos.pedido (
         id_pedido, numero_pedido, id_cliente, datos_cliente, id_domicilio_cliente,
@@ -44,10 +67,10 @@ export const insertPedido = async (req, res) => {
     ];
 
     const result = await pool.query(query, values);
-    
+
     // Retornamos éxito e ID del pedido insertado
-    res.status(201).send({ 
-      success: true, 
+    res.status(201).send({
+      success: true,
       message: 'Pedido pendiente guardado existosamente.',
       idPedido: result.rows[0].id_pedido
     });
@@ -267,8 +290,8 @@ export const updateEstatusPedido = async (req, res) => {
 
   // SEGURIDAD: Bloquear cambios manuales al estatus 'NP'
   if (estatus === 'NP') {
-    return res.status(403).json({ 
-      error: 'Prohibido: No se puede cambiar el estatus a NP manualmente. Debe completarse mediante el flujo de pago.' 
+    return res.status(403).json({
+      error: 'Prohibido: No se puede cambiar el estatus a NP manualmente. Debe completarse mediante el flujo de pago.'
     });
   }
 
