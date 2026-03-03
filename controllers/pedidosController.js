@@ -12,7 +12,7 @@ export const insertPedido = async (req, res) => {
     // 1. Verificar si el pedido ya existe (para reintentos de pago desde la app)
     if (pedido.idPedido) {
       const checkResult = await pool.query(
-        'SELECT id_pedido, estatus FROM pedidos.pedido WHERE id_pedido = $1',
+        'SELECT id_pedido, numero_pedido, estatus FROM pedidos.pedido WHERE id_pedido = $1',
         [pedido.idPedido]
       );
       if (checkResult.rows.length > 0) {
@@ -22,7 +22,8 @@ export const insertPedido = async (req, res) => {
           return res.status(200).send({
             success: true,
             message: 'El pedido ya fue registrado previamente como pendiente.',
-            idPedido: pedido.idPedido
+            idPedido: pedido.idPedido,
+            numeroPedido: checkResult.rows[0].numero_pedido
           });
         } else {
           return res.status(400).send({
@@ -41,7 +42,7 @@ export const insertPedido = async (req, res) => {
         -- Nota: No insertamos url_recibo_pago aquí porque es pendiente de pago
       ) VALUES (
         $1, nextval('pedidos.pedido_numero_pedido_seq'), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
-      ) RETURNING id_pedido
+      ) RETURNING id_pedido, numero_pedido
     `;
 
     // SEGURIDAD: Forzamos el estatus a "PP" (Pendiente de Pago)
@@ -72,7 +73,8 @@ export const insertPedido = async (req, res) => {
     res.status(201).send({
       success: true,
       message: 'Pedido pendiente guardado existosamente.',
-      idPedido: result.rows[0].id_pedido
+      idPedido: result.rows[0].id_pedido,
+      numeroPedido: result.rows[0].numero_pedido
     });
 
   } catch (error) {

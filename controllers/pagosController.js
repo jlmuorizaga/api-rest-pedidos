@@ -43,12 +43,39 @@ export const crearIntentoPago = async (req, res) => {
 
     res.send({
       clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id,
     });
   } catch (error) {
     console.error('Error al crear PaymentIntent:', error);
     res.status(500).send({ error: error.message });
   }
 };
+
+// --- ENDPOINT 1.5: Actualizar Intento de Pago ---
+export const actualizarIntentoPago = async (req, res) => {
+  const { paymentIntentId, claveSucursal, descripcion } = req.body;
+
+  if (!paymentIntentId || !claveSucursal || !descripcion) {
+    return res.status(400).send({
+      error: 'Faltan datos: paymentIntentId, claveSucursal y descripcion son requeridos.',
+    });
+  }
+
+  try {
+    const secretKey = await getStripeSecretKey(claveSucursal);
+    const stripe = new Stripe(secretKey);
+
+    await stripe.paymentIntents.update(paymentIntentId, {
+      description: descripcion,
+    });
+
+    res.send({ success: true, message: 'Intento de pago actualizado.' });
+  } catch (error) {
+    console.error('Error al actualizar PaymentIntent:', error);
+    res.status(500).send({ error: error.message });
+  }
+};
+
 
 // --- ENDPOINT 2: Confirmar Pago y Guardar Pedido (VERSIÓN CORREGIDA CON SECUENCIA) ---
 export const confirmarYGuardarPedido = async (req, res) => {
