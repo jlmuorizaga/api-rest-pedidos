@@ -80,7 +80,7 @@ export const getProductosBySucursal = async (req, res) => {
   const { cve_sucursal } = req.params;
   const query = `
     SELECT p.id, p.descripcion,p.tamanio,p.usa_salsa as "usaSalsa", p.categoria1, p.categoria2, p.categoria3,
-    rps.precio as "precio", p.aplica_bebida_gratis as "aplicaBebidaGratis"
+    rps.precio as "precio", p.aplica_bebida_gratis as "aplicaBebidaGratis", p.ruta_imagen as "imgUrl"
     FROM preesppropro.producto as p,
     preesppropro.sucursal as s,
     preesppropro.relacion_producto_sucursal as rps
@@ -126,7 +126,7 @@ export const getProductosByTipoProductoBySucursal = async (req, res) => {
   const { cve_sucursal, id_tipo_producto } = req.params;
   const query = `
     SELECT p.id, p.descripcion,p.tamanio,p.usa_salsa as "usaSalsa", p.categoria1, p.categoria2, p.categoria3,
-    rps.precio as "precio",p.aplica_bebida_gratis as "aplicaBebidaGratis"
+    rps.precio as "precio",p.aplica_bebida_gratis as "aplicaBebidaGratis", p.ruta_imagen as "imgUrl"
     FROM preesppropro.producto as p,
     preesppropro.producto_tipo as pt,
     preesppropro.sucursal as s,
