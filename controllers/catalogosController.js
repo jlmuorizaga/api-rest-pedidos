@@ -13,7 +13,7 @@ export const getSucursales = async (req, res) => {
     FROM preesppropro.sucursal as suc,
     preesppropro.relacion_pizza_sucursal as relpizzasucursal,
     preesppropro.relacion_producto_sucursal as relprod
-    WHERE (suc.id=relpizzasucursal.id_sucursal OR suc.id=relprod.id_sucursal) 
+    WHERE (suc.id=relpizzasucursal.id_sucursal OR suc.id=relprod.id_sucursal) AND suc.venta_activa = 'S'
     ORDER BY clave
   `;
   try {
