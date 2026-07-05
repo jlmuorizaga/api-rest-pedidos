@@ -303,25 +303,21 @@ export const recuperarContrasenia = async (req, res) => {
 
     const usuario = resultado.rows[0];
 
-    // Generar contraseña temporal sin caracteres ambiguos (sin 0, 1, I, l, O, o)
-    const generateTemporaryPassword = () => {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
-      let tempPass = 'CP-';
-      for (let i = 0; i < 6; i++) {
-        tempPass += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return tempPass;
-    };
-    const contraseniaTemporal = generateTemporaryPassword();
+    // Generar código PIN de 6 dígitos en el servidor
+    let codigoPIN = '';
+    for (let i = 0; i < 6; i++) {
+      codigoPIN += Math.floor(Math.random() * 10).toString();
+    }
 
-    // Hashear y actualizar en la base de datos
-    const salt = await bcrypt.genSalt(10);
-    const hashedTempPassword = await bcrypt.hash(contraseniaTemporal, salt);
-
-    await pool.query(
-      'UPDATE pedidos.cliente SET contrasenia = $1 WHERE correo_electronico = $2',
-      [hashedTempPassword, correo]
-    );
+    // Guardar en la base de datos de verificaciones
+    const expiracion = new Date(Date.now() + 15 * 60 * 1000); // Válido por 15 minutos
+    const dbQuery = `
+      INSERT INTO pedidos.codigo_verificacion (correo, codigo, expiracion, verificado)
+      VALUES ($1, $2, $3, FALSE)
+      ON CONFLICT (correo) 
+      DO UPDATE SET codigo = EXCLUDED.codigo, expiracion = EXCLUDED.expiracion, verificado = FALSE
+    `;
+    await pool.query(dbQuery, [correo, codigoPIN, expiracion]);
 
     // --- DISEÑO DEL CORREO ---
     const htmlTemplate = `
@@ -351,16 +347,16 @@ export const recuperarContrasenia = async (req, res) => {
                                     Hemos recibido una solicitud para recuperar tu contraseña de acceso a la plataforma de Pedidos.
                                 </p>
 
-                                <p style="font-size: 16px; color: #555555;">Aquí tienes tu contraseña temporal de acceso:</p>
+                                <p style="font-size: 16px; color: #555555;">Aquí tienes tu código PIN de verificación:</p>
 
                                 <!-- Caja de Contraseña Destacada con fuente monoespaciada legible -->
                                 <div style="background-color: #f3f4f6; border-left: 4px solid #2563EB; padding: 20px; margin: 24px 0; text-align: center;">
-                                    <span style="display: block; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Contraseña Temporal</span>
-                                    <span style="display: block; font-size: 22px; font-weight: bold; color: #111827; letter-spacing: 2px; font-family: Consolas, 'Courier New', Courier, monospace;">${contraseniaTemporal}</span>
+                                    <span style="display: block; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Código PIN de Restablecimiento</span>
+                                    <span style="display: block; font-size: 32px; font-weight: bold; color: #111827; letter-spacing: 4px; font-family: Consolas, 'Courier New', Courier, monospace;">${codigoPIN}</span>
                                 </div>
 
-                                <p style="font-size: 14px; color: #d62828; font-weight: bold;">
-                                    Por seguridad, ingresa a la aplicación con esta contraseña temporal y cámbiala de inmediato desde la sección "Editar mis datos" en la aplicación móvil.
+                                <p style="font-size: 14px; color: #555555;">
+                                    Este código es válido por 15 minutos. Si tú no solicitaste esta recuperación, puedes ignorar este mensaje de forma segura y tu contraseña no cambiará.
                                 </p>
                             </div>
                             
@@ -380,11 +376,11 @@ export const recuperarContrasenia = async (req, res) => {
       Source: process.env.SENDER_EMAIL || SENDER_EMAIL,
       Destination: { ToAddresses: [correo] },
       Message: {
-        Subject: { Data: 'Recuperación de contraseña - Pedidos' },
+        Subject: { Data: 'Restablecimiento de contraseña - Pedidos' },
         Body: {
           // Versión texto plano para clientes antiguos
           Text: {
-            Data: `Hola ${usuario.nombre},\n\nTu contraseña temporal es: ${contraseniaTemporal}\n\nPor seguridad, cámbiala lo antes posible desde la sección "Editar mis datos" en la aplicación.\n\nSi no solicitaste esto, ignora este mensaje.`,
+            Data: `Hola ${usuario.nombre},\n\nTu código PIN para restablecer la contraseña es: ${codigoPIN}\n\nEste código expira en 15 minutos.\n\nSi no solicitaste esto, ignora este mensaje.`,
           },
           // Versión HTML bonita
           Html: {
@@ -399,7 +395,7 @@ export const recuperarContrasenia = async (req, res) => {
 
     return res.status(200).json({
       exito: true,
-      mensaje: 'Se ha enviado una contraseña temporal a tu correo electrónico.',
+      mensaje: 'Se ha enviado un código PIN de verificación a tu correo electrónico.',
     });
   } catch (error) {
     console.error('Error en recuperarContrasenia:', error);
@@ -408,5 +404,63 @@ export const recuperarContrasenia = async (req, res) => {
       mensaje: 'Ocurrió un error interno al procesar la solicitud.',
       error: error.message,
     });
+  }
+};
+
+/**
+ * Aplica el cambio físico de contraseña tras validar el código PIN.
+ */
+export const restablecerContraseniaConCodigo = async (req, res) => {
+  const { correo, codigo, nuevaContrasenia } = req.body;
+
+  if (!correo || !codigo || !nuevaContrasenia) {
+    return res.status(400).json({ error: 'Faltan parámetros requeridos.' });
+  }
+
+  // Enforce backend validation of length >= 6
+  if (nuevaContrasenia.length < 6) {
+    return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
+  }
+
+  try {
+    // 1. Verificar que el código en la base de datos coincida y esté validado (verificado = true)
+    const checkQuery = `
+      SELECT verificado, expiracion 
+      FROM pedidos.codigo_verificacion 
+      WHERE correo = $1 AND codigo = $2
+    `;
+    const checkResult = await pool.query(checkQuery, [correo, codigo.toString().trim()]);
+
+    if (checkResult.rows.length === 0) {
+      return res.status(400).json({ error: 'El código de verificación o correo son inválidos.' });
+    }
+
+    const { verificado, expiracion } = checkResult.rows[0];
+
+    if (!verificado) {
+      return res.status(400).json({ error: 'El código de verificación aún no ha sido confirmado.' });
+    }
+
+    if (new Date() > new Date(expiracion)) {
+      return res.status(400).json({ error: 'El código de verificación ha expirado.' });
+    }
+
+    // 2. Hashear la nueva contraseña con bcrypt
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(nuevaContrasenia, salt);
+
+    // 3. Actualizar la contraseña en la base de datos de clientes
+    await pool.query(
+      'UPDATE pedidos.cliente SET contrasenia = $1 WHERE correo_electronico = $2',
+      [hashedPassword, correo]
+    );
+
+    // 4. Limpiar el código usado de la tabla temporal
+    await pool.query('DELETE FROM pedidos.codigo_verificacion WHERE correo = $1', [correo]);
+
+    res.status(200).json({ exito: true, mensaje: 'Tu contraseña ha sido cambiada exitosamente.' });
+  } catch (error) {
+    console.error('Error en restablecerContraseniaConCodigo:', error);
+    res.status(500).json({ error: 'Error interno del servidor al restablecer contraseña.' });
   }
 };

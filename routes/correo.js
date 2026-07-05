@@ -8,6 +8,7 @@ import {
   verificaCorreo,
   confirmarCodigo,
   recuperarContrasenia,
+  restablecerContraseniaConCodigo,
 } from '../controllers/correoController.js';
 
 const router = express.Router();
@@ -28,8 +29,12 @@ router.post('/confirmar-codigo', confirmarCodigo);
 // POST /api/recupera-correo-prueba
 router.post('/recupera-correo-prueba', recuperaCorreoPrueba);
 
-// Ruta para recuperar contraseña
+// Ruta para recuperar contraseña (Envía el PIN)
 // POST /api/recupera-contrasenia
 router.post('/recupera-contrasenia', recuperarContrasenia);
+
+// Ruta para establecer la nueva contraseña final
+// POST /api/restablecer-contrasenia
+router.post('/restablecer-contrasenia', restablecerContraseniaConCodigo);
 
 export default router;
