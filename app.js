@@ -23,7 +23,13 @@ const app = express();
 const PORT = 3000;
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.options('*', cors()); // Habilita preflight para todas las rutas
+
 app.use(express.json());
 // app.use(express.urlencoded({ extended: false })); // (Opcional, si no usas formularios HTML)
 
