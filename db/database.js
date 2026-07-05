@@ -10,6 +10,13 @@ const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_NAME = process.env.DB_NAME;
 const DB_PORT = process.env.DB_PORT;
 
+// Configurar SSL de forma dinámica para evitar errores en desarrollo local (localhost)
+const useSSL = process.env.DB_SSL 
+  ? process.env.DB_SSL === 'true' 
+  : (DB_HOST && !['localhost', '127.0.0.1'].includes(DB_HOST.toLowerCase()));
+
+const sslConfig = useSSL ? { rejectUnauthorized: false } : false;
+
 // Pool de conexiones a base de datos
 const pool = new Pool({
   user: DB_USER,
@@ -17,9 +24,7 @@ const pool = new Pool({
   database: DB_NAME,
   password: DB_PASSWORD,
   port: DB_PORT,
-  ssl: {
-    rejectUnauthorized: false, // <-- Importante para conexiones a AWS RDS
-  },
+  ssl: sslConfig,
 });
 
 // Opcional: listener para errores

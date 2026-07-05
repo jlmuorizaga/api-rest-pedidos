@@ -1,4 +1,8 @@
 import pool from '../db/database.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'clave_secreta_chpsystem_pizza_2026';
 
 // Convertido a async/await
 export const verificaLogin = async (req, res) => {
@@ -20,13 +24,22 @@ export const verificaLogin = async (req, res) => {
 
     const cliente = result.rows[0];
 
-    // IMPORTANTE: Aquí se compara texto plano. En un futuro deberías hashear contraseñas.
-    if (cliente.contrasenia !== contrasenia) {
+    // Verificar contraseña usando bcrypt.compare
+    const match = await bcrypt.compare(contrasenia, cliente.contrasenia);
+    if (!match) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
     delete cliente.contrasenia;
-    res.json({ message: 'Autenticación exitosa', cliente });
+
+    // Generar Token JWT
+    const token = jwt.sign(
+      { idCliente: cliente.id_cliente, correoElectronico: cliente.correo_electronico },
+      JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+
+    res.json({ message: 'Autenticación exitosa', cliente, token });
   } catch (error) {
     console.error('Error en la autenticación:', error);
     res.status(500).json({ error: 'Error en el servidor' });
@@ -36,14 +49,20 @@ export const verificaLogin = async (req, res) => {
 // Convertido a async/await
 export const getClienteAcceso = async (req, res) => {
   const { correo, contrasenia } = req.params;
-  const query = `
-    SELECT count(*) as acceso
-    FROM pedidos.cliente
-    WHERE activo = $1 AND correo_electronico = $2 AND contrasenia = $3
-  `;
   try {
-    const results = await pool.query(query, ['S', correo, contrasenia]);
-    res.status(200).json(results.rows[0]);
+    const query = `
+      SELECT contrasenia 
+      FROM pedidos.cliente 
+      WHERE activo = $1 AND correo_electronico = $2
+    `;
+    const results = await pool.query(query, ['S', correo]);
+    if (results.rows.length === 0) {
+      return res.status(200).json({ acceso: '0' });
+    }
+    
+    // Comparar contraseña con el hash de la base de datos
+    const match = await bcrypt.compare(contrasenia, results.rows[0].contrasenia);
+    res.status(200).json({ acceso: match ? '1' : '0' });
   } catch (error) {
     console.error('Error en getClienteAcceso:', error);
     res.status(500).json({ error: error.message });

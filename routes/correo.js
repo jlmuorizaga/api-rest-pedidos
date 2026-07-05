@@ -1,11 +1,12 @@
 // routes/correo.js
 import express from 'express';
 
-// Importamos solo las dos funciones de prueba del controlador
+// Importamos las funciones del controlador
 import {
   verificaCorreoPrueba,
   recuperaCorreoPrueba,
   verificaCorreo,
+  confirmarCodigo,
   recuperarContrasenia,
 } from '../controllers/correoController.js';
 
@@ -18,6 +19,10 @@ router.post('/verifica-correo-prueba', verificaCorreoPrueba);
 // Ruta para verificar correo
 // POST /api/verifica-correo
 router.post('/verifica-correo', verificaCorreo);
+
+// Ruta para confirmar código de verificación
+// POST /api/correo/confirmar-codigo
+router.post('/confirmar-codigo', confirmarCodigo);
 
 // Ruta de prueba para recuperar contraseña
 // POST /api/recupera-correo-prueba

@@ -1,4 +1,5 @@
 import pool from '../db/database.js';
+import bcrypt from 'bcryptjs';
 
 // --- CLIENTES ---
 
@@ -13,6 +14,31 @@ export const insertaCliente = async (req, res) => {
     fechaRegistro,
     activo,
   } = req.body;
+
+  // 1. Verificar si el correo ha sido verificado en la tabla de verificación de códigos
+  try {
+    const verificacionRes = await pool.query(
+      'SELECT verificado FROM pedidos.codigo_verificacion WHERE correo = $1',
+      [correoElectronico]
+    );
+    if (verificacionRes.rows.length === 0 || !verificacionRes.rows[0].verificado) {
+      return res.status(400).json({ error: 'El correo electrónico no ha sido verificado.' });
+    }
+  } catch (error) {
+    console.error('Error al comprobar verificación de correo:', error);
+    return res.status(500).json({ error: 'Error interno al validar el correo electrónico.' });
+  }
+
+  // 2. Hashear la contraseña antes de guardar
+  let hashedPassword;
+  try {
+    const salt = await bcrypt.genSalt(10);
+    hashedPassword = await bcrypt.hash(contrasenia, salt);
+  } catch (error) {
+    console.error('Error al hashear contraseña:', error);
+    return res.status(500).json({ error: 'Error interno al procesar el registro.' });
+  }
+
   const query = `
     INSERT INTO pedidos.cliente
     (id_cliente, correo_electronico, contrasenia, nombre, telefono, fecha_registro, activo)
@@ -22,12 +48,16 @@ export const insertaCliente = async (req, res) => {
     const results = await pool.query(query, [
       idCliente,
       correoElectronico,
-      contrasenia,
+      hashedPassword,
       nombre,
       telefono,
       fechaRegistro,
       activo,
     ]);
+    
+    // Opcional: Eliminar la verificación de correo una vez registrado
+    await pool.query('DELETE FROM pedidos.codigo_verificacion WHERE correo = $1', [correoElectronico]);
+
     res.status(201).json({
       respuesta: `Se insertó cliente: ${results.rows[0].id_cliente}`,
     });
@@ -42,12 +72,14 @@ export const actualizaDatosCliente = async (req, res) => {
   const { idCliente } = req.params;
   const { contrasenia, nombre, telefono } = req.body;
   try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(contrasenia, salt);
     const result = await pool.query(
       `UPDATE pedidos.cliente 
        SET contrasenia = $1, nombre = $2, telefono = $3
        WHERE id_cliente = $4
        RETURNING *`,
-      [contrasenia, nombre, telefono, idCliente]
+      [hashedPassword, nombre, telefono, idCliente]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Cliente no encontrado' });
