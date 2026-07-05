@@ -15,6 +15,11 @@ export const insertaCliente = async (req, res) => {
     activo,
   } = req.body;
 
+  // Validar longitud mínima de contraseña
+  if (!contrasenia || contrasenia.length < 6) {
+    return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
+  }
+
   // 1. Verificar si el correo ha sido verificado en la tabla de verificación de códigos
   try {
     const verificacionRes = await pool.query(
@@ -71,6 +76,12 @@ export const insertaCliente = async (req, res) => {
 export const actualizaDatosCliente = async (req, res) => {
   const { idCliente } = req.params;
   const { contrasenia, nombre, telefono } = req.body;
+
+  // Validar longitud mínima de contraseña
+  if (!contrasenia || contrasenia.length < 6) {
+    return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
+  }
+
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(contrasenia, salt);
