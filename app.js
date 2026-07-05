@@ -5,6 +5,9 @@
 
 import express from 'express';
 import cors from 'cors';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const packageJson = require('./package.json');
 
 //Importación de enrutadores
 import pagosRouter from './routes/pagos.js';
@@ -43,6 +46,13 @@ app.get('/', (req, res) => {
   res.json({
     info: 'API CHPSystem Pedidos Móviles Nube versión: 20260302 0934',
     status: 'Operacional',
+  });
+});
+
+// Ruta para retornar la versión de la API de forma dinámica
+app.get('/api/version', (req, res) => {
+  res.json({
+    version: packageJson.version,
   });
 });
 

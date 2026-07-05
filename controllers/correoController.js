@@ -1,6 +1,7 @@
 // controllers/correoController.js
 
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import bcrypt from 'bcryptjs';
 
 //import dotenv from 'dotenv';
 //dotenv.config();
@@ -35,21 +36,43 @@ export const verificaCorreoPrueba = async (req, res) => {
  */
 
 export const verificaCorreo = async (req, res) => {
-  const { correo, asunto, codigoVerificacion } = req.body;
+  const { correo, asunto } = req.body;
 
   // 1. Validar parámetros requeridos
-  if (!correo || !asunto || !codigoVerificacion) {
+  if (!correo || !asunto) {
     return res.status(400).send({
-      message:
-        'Faltan parámetros requeridos: correo, asunto y codigoVerificacion.',
+      message: 'Faltan parámetros requeridos: correo y asunto.',
+    });
+  }
+
+  // Generar código de 6 dígitos en el servidor
+  let codigoVerificacion = '';
+  for (let i = 0; i < 6; i++) {
+    codigoVerificacion += Math.floor(Math.random() * 10).toString();
+  }
+
+  // Guardar en la base de datos
+  try {
+    const expiracion = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+    const dbQuery = `
+      INSERT INTO pedidos.codigo_verificacion (correo, codigo, expiracion, verificado)
+      VALUES ($1, $2, $3, FALSE)
+      ON CONFLICT (correo) 
+      DO UPDATE SET codigo = EXCLUDED.codigo, expiracion = EXCLUDED.expiracion, verificado = FALSE
+    `;
+    await pool.query(dbQuery, [correo, codigoVerificacion, expiracion]);
+  } catch (error) {
+    console.error('Error al guardar código de verificación en la base de datos:', error);
+    return res.status(500).send({
+      message: 'Error interno del servidor al registrar el código de verificación.',
+      errorDetails: error.message,
     });
   }
 
   // URL del Logo (Idealmente deberías tener tu logo alojado en S3 o tu servidor público)
-  // Si no tienes uno aún, usa un placeholder o texto, pero aquí dejo la estructura lista.
   const logoUrl = 'https://tu-dominio.com/assets/logo-cheese-pizza-white.png';
 
-  // 2. Cuerpo del correo (Versión Texto Plano - Importante para accesibilidad y filtros spam)
+  // 2. Cuerpo del correo (Versión Texto Plano)
   const emailBodyText = `
 Hola,
 
@@ -86,7 +109,6 @@ El equipo de Cheese Pizza
           <!-- Encabezado Rojo -->
           <tr>
             <td style="background-color: #d62828; padding: 30px; text-align: center;">
-              <!-- Si tienes logo usa la etiqueta IMG, si no, usa el H1 -->
               <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; letter-spacing: 1px;">
                 CHEESE PIZZA
               </h1>
@@ -147,7 +169,7 @@ El equipo de Cheese Pizza
 
   // 4. Crear el comando de SES
   const sendEmailCommand = new SendEmailCommand({
-    Source: process.env.SENDER_EMAIL, // Asegúrate de usar tu variable de entorno
+    Source: process.env.SENDER_EMAIL || SENDER_EMAIL,
     Destination: {
       ToAddresses: [correo],
     },
@@ -183,9 +205,56 @@ El equipo de Cheese Pizza
     console.error('Error al enviar el correo con SES:', error);
 
     return res.status(500).send({
-      message: 'Error interno del servidor al intentar enviar el correo.',
+      message: 'Error interno del servidor al intentar enviar el correo con SES.',
       errorDetails: error.message,
     });
+  }
+};
+
+/**
+ * Confirma el código de verificación del correo de un usuario.
+ */
+export const confirmarCodigo = async (req, res) => {
+  const { correo, codigo } = req.body;
+
+  if (!correo || !codigo) {
+    return res.status(400).json({ error: 'Se requiere correo y código.' });
+  }
+
+  try {
+    const query = `
+      SELECT codigo, expiracion 
+      FROM pedidos.codigo_verificacion 
+      WHERE correo = $1
+    `;
+    const result = await pool.query(query, [correo]);
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ verificado: false, mensaje: 'No se ha solicitado verificación para este correo.' });
+    }
+
+    const { codigo: dbCodigo, expiracion } = result.rows[0];
+
+    // Verificar si ya expiró
+    if (new Date() > new Date(expiracion)) {
+      return res.status(400).json({ verificado: false, mensaje: 'El código de verificación ha expirado.' });
+    }
+
+    // Verificar si coincide
+    if (dbCodigo !== codigo.toString().trim()) {
+      return res.status(400).json({ verificado: false, mensaje: 'El código de verificación es incorrecto.' });
+    }
+
+    // Marcar como verificado
+    await pool.query(
+      'UPDATE pedidos.codigo_verificacion SET verificado = TRUE WHERE correo = $1',
+      [correo]
+    );
+
+    res.status(200).json({ verificado: true, mensaje: 'Código verificado con éxito.' });
+  } catch (error) {
+    console.error('Error al confirmar código:', error);
+    res.status(500).json({ error: 'Error interno al validar el código.' });
   }
 };
 
@@ -217,7 +286,7 @@ export const recuperarContrasenia = async (req, res) => {
 
   try {
     const consulta = `
-            SELECT nombre, contrasenia 
+            SELECT nombre 
             FROM pedidos.cliente 
             WHERE correo_electronico = $1 
             LIMIT 1
@@ -234,8 +303,23 @@ export const recuperarContrasenia = async (req, res) => {
 
     const usuario = resultado.rows[0];
 
+    // Generar código PIN de 6 dígitos en el servidor
+    let codigoPIN = '';
+    for (let i = 0; i < 6; i++) {
+      codigoPIN += Math.floor(Math.random() * 10).toString();
+    }
+
+    // Guardar en la base de datos de verificaciones
+    const expiracion = new Date(Date.now() + 15 * 60 * 1000); // Válido por 15 minutos
+    const dbQuery = `
+      INSERT INTO pedidos.codigo_verificacion (correo, codigo, expiracion, verificado)
+      VALUES ($1, $2, $3, FALSE)
+      ON CONFLICT (correo) 
+      DO UPDATE SET codigo = EXCLUDED.codigo, expiracion = EXCLUDED.expiracion, verificado = FALSE
+    `;
+    await pool.query(dbQuery, [correo, codigoPIN, expiracion]);
+
     // --- DISEÑO DEL CORREO ---
-    // Definimos el HTML aquí para mantener limpio el objeto params
     const htmlTemplate = `
         <!DOCTYPE html>
         <html>
@@ -263,16 +347,16 @@ export const recuperarContrasenia = async (req, res) => {
                                     Hemos recibido una solicitud para recuperar tu contraseña de acceso a la plataforma de Pedidos.
                                 </p>
 
-                                <p style="font-size: 16px; color: #555555;">Aquí tienes tu credencial actual:</p>
+                                <p style="font-size: 16px; color: #555555;">Aquí tienes tu código PIN de verificación:</p>
 
-                                <!-- Caja de Contraseña Destacada -->
+                                <!-- Caja de Contraseña Destacada con fuente monoespaciada legible -->
                                 <div style="background-color: #f3f4f6; border-left: 4px solid #2563EB; padding: 20px; margin: 24px 0; text-align: center;">
-                                    <span style="display: block; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Tu Contraseña</span>
-                                    <span style="display: block; font-size: 28px; font-weight: bold; color: #111827; letter-spacing: 1px;">${usuario.contrasenia}</span>
+                                    <span style="display: block; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Código PIN de Restablecimiento</span>
+                                    <span style="display: block; font-size: 32px; font-weight: bold; color: #111827; letter-spacing: 4px; font-family: Consolas, 'Courier New', Courier, monospace;">${codigoPIN}</span>
                                 </div>
 
-                                <p style="font-size: 14px; color: #666666; margin-top: 32px; border-top: 1px solid #eeeeee; padding-top: 20px;">
-                                    Por seguridad, te recomendamos eliminar este correo una vez hayas ingresado a tu cuenta.
+                                <p style="font-size: 14px; color: #555555;">
+                                    Este código es válido por 15 minutos. Si tú no solicitaste esta recuperación, puedes ignorar este mensaje de forma segura y tu contraseña no cambiará.
                                 </p>
                             </div>
                             
@@ -289,14 +373,14 @@ export const recuperarContrasenia = async (req, res) => {
         `;
 
     const params = {
-      Source: process.env.SENDER_EMAIL,
+      Source: process.env.SENDER_EMAIL || SENDER_EMAIL,
       Destination: { ToAddresses: [correo] },
       Message: {
-        Subject: { Data: 'Recuperación de contraseña - Pedidos' },
+        Subject: { Data: 'Restablecimiento de contraseña - Pedidos' },
         Body: {
           // Versión texto plano para clientes antiguos
           Text: {
-            Data: `Hola ${usuario.nombre},\n\nTu contraseña es: ${usuario.contrasenia}\n\nSi no solicitaste esto, ignora este mensaje.`,
+            Data: `Hola ${usuario.nombre},\n\nTu código PIN para restablecer la contraseña es: ${codigoPIN}\n\nEste código expira en 15 minutos.\n\nSi no solicitaste esto, ignora este mensaje.`,
           },
           // Versión HTML bonita
           Html: {
@@ -311,14 +395,72 @@ export const recuperarContrasenia = async (req, res) => {
 
     return res.status(200).json({
       exito: true,
-      mensaje: 'Se ha enviado la contraseña a tu correo electrónico.',
+      mensaje: 'Se ha enviado un código PIN de verificación a tu correo electrónico.',
     });
   } catch (error) {
-    console.error('Error en recuperaContrasenia:', error);
+    console.error('Error en recuperarContrasenia:', error);
     return res.status(500).json({
       exito: false,
       mensaje: 'Ocurrió un error interno al procesar la solicitud.',
       error: error.message,
     });
+  }
+};
+
+/**
+ * Aplica el cambio físico de contraseña tras validar el código PIN.
+ */
+export const restablecerContraseniaConCodigo = async (req, res) => {
+  const { correo, codigo, nuevaContrasenia } = req.body;
+
+  if (!correo || !codigo || !nuevaContrasenia) {
+    return res.status(400).json({ error: 'Faltan parámetros requeridos.' });
+  }
+
+  // Enforce backend validation of length >= 6
+  if (nuevaContrasenia.length < 6) {
+    return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
+  }
+
+  try {
+    // 1. Verificar que el código en la base de datos coincida y esté validado (verificado = true)
+    const checkQuery = `
+      SELECT verificado, expiracion 
+      FROM pedidos.codigo_verificacion 
+      WHERE correo = $1 AND codigo = $2
+    `;
+    const checkResult = await pool.query(checkQuery, [correo, codigo.toString().trim()]);
+
+    if (checkResult.rows.length === 0) {
+      return res.status(400).json({ error: 'El código de verificación o correo son inválidos.' });
+    }
+
+    const { verificado, expiracion } = checkResult.rows[0];
+
+    if (!verificado) {
+      return res.status(400).json({ error: 'El código de verificación aún no ha sido confirmado.' });
+    }
+
+    if (new Date() > new Date(expiracion)) {
+      return res.status(400).json({ error: 'El código de verificación ha expirado.' });
+    }
+
+    // 2. Hashear la nueva contraseña con bcrypt
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(nuevaContrasenia, salt);
+
+    // 3. Actualizar la contraseña en la base de datos de clientes
+    await pool.query(
+      'UPDATE pedidos.cliente SET contrasenia = $1 WHERE correo_electronico = $2',
+      [hashedPassword, correo]
+    );
+
+    // 4. Limpiar el código usado de la tabla temporal
+    await pool.query('DELETE FROM pedidos.codigo_verificacion WHERE correo = $1', [correo]);
+
+    res.status(200).json({ exito: true, mensaje: 'Tu contraseña ha sido cambiada exitosamente.' });
+  } catch (error) {
+    console.error('Error en restablecerContraseniaConCodigo:', error);
+    res.status(500).json({ error: 'Error interno del servidor al restablecer contraseña.' });
   }
 };
