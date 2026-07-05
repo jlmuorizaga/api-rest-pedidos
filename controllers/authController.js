@@ -47,29 +47,6 @@ export const verificaLogin = async (req, res) => {
 };
 
 // Convertido a async/await
-export const getClienteAcceso = async (req, res) => {
-  const { correo, contrasenia } = req.params;
-  try {
-    const query = `
-      SELECT contrasenia 
-      FROM pedidos.cliente 
-      WHERE activo = $1 AND correo_electronico = $2
-    `;
-    const results = await pool.query(query, ['S', correo]);
-    if (results.rows.length === 0) {
-      return res.status(200).json({ acceso: '0' });
-    }
-    
-    // Comparar contraseña con el hash de la base de datos
-    const match = await bcrypt.compare(contrasenia, results.rows[0].contrasenia);
-    res.status(200).json({ acceso: match ? '1' : '0' });
-  } catch (error) {
-    console.error('Error en getClienteAcceso:', error);
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Convertido a async/await
 export const getClienteExisteCorreo = async (req, res) => {
   const { correo } = req.params;
   const query = `

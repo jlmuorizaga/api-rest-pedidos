@@ -5,16 +5,17 @@ import {
   actualizarIntentoPago,
   confirmarYGuardarPedido,
 } from '../controllers/pagosController.js';
+import { verificarToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 // Endpoint para crear la intención de pago
-router.post('/crear-intento-pago', crearIntentoPago);
+router.post('/crear-intento-pago', verificarToken, crearIntentoPago);
 
 // Endpoint para actualizar la intención de pago con el detalle del pedido
-router.post('/actualizar-intento-pago', actualizarIntentoPago);
+router.post('/actualizar-intento-pago', verificarToken, actualizarIntentoPago);
 
 // Endpoint para verificar el pago y guardar el pedido final
-router.post('/confirmar-y-guardar', confirmarYGuardarPedido);
+router.post('/confirmar-y-guardar', verificarToken, confirmarYGuardarPedido);
 
 export default router;
