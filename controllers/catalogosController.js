@@ -295,3 +295,30 @@ export const getOrillasBySucursal = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const updateSucursalPoligono = async (req, res) => {
+  const { clave } = req.params;
+  const { poligono } = req.body;
+
+  try {
+    const query = `
+      UPDATE preesppropro.sucursal
+      SET poligono = $1
+      WHERE clave = $2
+      RETURNING *
+    `;
+    const results = await pool.query(query, [poligono, clave]);
+
+    if (results.rowCount === 0) {
+      return res.status(404).json({ error: 'Sucursal no encontrada.' });
+    }
+
+    res.status(200).json({ 
+      message: 'Polígono de sucursal actualizado correctamente.',
+      sucursal: results.rows[0]
+    });
+  } catch (error) {
+    console.error('Error en updateSucursalPoligono:', error);
+    res.status(500).json({ error: error.message });
+  }
+};

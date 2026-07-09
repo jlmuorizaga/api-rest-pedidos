@@ -18,6 +18,7 @@ import {
   getOrillasAll,
   getOrillasBySucursal,
   getCategoriasAll,
+  updateSucursalPoligono,
 } from '../controllers/catalogosController.js';
 
 const router = express.Router();
@@ -41,6 +42,9 @@ router.get('/ingredientesAll', getIngredientesAll);
 router.get('/orillasAll', getOrillasAll);
 router.get('/orillas/:cve_sucursal', getOrillasBySucursal);
 router.get('/categoriasAll', getCategoriasAll);
+
+// Ruta para actualizar polígono de cobertura
+router.put('/sucursales/:clave/poligono', updateSucursalPoligono);
 
 // Exportamos el enrutador
 export default router;
