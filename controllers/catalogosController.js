@@ -313,16 +313,16 @@ export const getOrillasBySucursal = async (req, res) => {
 
 export const updateSucursalPoligono = async (req, res) => {
   const { clave } = req.params;
-  const { poligono } = req.body;
+  const { poligono, latitud, longitud } = req.body;
 
   try {
     const query = `
       UPDATE preesppropro.sucursal
-      SET poligono = $1
-      WHERE clave = $2
+      SET poligono = $1, latitud = $2, longitud = $3
+      WHERE clave = $4
       RETURNING *
     `;
-    const results = await pool.query(query, [poligono, clave]);
+    const results = await pool.query(query, [poligono, latitud, longitud, clave]);
 
     if (results.rowCount === 0) {
       return res.status(404).json({ error: 'Sucursal no encontrada.' });
