@@ -19,6 +19,7 @@ import {
   getOrillasBySucursal,
   getCategoriasAll,
   updateSucursalPoligono,
+  updateRegionGeometria,
 } from '../controllers/catalogosController.js';
 
 const router = express.Router();
@@ -45,6 +46,9 @@ router.get('/categoriasAll', getCategoriasAll);
 
 // Ruta para actualizar polígono de cobertura
 router.put('/sucursales/:clave/poligono', updateSucursalPoligono);
+
+// Ruta para actualizar polígono y coordenadas de región
+router.put('/regiones/:id/geometria', updateRegionGeometria);
 
 // Exportamos el enrutador
 export default router;

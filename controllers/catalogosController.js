@@ -322,3 +322,30 @@ export const updateSucursalPoligono = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const updateRegionGeometria = async (req, res) => {
+  const { id } = req.params;
+  const { poligono, latitud, longitud } = req.body;
+
+  try {
+    const query = `
+      UPDATE preesppropro.region
+      SET poligono = $1, latitud = $2, longitud = $3
+      WHERE id = $4
+      RETURNING *
+    `;
+    const results = await pool.query(query, [poligono, latitud, longitud, id]);
+
+    if (results.rowCount === 0) {
+      return res.status(404).json({ error: 'Región no encontrada.' });
+    }
+
+    res.status(200).json({ 
+      message: 'Geometría de región actualizada correctamente.',
+      region: results.rows[0]
+    });
+  } catch (error) {
+    console.error('Error en updateRegionGeometria:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
