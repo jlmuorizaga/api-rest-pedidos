@@ -223,6 +223,21 @@ export const getRegionesAll = async (req, res) => {
   }
 };
 
+export const getRegionesAdmin = async (req, res) => {
+  const query = `
+    SELECT id, nombre, poligono, latitud, longitud
+    FROM preesppropro.region
+    ORDER BY nombre ASC
+  `;
+  try {
+    const results = await pool.query(query);
+    res.status(200).json(results.rows);
+  } catch (error) {
+    console.error('Error en getRegionesAdmin:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getCategorias = async (req, res) => {
   try {
     const results = await pool.query(

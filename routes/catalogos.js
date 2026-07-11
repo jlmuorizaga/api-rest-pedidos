@@ -13,6 +13,7 @@ import {
   getPromocionesBySucursal,
   getSalsasBySucursal,
   getRegionesAll,
+  getRegionesAdmin,
   getCategorias,
   getIngredientesAll,
   getOrillasAll,
@@ -38,6 +39,7 @@ router.get('/sucursalesAll', getSucursalesAll);
 router.get('/promociones/:cve_sucursal', getPromocionesBySucursal);
 router.get('/salsas/:cve_sucursal', getSalsasBySucursal);
 router.get('/regionesAll', getRegionesAll);
+router.get('/regionesAdmin', getRegionesAdmin);
 router.get('/categorias', getCategorias);
 router.get('/ingredientesAll', getIngredientesAll);
 router.get('/orillasAll', getOrillasAll);
