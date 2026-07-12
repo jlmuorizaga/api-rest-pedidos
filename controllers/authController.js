@@ -62,3 +62,50 @@ export const getClienteExisteCorreo = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const loginUsuarioAdmin = async (req, res) => {
+  const { usuario, contrasenia } = req.body;
+
+  if (!usuario || !contrasenia) {
+    return res.status(400).json({ error: 'Se requiere usuario y contraseña.' });
+  }
+
+  try {
+    const query = 'SELECT * FROM preesppropro.usuario WHERE usuario = $1';
+    const result = await pool.query(query, [usuario]);
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Usuario o contraseña incorrectos.' });
+    }
+
+    const dbUser = result.rows[0];
+
+    // Contraseña sin encriptación
+    if (contrasenia !== dbUser.contrasenia) {
+      return res.status(401).json({ error: 'Usuario o contraseña incorrectos.' });
+    }
+
+    // Limpiar contraseña
+    delete dbUser.contrasenia;
+
+    // Generar Token JWT
+    const token = jwt.sign(
+      { id: dbUser.id.trim(), usuario: dbUser.usuario, nombre: dbUser.nombre },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.status(200).json({
+      message: 'Autenticación exitosa.',
+      usuario: {
+        id: dbUser.id.trim(),
+        usuario: dbUser.usuario,
+        nombre: dbUser.nombre
+      },
+      token
+    });
+  } catch (error) {
+    console.error('Error en loginUsuarioAdmin:', error);
+    res.status(500).json({ error: 'Error en el servidor.' });
+  }
+};

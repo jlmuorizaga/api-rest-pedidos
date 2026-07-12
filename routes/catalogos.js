@@ -1,5 +1,6 @@
 // routes/catalogos.js
 import express from 'express';
+import { verificarToken } from '../middlewares/authMiddleware.js';
 
 // Importamos TODAS las funciones del controlador
 import {
@@ -25,7 +26,7 @@ import {
 
 const router = express.Router();
 
-// Endpoints para catálogos
+// Endpoints para catálogos públicos (sin autenticar, usados por la app móvil de clientes)
 router.get('/sucursales', getSucursales);
 router.get('/pizzas/:cve_sucursal', getPizzasBySucursal);
 router.get('/tamanios/:cve_sucursal/:id_especialidad', getTamaniosBySucursal);
@@ -35,22 +36,20 @@ router.get(
   '/productos/:cve_sucursal/:id_tipo_producto',
   getProductosByTipoProductoBySucursal
 );
-router.get('/sucursalesAll', getSucursalesAll);
 router.get('/promociones/:cve_sucursal', getPromocionesBySucursal);
 router.get('/salsas/:cve_sucursal', getSalsasBySucursal);
 router.get('/regionesAll', getRegionesAll);
-router.get('/regionesAdmin', getRegionesAdmin);
 router.get('/categorias', getCategorias);
 router.get('/ingredientesAll', getIngredientesAll);
 router.get('/orillasAll', getOrillasAll);
 router.get('/orillas/:cve_sucursal', getOrillasBySucursal);
 router.get('/categoriasAll', getCategoriasAll);
 
-// Ruta para actualizar polígono de cobertura
-router.put('/sucursales/:clave/poligono', updateSucursalPoligono);
-
-// Ruta para actualizar polígono y coordenadas de región
-router.put('/regiones/:id/geometria', updateRegionGeometria);
+// Endpoints administrativos protegidos con JWT (usados por geocheesepizza)
+router.get('/sucursalesAll', verificarToken, getSucursalesAll);
+router.get('/regionesAdmin', verificarToken, getRegionesAdmin);
+router.put('/sucursales/:clave/poligono', verificarToken, updateSucursalPoligono);
+router.put('/regiones/:id/geometria', verificarToken, updateRegionGeometria);
 
 // Exportamos el enrutador
 export default router;
