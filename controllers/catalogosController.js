@@ -209,10 +209,10 @@ export const getSalsasBySucursal = async (req, res) => {
 
 export const getRegionesAll = async (req, res) => {
   const query = `
-    SELECT DISTINCT(l.id), nombre, l.latitud, l.longitud
+    SELECT DISTINCT(l.id), l.nombre, l.latitud, l.longitud, l.poligono
     FROM preesppropro.region as l, preesppropro.sucursal as s
     WHERE l.id=s.id_region
-    ORDER BY nombre ASC
+    ORDER BY l.nombre ASC
   `;
   try {
     const results = await pool.query(query);
