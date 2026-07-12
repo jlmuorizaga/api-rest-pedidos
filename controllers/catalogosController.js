@@ -9,7 +9,7 @@ import pool from '../db/database.js';
 export const getSucursales = async (req, res) => {
   const query = `
     SELECT distinct clave, nombre_sucursal as "nombreSucursal",domicilio,hora_inicio as "horaInicio",hora_fin as "horaFin",
-    latitud, longitud, id_Region as "idRegion", venta_activa as "ventaActiva", pk as "stripePublicKey"
+    latitud, longitud, id_Region as "idRegion", venta_activa as "ventaActiva", pk as "stripePublicKey", poligono
     FROM preesppropro.sucursal as suc,
     preesppropro.relacion_pizza_sucursal as relpizzasucursal,
     preesppropro.relacion_producto_sucursal as relprod
