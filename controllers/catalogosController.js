@@ -9,7 +9,9 @@ import pool from '../db/database.js';
 export const getSucursales = async (req, res) => {
   const query = `
     SELECT distinct clave, nombre_sucursal as "nombreSucursal",domicilio,hora_inicio as "horaInicio",hora_fin as "horaFin",
-    latitud, longitud, id_Region as "idRegion", venta_activa as "ventaActiva", pk as "stripePublicKey", poligono
+    latitud, longitud, id_Region as "idRegion", venta_activa as "ventaActiva", pk as "stripePublicKey", poligono,
+    monto_minimo_entrega_sucursal as "montoMinimoEntregaSucursal",
+    monto_minimo_entrega_domicilio as "montoMinimoEntregaDomicilio"
     FROM preesppropro.sucursal as suc,
     preesppropro.relacion_pizza_sucursal as relpizzasucursal,
     preesppropro.relacion_producto_sucursal as relprod
@@ -18,7 +20,18 @@ export const getSucursales = async (req, res) => {
   `;
   try {
     const results = await pool.query(query);
-    res.status(200).json(results.rows);
+    const rows = results.rows.map((element) => ({
+      ...element,
+      montoMinimoEntregaSucursal:
+        element.montoMinimoEntregaSucursal != null
+          ? Number(element.montoMinimoEntregaSucursal)
+          : 0,
+      montoMinimoEntregaDomicilio:
+        element.montoMinimoEntregaDomicilio != null
+          ? Number(element.montoMinimoEntregaDomicilio)
+          : 0,
+    }));
+    res.status(200).json(rows);
   } catch (error) {
     console.error('Error en getSucursales:', error);
     res.status(500).json({ error: error.message });
